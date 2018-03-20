@@ -1,0 +1,58 @@
+{
+  "name": "sell-control",
+  "version": "1.0.0",
+  "description": "A profesional application that is suitable for any small-medium retail store. It allows to take control of clients, products, suppliers and sellings.",
+  "main": "index.js",
+  "scripts": {
+    "scss-compile": "node-sass --watch src/styles/master.scss -o public/dist",
+    "live-server": "live-server public | npm run scss-compile",
+    "babel-compile": "npx babel src/app.jsx --watch --out-file public/dist/bundle.js",
+    "dev-server": "webpack-dev-server --config webpack.dev.js",
+    "build-dev": "webpack --display-modules --sort-modules-by size",
+    "build-prd": "webpack -p --config webpack.prd.js --display-modules --sort-modules-by size",
+    "start": "node server/server.js",
+    "heroku-postbuild": "npm run build-prd"
+  },
+  "keywords": [
+    "sell",
+    "controll",
+    "react",
+    "redux",
+    "javascript",
+    "crud",
+    "punto",
+    "de",
+    "venta"
+  ],
+  "author": "Julio Ojeda",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "compression-webpack-plugin": "^1.1.11",
+    "css-loader": "^0.28.11",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "live-server": "^1.2.0",
+    "node-sass": "^4.7.2",
+    "preload-webpack-plugin": "^2.3.0",
+    "sass-loader": "^6.0.7",
+    "style-loader": "^0.20.3",
+    "webpack": "^3.1.0",
+    "webpack-cli": "^2.0.12",
+    "webpack-dev-server": "^2.5.1"
+  },
+  "dependencies": {
+    "express": "^4.16.3",
+    "formik": "^0.11.11",
+    "normalize.css": "^8.0.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "redux": "^3.7.2",
+    "yup": "^0.24.1"
+  }
+}

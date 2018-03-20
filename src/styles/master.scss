@@ -1,0 +1,42 @@
+
+$font-stack: Helvetica, sans-serif;
+$left-padding-page: 5rem;
+$top-padding-page: 3rem;
+
+// Form
+
+$vertical-space-fields: 1rem;
+$label-min-width: 5rem;
+$input-min-width: 15rem;
+$input-padding: .2rem;
+
+$primary-color: black;
+
+body {
+  font: 100% $font-stack;
+}
+
+.ClientPage__content{
+  padding-top: $top-padding-page;
+  padding-left: $left-padding-page;
+}
+
+.ClientPage__button_page_active{
+  background: rgb(84, 84, 84);
+  color: white;
+}
+
+.form_field{
+  margin-bottom: $vertical-space-fields;
+  display: flex;
+}
+
+.form_field label{
+  display: block;
+  width: $label-min-width;
+}
+
+.form_field input{
+  width: $input-min-width;
+  padding: $input-padding;
+}
