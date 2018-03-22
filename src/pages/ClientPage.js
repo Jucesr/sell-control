@@ -1,24 +1,28 @@
-import React from 'react';
-import {Formik} from 'formik';
-import Yup from 'yup';
-import Form from '../components/FormClient';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import {Formik} from 'formik'
+import Yup from 'yup'
 
-const require_message = 'This field is required';
+import Form from '../components/FormClient'
+import {addClient, fetchClients} from '../actions/clients'
 
-export default class ClientPage extends React.Component{
+const require_message = 'This field is required'
+
+class ClientPage extends React.Component{
 
   constructor(props){
-    super(props);
+    super(props)
     this.state = {
       active_page: 'list',
     }
   }
 
   togglePage = (e) => {
-    let page = e.target.id;
+    let page = e.target.id
     this.setState(() => ({
       active_page: page
-    }));
+    }))
   }
 
   render(){
@@ -35,9 +39,14 @@ export default class ClientPage extends React.Component{
 
         <div className="ClientPage__content">
 
-          { this.state.active_page == 'list' && <ListPage/>}
+          { this.state.active_page == 'list' &&
+            <ListPage
+              clients={this.props.clients}
+              fetchClients={this.props.fetchClients}
+            />
+          }
 
-          { this.state.active_page == 'new' && <NewPage/>}
+          { this.state.active_page == 'new' && <NewPage onSubmit={this.props.addClient}/>}
 
           { this.state.active_page == 'modify' && <ModifyPage/>}
 
@@ -49,11 +58,34 @@ export default class ClientPage extends React.Component{
   }
 }
 
-const ListPage = () => (
-  <div>List</div>
+const mapStateToProps = state => ({
+  clients: state.clients.items
+})
+
+const mapDispatchToProps = dispatch => ({
+  addClient: client => dispatch(addClient(client)),
+  fetchClients: () => dispatch(fetchClients())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(ClientPage)
+
+
+const ListPage = ({clients, fetchClients}) => (
+  <div>
+    {clients.length > 0 ? clients.map(({fist_name, last_name, address, email, phone}) =>
+      <div key={fist_name}>
+        <span>{fist_name}</span>
+        <span>{last_name}</span>
+        <span>{address}</span>
+        <span>{email}</span>
+        <span>{phone}</span>
+      </div>) : 'No Clients'}
+
+      <button onClick={fetchClients}>Fetch client</button>
+  </div>
 )
 
-const NewPage = () => (
+const NewPage = ({onSubmit}) => (
   <Form
     fields={{
       fist_name: '',
@@ -69,7 +101,7 @@ const NewPage = () => (
       email: Yup.string().email().required(require_message),
       phone: Yup.string().min(8)
     })}
-    onSubmit={(props) => console.log(props)}/>
+    onSubmit={(props) => onSubmit(props)}/>
 )
 
 const ModifyPage = () => (
@@ -79,3 +111,20 @@ const ModifyPage = () => (
 const DeletePage = () => (
   <div>List</div>
 )
+
+NewPage.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+}
+
+ListPage.propTypes = {
+  clients: PropTypes.arrayOf(
+    PropTypes.shape({
+      // id: PropTypes.string.isRequired,
+      fist_name: PropTypes.string.isRequired,
+      last_name: PropTypes.string,
+      address: PropTypes.string,
+      email: PropTypes.string.isRequired,
+      phone: PropTypes.string,
+    }).isRequired
+  ).isRequired,
+}

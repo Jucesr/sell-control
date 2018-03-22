@@ -1,12 +1,12 @@
-import React from 'react';
-import {Form, Field, withFormik} from 'formik';
+import React from 'react'
+import {Form, Field, withFormik} from 'formik'
 
 function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+    return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
 const formatText = (text) => {
-  return capitalizeFirstLetter(text.replaceAll('_', ' '));
+  return capitalizeFirstLetter(text.replaceAll('_', ' '))
 }
 
 const CustomField = (props) => (
@@ -49,10 +49,10 @@ const formikConfig = {
   },
   validationSchema: ({validationObject}) => validationObject,
   handleSubmit(values, {props, resetForm, setErrors, setSubmitting}) {
-    props.onSubmit(values);
+    props.onSubmit(values)
   }
 }
 
 
 
-export default withFormik(formikConfig)(F);
+export default withFormik(formikConfig)(F)
