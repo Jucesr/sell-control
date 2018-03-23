@@ -11,6 +11,8 @@
     "build-dev": "webpack --display-modules --sort-modules-by size",
     "build-prd": "webpack -p --config webpack.prd.js --display-modules --sort-modules-by size",
     "start": "node server/server.js",
+    "start-babel": "babel-node server/server.js",
+    "start-moon": "nodemon server/server.js --exec babel-node",
     "heroku-postbuild": "npm run build-prd"
   },
   "keywords": [
@@ -51,6 +53,9 @@
     "cross-fetch": "^2.1.0",
     "express": "^4.16.3",
     "formik": "^0.11.11",
+    "moment": "^2.21.0",
+    "mongodb": "^3.0.4",
+    "mongoose": "^5.0.11",
     "normalize.css": "^8.0.0",
     "prop-types": "^15.6.1",
     "react": "^16.2.0",

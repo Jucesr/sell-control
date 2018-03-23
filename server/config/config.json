@@ -1,0 +1,12 @@
+{
+  "test": {
+    "port": 3000,
+    "MONGODB_URI": "mongodb://localhost:27017/sellControlTest",
+    "JWT_SECRET": "thisrandomishardfixtoastring"
+  },
+  "development": {
+    "port": 3000,
+    "MONGODB_URI": "mongodb://localhost:27017/sellControl",
+    "JWT_SECRET": "jksjdkjbh3hbj3hjbjh3bjhda2"
+  }
+}
