@@ -50,6 +50,7 @@ const formikConfig = {
   validationSchema: ({validationObject}) => validationObject,
   handleSubmit(values, {props, resetForm, setErrors, setSubmitting}) {
     props.onSubmit(values)
+    resetForm()
   }
 }
 

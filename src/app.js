@@ -8,8 +8,6 @@ import { Provider } from 'react-redux'
 import ClientPage from './pages/ClientPage'
 import store from './store/store'
 
-const template = <p>My react template 2.0</p>
-
 const App = () => (
   <Provider store={store}>
     <ClientPage />
