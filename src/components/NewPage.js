@@ -5,7 +5,7 @@ import Yup from 'yup'
 
 const require_message = 'This field is required'
 
-export const NewPage = ({onSubmit}) => (
+export const NewPage = ({onSubmit, clients}) => (
   <Form
     fields={{
       fist_name: '',
@@ -14,19 +14,17 @@ export const NewPage = ({onSubmit}) => (
       email: '',
       phone: ''
     }}
-    validationObject={Yup.object().shape({
+    validationSchema={Yup.object().shape({
       fist_name: Yup.string().required(require_message),
       last_name: Yup.string(),
       address: Yup.string().max(40),
       email: Yup.string().email().required(require_message),
       phone: Yup.string().min(8)
     })}
-    onSubmit={(props) => {
-      onSubmit(props).then(
-        () => alert('Client added'),
-        e => alert(e)
-      );
-    }}/>
+    onSubmit={onSubmit}
+    automaticReset={false}
+  />
+
 )
 
 NewPage.propTypes = {

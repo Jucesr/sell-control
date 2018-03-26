@@ -49,6 +49,22 @@ class ClientPage extends React.Component{
     });
   }
 
+  onAddClient = (client, resetForm, setErrors) => {
+    const search = this.props.clients.filter((item) => item.email == client.email)
+    if(search.length == 0){
+      this.props.addClient(client).then(
+        () => {
+          alert('Client added')
+        }
+      ).catch(
+        e => alert(e)
+      ).then(resetForm)
+    }else{
+      setErrors({email: 'The email is alredy taken'})
+    }
+
+  }
+
   onCancelEdit = () => {
     this.setState(() => ({
         edit_client: {
@@ -84,14 +100,14 @@ class ClientPage extends React.Component{
 
           { this.state.active_page == 'new' &&
             <NewPage
-              onSubmit={this.props.addClient}
+              onSubmit={this.onAddClient}
             />
           }
 
           { this.state.active_page == 'edit' &&
             <EditPage
               defaults={this.state.edit_client}
-              onSubmit={this.props.updateClient}              
+              onSubmit={this.props.updateClient}
               onDelete={this.props.removeClient}
               onCancel={this.onCancelEdit}
               onSearch={this.onSearch}

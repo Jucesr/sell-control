@@ -15,7 +15,7 @@ export const EditPage = ({onSubmit, onSearch, onCancel, onDelete, defaults}) => 
       cancelButton={false}
       disabledForm={defaults.hasOwnProperty('_id')}
       textSubmitButton="Search"
-      validationObject={Yup.object().shape({
+      validationSchema={Yup.object().shape({
         email: Yup.string().email(invalid_email).required(require_message)
       })}
       onSubmit={(props) => {
@@ -42,11 +42,11 @@ export const EditPage = ({onSubmit, onSearch, onCancel, onDelete, defaults}) => 
           onDelete(defaults._id).then(
             () => alert('Client deleted'),
             e => alert(e)
-          );
-          onCancel();
+          ).then(() => onCancel());
+
         }
       }}
-      validationObject={Yup.object().shape({
+      validationSchema={Yup.object().shape({
         fist_name: Yup.string().required(require_message),
         last_name: Yup.string(),
         address: Yup.string().max(40),
@@ -61,8 +61,7 @@ export const EditPage = ({onSubmit, onSearch, onCancel, onDelete, defaults}) => 
         onSubmit(updatedClient).then(
           () => alert('Client saved'),
           e => alert(e)
-        );
-        onCancel();
+        ).then(() => onCancel());
       }}/>
 
     }

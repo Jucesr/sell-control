@@ -17,12 +17,13 @@ const CustomField = (props) => (
   </div>
 )
 const CustomForm = ({
-  validationObject,
+  validationSchema,
   onSubmit,
   onCancel,
   fields,
   buttons,
   disabledForm,
+  automaticReset = true,
   textSubmitButton = 'Ok',
   textCancelButton = 'Cancel',
   cancelButton = true
@@ -31,11 +32,14 @@ const CustomForm = ({
     initialValues={{
         ...fields
       }}
-    validationSchema={validationObject}
+    validationSchema={validationSchema}
     onSubmit={
       (values, { resetForm, setErrors, setSubmitting}) => {
-        onSubmit(values);
-        resetForm();
+        onSubmit(values, resetForm, setErrors);
+        if(automaticReset){
+          resetForm();
+        }
+
       }}
     render={({
         values,
