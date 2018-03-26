@@ -7,10 +7,9 @@ html {
 }
 
 body {
-  color: $dark-gray;
-  font-family: Helvetica, Arial, sans-serif;
-  font-size: $m-size;
-  line-height: 1.6;
+  font-family: $font_type;
+  font-size: $font_document;
+  // line-height: 1.6;
 }
 
 button {
@@ -19,8 +18,4 @@ button {
 
 button:disabled{
   cursor: default;
-}
-
-.is-active{
-  font-weight: bold;
 }

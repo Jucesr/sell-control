@@ -1,5 +1,5 @@
 import React from 'react'
-import Form from '../components/FormClient'
+import Form from '../components/CustomForm'
 import PropTypes from 'prop-types'
 import Yup from 'yup'
 

@@ -4,35 +4,59 @@ import PropTypes from 'prop-types'
 
 export const ListPage = ({clients, fetchClients, isFetching}) => (
   <div>
-
-    {isFetching ?
-      <p>Loading...</p> :
-      clients.length > 0 ? (
         <ReactTable
           data={clients}
           columns={[
             {
               Header: 'Fist name',
-              accessor: 'fist_name'
+              accessor: 'fist_name',
+              headerClassName: 'table_header'
             },{
               Header: 'Last name',
-              accessor: 'last_name'
+              accessor: 'last_name',
+              headerClassName: 'table_header'
             },{
               Header: 'Address',
-              accessor: 'address'
+              accessor: 'address',
+              headerClassName: 'table_header'
             },{
               Header: 'Email',
-              accessor: 'email'
+              accessor: 'email',
+              headerClassName: 'table_header'
             },{
               Header: 'Phone',
-              accessor: 'phone'
+              accessor: 'phone',
+              headerClassName: 'table_header'
             }
-
           ]}
+          loading={isFetching}
+          // getTdProps={(state, rowInfo, column, instance) => {
+          //     return {
+          //       onClick: (e, handleOriginal) => {
+          //         console.log('A Td Element was clicked!')
+          //         console.log('it produced this event:', e)
+          //         console.log('It was in this column:', column)
+          //         console.log('It was in this row:', rowInfo)
+          //         console.log('It was in this table instance:', instance)
+          //
+          //         // IMPORTANT! React-Table uses onClick internally to trigger
+          //         // events like expanding SubComponents and pivots.
+          //         // By default a custom 'onClick' handler will override this functionality.
+          //         // If you want to fire the original onClick handler, call the
+          //         // 'handleOriginal' function.
+          //         if (handleOriginal) {
+          //           handleOriginal()
+          //         }
+          //       }
+          //     }
+          //   }}
+          // getTheadThProps={(state, rowInfo, column, instance) => {
+          //     console.log('state:', state)
+          //     console.log('It was in this column:', column)
+          //     console.log('It was in this row:', rowInfo)
+          //     console.log('It was in this table instance:', instance)
+          // }}
         />
-
-      ) : 'No Clients'}
-
   </div>
 )
 

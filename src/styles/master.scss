@@ -1,24 +1,15 @@
+@import "./base/settings";
+@import "./base/base";
+@import "react-table.css";
 
-$font-stack: Helvetica, sans-serif;
-$left-padding-page: 5rem;
-$top-padding-page: 3rem;
-
-// Form
-
-$vertical-space-fields: 1rem;
-$label-min-width: 5rem;
-$input-min-width: 15rem;
-$input-padding: .2rem;
-
-$primary-color: black;
-
-body {
-  font: 100% $font-stack;
+.ClientPage__title{
+  font-size: $font_page_title;
 }
 
 .ClientPage__content{
-  padding-top: $top-padding-page;
-  padding-left: $left-padding-page;
+  padding-top: $top_padding_page;
+  padding-left: $side_padding_page;
+  padding-right: $side_padding_page;
 }
 
 .ClientPage__button_page_active{
@@ -27,18 +18,23 @@ body {
 }
 
 .form_field{
-  margin-bottom: $vertical-space-fields;
+  margin-bottom: $vertical_space_fields;
   display: flex;
 }
 
 .form_field label{
   display: block;
-  width: $label-min-width;
+  width: $label_min_width;
 }
 
 .form_field input{
-  width: $input-min-width;
-  padding: $input-padding;
+  width: $input_min_width;
+  padding: $input_padding;
 }
 
-@import "react-table.css";
+//List styles
+
+.table_header{
+  font-size: $font_table_header;
+  font-weight: bold;
+}

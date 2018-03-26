@@ -55,6 +55,16 @@ const postClient = (client) => {
   });
 }
 
+const patchClient = (client) => {
+  return httpRequest(`/api/clients/${client._id}`, {
+    body: JSON.stringify(client), // must match 'Content-Type' header
+    headers: {
+      'content-type': 'application/json'
+    },
+    method: 'PATCH', // *GET, POST, PUT, DELETE, etc.
+  });
+}
+
 const httpRequest = (url, data = null) => {
   return fetch(url, data)
     .then(response => response.json())

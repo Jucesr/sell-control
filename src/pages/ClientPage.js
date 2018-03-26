@@ -13,6 +13,13 @@ class ClientPage extends React.Component{
     super(props)
     this.state = {
       active_page: 'list',
+      edit_client: {
+        fist_name: '',
+        last_name: '',
+        address: '',
+        email: '',
+        phone: ''
+      }
     }
   }
 
@@ -27,11 +34,38 @@ class ClientPage extends React.Component{
     }))
   }
 
+  onSearch = ({email}) => {
+    const client = this.props.clients.filter(client => client.email == email)[0];
+
+    return new Promise((resolve, reject) => {
+      if(client){
+        this.setState(() => ({
+            edit_client: client
+        }), resolve())
+      }else{
+        //TODO: Search in Database.
+        reject('Client was not found');
+      }
+    });
+  }
+
+  onCancelEdit = () => {
+    this.setState(() => ({
+        edit_client: {
+          fist_name: '',
+          last_name: '',
+          address: '',
+          email: '',
+          phone: ''
+        }
+    }));
+  }
+
   render(){
 
     return (
       <div>
-        <h2>Clients</h2>
+        <h2 className= 'ClientPage__title'>Clients</h2>
         <div className="ClientPage__actions">
           <button className={this.state.active_page == 'list' ? 'ClientPage__button_page_active' : 'ClientPage__button_page'} id="list" onClick={this.togglePage}>List</button>
           <button className={this.state.active_page == 'new' ? 'ClientPage__button_page_active' : 'ClientPage__button_page'} id="new" onClick={this.togglePage}>New</button>
@@ -48,11 +82,20 @@ class ClientPage extends React.Component{
             />
           }
 
-          { this.state.active_page == 'new' && <NewPage onSubmit={this.props.addClient}/>}
+          { this.state.active_page == 'new' &&
+            <NewPage
+              onSubmit={this.props.addClient}
+            />
+          }
 
-          { this.state.active_page == 'edit' && <EditPage/>}
-
-
+          { this.state.active_page == 'edit' &&
+            <EditPage
+              onSubmit={console.log}
+              defaults={this.state.edit_client}
+              onSearch={this.onSearch}
+              onCancel={this.onCancelEdit}
+            />
+          }
         </div>
       </div>
     )
