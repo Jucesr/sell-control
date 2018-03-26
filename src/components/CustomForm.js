@@ -21,8 +21,10 @@ const CustomForm = ({
   onSubmit,
   onCancel,
   fields,
+  buttons,
   disabledForm,
   textSubmitButton = 'Ok',
+  textCancelButton = 'Cancel',
   cancelButton = true
 }) => (
   <Formik
@@ -62,7 +64,25 @@ const CustomForm = ({
             })
           }
           <button disabled={disabledForm}>{textSubmitButton}</button>
-          {cancelButton && <button disabled={disabledForm} onClick={onCancel || handleReset} type="reset">Cancel</button>}
+
+          {
+            buttons &&
+            Object.keys(buttons).map(function(key, index) {
+              return (
+                <button
+                  key={index}
+                  disabled={disabledForm}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    buttons[key](e);
+                  }}
+                >
+                  {key}
+                </button>
+              )
+            })
+          }
+          {cancelButton && <button disabled={disabledForm} onClick={onCancel || handleReset} type="reset">{textCancelButton}</button>}
         </Form>
       )}
 

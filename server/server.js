@@ -65,6 +65,7 @@ app.patch('/api/clients/:id', bodyParser.json(), (req, res) => {
       if(!doc)
         return res.status(404).send('No client was found');
       res.status(200).send(doc);
+      console.log('A client was updated');
     }).catch( (e) => {
     res.status(404).send(e);
   } );

@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import {NewPage} from '../components/NewPage'
 import {ListPage} from '../components/ListPage'
 import {EditPage} from '../components/EditPage'
-import {addClient, fetchClients} from '../actions/clients'
+import {addClient, fetchClients, updateClient, removeClient} from '../actions/clients'
 
 class ClientPage extends React.Component{
 
@@ -90,10 +90,11 @@ class ClientPage extends React.Component{
 
           { this.state.active_page == 'edit' &&
             <EditPage
-              onSubmit={console.log}
               defaults={this.state.edit_client}
-              onSearch={this.onSearch}
+              onSubmit={this.props.updateClient}              
+              onDelete={this.props.removeClient}
               onCancel={this.onCancelEdit}
+              onSearch={this.onSearch}
             />
           }
         </div>
@@ -109,6 +110,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   addClient: client => dispatch(addClient(client)),
+  updateClient: client => dispatch(updateClient(client)),
+  removeClient: id => dispatch(removeClient(id)),
   fetchClients: () => dispatch(fetchClients())
 })
 

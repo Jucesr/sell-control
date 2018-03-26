@@ -16,8 +16,11 @@ export default (state = initialState, action) => {
         ]
       }
 
-    case 'DELETE_CLIENT':
-      return state.filter( (client) => action.id != client.id)
+    case 'REMOVE_CLIENT':
+      return {
+        ...state,
+        items: state.items.filter( (client) => action._id != client._id)
+      }
 
     case 'REQUEST_CLIENTS':
       return {
@@ -30,6 +33,17 @@ export default (state = initialState, action) => {
         ...state,
         isFetching: false,
         items: action.clients
+      }
+
+    case 'UPDATE_CLIENT':
+      return {
+        ...state,
+        items: state.items.map(client => {
+          if(client._id == action.client._id){
+            return action.client;
+          }
+          return client;
+        })
       }
 
     default:

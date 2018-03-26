@@ -12,7 +12,7 @@
     "build-prd": "webpack -p --config webpack.prd.js --display-modules --sort-modules-by size",
     "start": "node server/server.js",
     "start-babel": "babel-node server/server.js",
-    "start-moon": "nodemon server/server.js --exec babel-node",
+    "start-moon": "nodemon --watch server server/server.js --exec babel-node",
     "heroku-postbuild": "npm run build-prd"
   },
   "keywords": [

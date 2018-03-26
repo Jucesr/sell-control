@@ -6,7 +6,7 @@ import Yup from 'yup'
 const require_message = 'This field is required';
 const invalid_email = 'Invalid email';
 
-export const EditPage = ({onSubmit, onSearch, onCancel, defaults}) => (
+export const EditPage = ({onSubmit, onSearch, onCancel, onDelete, defaults}) => (
   <div>
     <Form
       fields={{
@@ -26,7 +26,8 @@ export const EditPage = ({onSubmit, onSearch, onCancel, defaults}) => (
       }}
 
     />
-    { defaults.hasOwnProperty('_id') && <Form
+    { defaults.hasOwnProperty('_id') &&
+      <Form
       textSubmitButton="Save"
       onCancel={onCancel}
       fields={{
@@ -36,6 +37,15 @@ export const EditPage = ({onSubmit, onSearch, onCancel, defaults}) => (
         email: defaults.email,
         phone: defaults.phone
       }}
+      buttons={{
+        Delete: () => {
+          onDelete(defaults._id).then(
+            () => alert('Client deleted'),
+            e => alert(e)
+          );
+          onCancel();
+        }
+      }}
       validationObject={Yup.object().shape({
         fist_name: Yup.string().required(require_message),
         last_name: Yup.string(),
@@ -44,11 +54,19 @@ export const EditPage = ({onSubmit, onSearch, onCancel, defaults}) => (
         phone: Yup.string().min(8)
       })}
       onSubmit={(props) => {
-        onSubmit(props).then(
+        const updatedClient = {
+          ...props,
+          _id: defaults._id
+        }
+        onSubmit(updatedClient).then(
           () => alert('Client saved'),
           e => alert(e)
         );
-      }}/>}
+        onCancel();
+      }}/>
+
+    }
+
   </div>
 
 )

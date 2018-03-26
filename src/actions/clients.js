@@ -7,20 +7,58 @@ export const addClient = (client) => {
       .then(
         data => dispatch(add_client(data))
       ).catch(
-        e => console.log('Error occured while adding client')
+        e => {
+           throw new Error(e);
+        }
       )
   }
 }
+
+export const updateClient = (client) => {
+  return (dispatch) => {
+    return patchClient(client)
+      .then(
+        data => dispatch(update_client(data))
+      ).catch(
+         e => {
+            throw new Error(e);
+         }
+      )
+  }
+}
+
+export const removeClient = (_id) => {
+  return (dispatch) => {
+    return deleteClient(_id)
+      .then(
+        data => dispatch(remove_client(data))
+      ).catch(
+         e => {
+            throw new Error(e);
+         }
+      )
+  }
+}
+
+
+
+//Pure actions
 
 const add_client = (client) => ({
   type: 'ADD_CLIENT',
   client
 })
 
-export const deleteClient = (id) => ({
-  type: 'DELETE_CLIENT',
-  id
+const update_client = (client) => ({
+  type: 'UPDATE_CLIENT',
+  client
 })
+
+const remove_client = ({_id}) => ({
+  type: 'REMOVE_CLIENT',
+  _id
+})
+
 
 const requestClients = () => ({
   type: 'REQUEST_CLIENTS'
@@ -62,6 +100,15 @@ const patchClient = (client) => {
       'content-type': 'application/json'
     },
     method: 'PATCH', // *GET, POST, PUT, DELETE, etc.
+  });
+}
+
+const deleteClient = (_id) => {
+  return httpRequest(`/api/clients/${_id}`, {
+    headers: {
+      'content-type': 'application/json'
+    },
+    method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
   });
 }
 
