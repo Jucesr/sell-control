@@ -1,11 +1,66 @@
 import fetch from 'cross-fetch'
 
 export const addClient = (client) => {
+  return dispatchAsyncAction(add_client, postClient, client);
+}
+
+export const updateClient = (client) => {
+  return dispatchAsyncAction(update_client, patchClient, client);
+}
+
+export const removeClient = (_id) => {
+  return dispatchAsyncAction(remove_client, deleteClient, _id);
+}
+
+//Async actions
+
+export const fetchClients = () => {
+  return (dispatch) => {
+    dispatch(requestClients())
+
+    return httpRequest('/api/clients')
+      .then(
+        json => dispatch(receiveClients(json)),
+        error => console.log('An error occured.', error)
+      )
+  }
+}
+
+const postClient = (client) => {
+  return httpRequest('/api/clients', 'POST', client);
+}
+
+const patchClient = (client) => {
+  return httpRequest(`/api/clients/${client._id}`, 'PATCH', client);
+}
+
+const deleteClient = (_id) => {
+  return httpRequest(`/api/clients/${_id}`, 'DELETE');
+}
+
+const httpRequest = (url, method, body = null) => {
+
+  let requestObj = {
+    headers: {
+      'content-type': 'application/json'
+    },
+    method: method // *GET, POST, PUT, DELETE, etc.
+  }
+
+  if(body){
+    requestObj.body = JSON.stringify(body);
+  }
+
+  return fetch(url, requestObj)
+    .then(response => response.json())
+}
+
+const dispatchAsyncAction = (action, method, requestData) => {
   return (dispatch) => {
 
-    return postClient(client)
+    return method(requestData)
       .then(
-        data => dispatch(add_client(data))
+        data => dispatch(action(data))
       ).catch(
         e => {
            throw new Error(e);
@@ -13,33 +68,6 @@ export const addClient = (client) => {
       )
   }
 }
-
-export const updateClient = (client) => {
-  return (dispatch) => {
-    return patchClient(client)
-      .then(
-        data => dispatch(update_client(data))
-      ).catch(
-         e => {
-            throw new Error(e);
-         }
-      )
-  }
-}
-
-export const removeClient = (_id) => {
-  return (dispatch) => {
-    return deleteClient(_id)
-      .then(
-        data => dispatch(remove_client(data))
-      ).catch(
-         e => {
-            throw new Error(e);
-         }
-      )
-  }
-}
-
 
 
 //Pure actions
@@ -68,51 +96,3 @@ const receiveClients = (clients) => ({
   type: 'RECEIVE_CLIENTS',
   clients
 })
-
-//Async actions
-
-export const fetchClients = () => {
-  return (dispatch) => {
-    dispatch(requestClients())
-
-    return httpRequest('/api/clients')
-      .then(
-        json => dispatch(receiveClients(json)),
-        error => console.log('An error occured.', error)
-      )
-  }
-}
-
-const postClient = (client) => {
-  return httpRequest('/api/clients', {
-    body: JSON.stringify(client), // must match 'Content-Type' header
-    headers: {
-      'content-type': 'application/json'
-    },
-    method: 'POST', // *GET, POST, PUT, DELETE, etc.
-  });
-}
-
-const patchClient = (client) => {
-  return httpRequest(`/api/clients/${client._id}`, {
-    body: JSON.stringify(client), // must match 'Content-Type' header
-    headers: {
-      'content-type': 'application/json'
-    },
-    method: 'PATCH', // *GET, POST, PUT, DELETE, etc.
-  });
-}
-
-const deleteClient = (_id) => {
-  return httpRequest(`/api/clients/${_id}`, {
-    headers: {
-      'content-type': 'application/json'
-    },
-    method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
-  });
-}
-
-const httpRequest = (url, data = null) => {
-  return fetch(url, data)
-    .then(response => response.json())
-}
