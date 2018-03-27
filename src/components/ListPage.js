@@ -2,7 +2,9 @@ import React from 'react'
 import ReactTable from "react-table"
 import PropTypes from 'prop-types'
 
-export const ListPage = ({clients, fetchClients, isFetching}) => (
+import {replaceNullWithBlank} from '../helpers/'
+
+export const ListPage = ({clients, fetchClients, isFetching, onClickItemTable}) => (
   <div>
         <ReactTable
           data={clients}
@@ -10,11 +12,25 @@ export const ListPage = ({clients, fetchClients, isFetching}) => (
             {
               Header: 'Fist name',
               accessor: 'fist_name',
-              headerClassName: 'table_header'
+              headerClassName: 'table_header',
+              className: 'table_row'
+              // Cell: row => (
+              //   <div
+              //     style={{
+              //       width: '100%',
+              //       height: '100%',
+              //       backgroundColor: '#dadada',
+              //       borderRadius: '2px'
+              //     }}
+              //   >
+              //     {row.value}
+              //   </div>
+              //   )
             },{
               Header: 'Last name',
               accessor: 'last_name',
-              headerClassName: 'table_header'
+              headerClassName: 'table_header',
+              className: 'table_row'
             },{
               Header: 'Address',
               accessor: 'address',
@@ -30,26 +46,23 @@ export const ListPage = ({clients, fetchClients, isFetching}) => (
             }
           ]}
           loading={isFetching}
-          // getTdProps={(state, rowInfo, column, instance) => {
-          //     return {
-          //       onClick: (e, handleOriginal) => {
-          //         console.log('A Td Element was clicked!')
-          //         console.log('it produced this event:', e)
-          //         console.log('It was in this column:', column)
-          //         console.log('It was in this row:', rowInfo)
-          //         console.log('It was in this table instance:', instance)
-          //
-          //         // IMPORTANT! React-Table uses onClick internally to trigger
-          //         // events like expanding SubComponents and pivots.
-          //         // By default a custom 'onClick' handler will override this functionality.
-          //         // If you want to fire the original onClick handler, call the
-          //         // 'handleOriginal' function.
-          //         if (handleOriginal) {
-          //           handleOriginal()
-          //         }
-          //       }
-          //     }
-          //   }}
+          getTdProps={(state, rowInfo, column, instance) => {
+              return {
+                onClick: (e, handleOriginal) => {
+                  if(rowInfo){
+                    onClickItemTable(replaceNullWithBlank(rowInfo.original));
+                  }
+                  if (handleOriginal) {
+                    handleOriginal()
+                  }
+                }
+              }
+            }}
+          getTrProps={(state, rowInfo, column, instance) => {
+              return {
+                className: 'table_row'
+              }
+            }}
           // getTheadThProps={(state, rowInfo, column, instance) => {
           //     console.log('state:', state)
           //     console.log('It was in this column:', column)

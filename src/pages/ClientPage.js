@@ -77,6 +77,13 @@ class ClientPage extends React.Component{
     }));
   }
 
+  onClickItemTable = (client) => {
+    this.setState(() => ({
+        edit_client: client,
+        active_page: 'edit'
+    }))
+  }
+
   render(){
 
     return (
@@ -95,6 +102,7 @@ class ClientPage extends React.Component{
               clients={this.props.clients}
               fetchClients={this.props.fetchClients}
               isFetching={this.props.isFetching}
+              onClickItemTable={this.onClickItemTable}
             />
           }
 

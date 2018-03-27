@@ -1,4 +1,3 @@
-import './helpers/base'
 import './styles/master.scss'
 
 import React from 'react'

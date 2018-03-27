@@ -38,3 +38,10 @@
   font-size: $font_table_header;
   font-weight: bold;
 }
+
+.table_row{
+  cursor: pointer;
+  &:hover{
+    background: darken(white, 10%);
+  }
+}

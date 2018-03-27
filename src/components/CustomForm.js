@@ -1,12 +1,14 @@
 import React from 'react'
 import {Form, Field, Formik} from 'formik'
 
+import {replaceAll} from '../helpers/'
+
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
 const formatText = (text) => {
-  return capitalizeFirstLetter(text.replaceAll('_', ' '))
+  return capitalizeFirstLetter(replaceAll(text, '_', ' '))
 }
 
 const CustomField = (props) => (
