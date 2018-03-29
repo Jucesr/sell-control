@@ -65,6 +65,21 @@ class ClientPage extends React.Component{
 
   }
 
+  onEditClient = (updatedClient, resetForm, setErrors) => {
+
+    updatedClient = {
+      ...updatedClient,
+      _id: this.state.edit_client._id
+    }
+    this.props.updateClient(updatedClient).then(
+      () => {
+        alert('Client saved');
+        this.onCancelEdit();
+      },
+      e => alert(e)
+    )
+  }
+
   onCancelEdit = () => {
     this.setState(() => ({
         edit_client: {
@@ -82,6 +97,12 @@ class ClientPage extends React.Component{
         edit_client: client,
         active_page: 'edit'
     }))
+  }
+
+  setStateProm = (newState) => {
+    return new Promise((resolve) => {
+      this.setState(newState, resolve())
+    });
   }
 
   render(){
@@ -115,7 +136,7 @@ class ClientPage extends React.Component{
           { this.state.active_page == 'edit' &&
             <EditPage
               defaults={this.state.edit_client}
-              onSubmit={this.props.updateClient}
+              onSubmit={this.onEditClient}
               onDelete={this.props.removeClient}
               onCancel={this.onCancelEdit}
               onSearch={this.onSearch}

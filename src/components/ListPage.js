@@ -4,33 +4,31 @@ import PropTypes from 'prop-types'
 
 import {replaceNullWithBlank} from '../helpers/'
 
+function filterCaseInsensitive(filter, row) {
+	const id = filter.pivotId || filter.id;
+	return (
+		row[id] !== undefined ?
+			String(row[id].toLowerCase()).includes(filter.value.toLowerCase())
+		:
+			true
+	);
+}
+
 export const ListPage = ({clients, fetchClients, isFetching, onClickItemTable}) => (
   <div>
         <ReactTable
           data={clients}
+          filterable={true}
+          defaultFilterMethod={filterCaseInsensitive}
           columns={[
             {
               Header: 'Fist name',
               accessor: 'fist_name',
-              headerClassName: 'table_header',
-              className: 'table_row'
-              // Cell: row => (
-              //   <div
-              //     style={{
-              //       width: '100%',
-              //       height: '100%',
-              //       backgroundColor: '#dadada',
-              //       borderRadius: '2px'
-              //     }}
-              //   >
-              //     {row.value}
-              //   </div>
-              //   )
+              headerClassName: 'table_header'
             },{
               Header: 'Last name',
               accessor: 'last_name',
               headerClassName: 'table_header',
-              className: 'table_row'
             },{
               Header: 'Address',
               accessor: 'address',
@@ -59,16 +57,12 @@ export const ListPage = ({clients, fetchClients, isFetching, onClickItemTable}) 
               }
             }}
           getTrProps={(state, rowInfo, column, instance) => {
-              return {
+						return rowInfo ? {
                 className: 'table_row'
-              }
+            } : {}
+
             }}
-          // getTheadThProps={(state, rowInfo, column, instance) => {
-          //     console.log('state:', state)
-          //     console.log('It was in this column:', column)
-          //     console.log('It was in this row:', rowInfo)
-          //     console.log('It was in this table instance:', instance)
-          // }}
+          className="-striped -highlight"
         />
   </div>
 )

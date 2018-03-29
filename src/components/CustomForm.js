@@ -1,3 +1,5 @@
+//TODO: BUSCA UNA MANERA DE LIMPIAR EL FORMULARIO DESDE AQUI, ES DECIR QUE TODOS LOS CAMPOS SE PONGAN EN BLANCO
+
 import React from 'react'
 import {Form, Field, Formik} from 'formik'
 
@@ -10,6 +12,8 @@ function capitalizeFirstLetter(string) {
 const formatText = (text) => {
   return capitalizeFirstLetter(replaceAll(text, '_', ' '))
 }
+
+const cleanForm = (values) => Object.keys(values).map(key => values[key] = '');
 
 const CustomField = (props) => (
   <div className="form_field">
@@ -36,12 +40,11 @@ const CustomForm = ({
       }}
     validationSchema={validationSchema}
     onSubmit={
-      (values, { resetForm, setErrors, setSubmitting}) => {
+      (values, { resetForm, setErrors, setSubmitting, setValues}) => {
         onSubmit(values, resetForm, setErrors);
-        if(automaticReset){
-          resetForm();
-        }
-
+        // if(automaticReset){
+        //   cleanForm(values);
+        // }
       }}
     render={({
         values,

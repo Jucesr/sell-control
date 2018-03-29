@@ -53,16 +53,7 @@ export const EditPage = ({onSubmit, onSearch, onCancel, onDelete, defaults}) => 
         email: Yup.string().email().required(require_message),
         phone: Yup.string().min(8)
       })}
-      onSubmit={(props) => {
-        const updatedClient = {
-          ...props,
-          _id: defaults._id
-        }
-        onSubmit(updatedClient).then(
-          () => alert('Client saved'),
-          e => alert(e)
-        ).then(() => onCancel());
-      }}/>
+      onSubmit={onSubmit}/>
 
     }
 
