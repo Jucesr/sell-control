@@ -1,0 +1,22 @@
+.SideBar{
+  display: flex;
+  flex-direction: column;
+  background: $color_02;
+  padding: .3rem .5rem;
+  position: fixed;
+  height: 100vh;
+  max-width: 5rem;
+  z-index: 1000000;
+}
+
+.SideBar__item{
+  padding: .6rem .5rem ;
+  &:hover{
+    background: darken($color_02,20%);
+    cursor: pointer;
+  }
+}
+
+.SideBar__items img {
+  width: 30px;
+}

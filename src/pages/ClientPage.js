@@ -108,7 +108,7 @@ class ClientPage extends React.Component{
   render(){
 
     return (
-      <div>
+      <div className = "ClientPage">
         <h2 className= 'ClientPage__title'>Clients</h2>
         <div className="ClientPage__actions">
           <button className={this.state.active_page == 'list' ? 'ClientPage__button_page_active' : 'ClientPage__button_page'} id="list" onClick={this.togglePage}>List</button>

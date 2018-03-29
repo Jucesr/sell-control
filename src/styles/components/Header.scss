@@ -1,0 +1,40 @@
+.Header{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background: $color_01;
+  color: $color_02;
+  padding: .3rem 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000000;
+}
+
+.Header__left{
+  display: flex;
+  max-height: 3rem;
+}
+
+.Header__menu {
+  min-width: 5rem;
+}
+
+.Header__right{
+  display: flex;
+  padding-right: 1rem;
+}
+
+.Header__username{
+  height: auto;
+  margin: auto;
+  padding-right: 1rem;
+}
+
+.Header__image{
+  max-height: 3rem;
+}
+
+.Header__image img{
+  border-radius: 50%;
+
+}
