@@ -1,3 +1,9 @@
+$header_padding_horizontal: 0;
+$header_padding_vertical: .3rem;
+$header_height: 3.6rem;
+$header_menu_button_height: 3rem;
+//$header_total_height: $header_padding_vertical + $header_padding_vertical + $header_width;
+
 // Font sizes
 
 $font_document: 1.4rem;
@@ -8,9 +14,11 @@ $font_type: Helvetica, sans-serif;
 
 //Colors
 
-$color_01: #524656; //Header
-$color_02: rgb(228, 220, 203); 
+$color_01: #524656; //Header#
+$color_02:  rgb(228, 220, 203);; //Sidebar
 $color_03: #CF4747;
+
+//$color_02:#524656
 
 // Module pages
 

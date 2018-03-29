@@ -4,27 +4,27 @@
 @import "./components/Header";
 @import "./components/SideBar";
 
-.Body{
-  display: flex;
-  flex-direction: row;
-}
+// .Body{
+//   padding-top: 5rem;
+// }
 
 .ClientPage{
   width: 100%;
-  padding-left: 5rem;
-  // padding-top: 1.5rem;
+  // padding-left: 5rem;
+  padding-top: $header_height;
 }
 
 .ClientPage__title{
   font-size: $font_page_title;
   padding: 1rem 1.5rem;
+  min-height: 4.6rem;
   background-color: lighten($color_01, 30%);
   color: white;
 }
 
 .ClientPage__actions{
   position: sticky;
-  top: 3.5rem;
+  top: $header_height;
   z-index: 1000000;
   background: lighten($color_02, 10%);
   width: 100%;

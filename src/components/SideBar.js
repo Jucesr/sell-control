@@ -1,8 +1,7 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 
-export const SideBar = () => (
-  <div className="SideBar">
+export const SideBarContent = () => (
+  <div >
     <div className="SideBar__items">
       <div className="SideBar__item">
         <img src="/img/client.png"></img>

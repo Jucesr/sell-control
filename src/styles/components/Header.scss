@@ -3,21 +3,35 @@
   flex-direction: row;
   justify-content: space-between;
   background: $color_01;
-  color: $color_02;
-  padding: .3rem 1rem;
+  color: white;
+  // padding: $header_padding_vertical $header_padding_horizontal;
   position: sticky;
   top: 0;
   z-index: 1000000;
+  height: $header_height;
+
 }
 
 .Header__left{
   display: flex;
-  max-height: 3rem;
+
 }
 
 .Header__menu {
-  min-width: 5rem;
+  // height: 3rem;
+  //margin: auto 1rem;
+  padding: calc((#{$header_height}  - #{$header_menu_button_height}) /2) 1rem;
+  &:hover{
+    background: lighten($color_01, 20%);
+    cursor: pointer;
+  }
 }
+
+.Header__menu img{
+  height: $header_menu_button_height;
+}
+
+
 
 .Header__right{
   display: flex;
@@ -30,11 +44,15 @@
   padding-right: 1rem;
 }
 
-.Header__image{
+.Header__avatar{
   max-height: 3rem;
+  &:hover{
+    background: lighten($color_01, 20%);
+    cursor: pointer;
+  }
 }
 
-.Header__image img{
+.Header__avatar img{
   border-radius: 50%;
 
 }
