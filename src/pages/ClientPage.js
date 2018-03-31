@@ -157,7 +157,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   addClient: client => dispatch(addClient(client)),
   updateClient: client => dispatch(updateClient(client)),
-  removeClient: id => dispatch(removeClient(id)),
+  removeClient: client => dispatch(removeClient(client)),
   fetchClients: () => dispatch(fetchClients())
 })
 

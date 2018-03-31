@@ -39,7 +39,8 @@ export const EditPage = ({onSubmit, onSearch, onCancel, onDelete, defaults}) => 
       }}
       buttons={{
         Delete: () => {
-          onDelete(defaults._id).then(
+          console.log(defaults);
+          onDelete(defaults).then(
             () => alert('Client deleted'),
             e => alert(e)
           ).then(() => onCancel());

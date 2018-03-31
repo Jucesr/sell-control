@@ -7,7 +7,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
  
 const store = createStore(
   combineReducers({
-    clients: clientReducer,
+    clients: clientReducer(),
     ui: uiReducer
   }),
   composeEnhancers(applyMiddleware(thunkMiddleware))

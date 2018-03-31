@@ -14,7 +14,7 @@ const {Client} = require('./models/client');
 app.use(express.static(publicPath))
 // app.use(bodyParser.json())
 
-app.post('/api/clients', bodyParser.json(), (req, res) => {
+app.post('/api/client', bodyParser.json(), (req, res) => {
   const client = new Client({
     ...req.body
   });
@@ -30,7 +30,7 @@ app.post('/api/clients', bodyParser.json(), (req, res) => {
   )
 });
 
-app.delete('/api/clients/:id', bodyParser.json(), (req, res) => {
+app.delete('/api/client/:id', bodyParser.json(), (req, res) => {
   var id = req.params.id;
 
   if(!ObjectID.isValid(id)){
@@ -51,7 +51,7 @@ app.delete('/api/clients/:id', bodyParser.json(), (req, res) => {
 
 });
 
-app.patch('/api/clients/:id', bodyParser.json(), (req, res) => {
+app.patch('/api/client/:id', bodyParser.json(), (req, res) => {
 
   var id = req.params.id;
 
@@ -73,12 +73,12 @@ app.patch('/api/clients/:id', bodyParser.json(), (req, res) => {
 
 });
 
-app.get('/api/clients',  (req, res) => {
+app.get('/api/client',  (req, res) => {
 
   Client.getAll().then(
     (clients) => {
       res.send(clients);
-      console.log('Clients were sent');
+      console.log('client were sent');
     }, e => {
       res.status(404).send(e);
       console.log('Error has occurred');
