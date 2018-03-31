@@ -1,13 +1,13 @@
 import { createStore , combineReducers, applyMiddleware  } from 'redux'
 import thunkMiddleware from 'redux-thunk'
-import clientReducer from '../reducers/clients'
+import crudReducer from '../reducers/crud'
 import uiReducer from '../reducers/ui'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
  
 const store = createStore(
   combineReducers({
-    clients: clientReducer(),
+    clients: crudReducer('client'),
     ui: uiReducer
   }),
   composeEnhancers(applyMiddleware(thunkMiddleware))

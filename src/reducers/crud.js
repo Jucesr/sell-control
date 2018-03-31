@@ -1,4 +1,5 @@
-export default () => {
+export default (entity) => {
+  entity = entity.toUpperCase();
   const initialState = {
     isFetching: false,
     items: []
@@ -7,7 +8,7 @@ export default () => {
   return (state = initialState, action) => {
 
     switch (action.type) {
-      case 'CREATE_CLIENT':
+      case `CREATE_${entity}`:
         return {
           ...state,
           items: [
@@ -16,33 +17,33 @@ export default () => {
           ]
         }
 
-      case 'DELETE_CLIENT':
+      case `DELETE_${entity}`:
         return {
           ...state,
-          items: state.items.filter( (client) => action.entity._id != client._id)
+          items: state.items.filter( (item) => action.entity._id != item._id)
         }
 
-      case 'REQUEST_CLIENT':
+      case `REQUEST_${entity}`:
         return {
           ...state,
           isFetching: true
         }
 
-      case 'FETCH_CLIENT':
+      case `FETCH_${entity}`:
         return {
           ...state,
           isFetching: false,
           items: action.entity
         }
 
-      case 'UPDATE_CLIENT':
+      case `UPDATE_${entity}`:
         return {
           ...state,
-          items: state.items.map(client => {
-            if(client._id == action.entity._id){
+          items: state.items.map(item => {
+            if(item._id == action.entity._id){
               return action.entity;
             }
-            return client;
+            return item;
           })
         }
 
