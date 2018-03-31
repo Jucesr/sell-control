@@ -1,0 +1,65 @@
+.CustomForm__form_field{
+  margin-bottom: $vertical_space_fields;
+  display: flex;
+  flex-direction: column;
+  margin-top: 1.5rem;
+}
+
+.CustomForm__form_field label{
+  display: block;
+  width: $label_min_width;
+  color: lighten($color_01, 30%);
+  // margin-bottom: .5rem;
+}
+
+.CustomForm__form_field input{
+  width: $input_min_width;
+  padding: $input_padding;
+  // background-color: lighten($color_02, 10%);
+  border: 1px solid $color_02;
+  font-size: 1.3rem;
+  color: darken($color_02,30%);
+  border-radius: .5rem;
+
+  &:focus {
+    outline: none !important;
+    border:1px solid $color_01;
+    box-shadow: 0 0 5px lighten($color_01,10%);
+}
+
+  &:disabled{
+    // background-color: darken($color_02, 10%);
+  }
+
+  &:-webkit-autofill {
+      -webkit-text-fill-color: darken($color_02,30%) !important;
+      -webkit-box-shadow: 0 0 0 30px white inset;
+  }
+}
+
+.CustomForm__form_field div{
+  color: red;
+  font-size: 1rem;
+  margin-top: .5rem;
+  font-style: italic;
+}
+
+
+.CustomForm__buttons{
+  font-family: $font_secondary;
+  display: flex;
+}
+
+
+
+.CustomForm__buttons button {
+  background-color: $color_01;
+  color: white;
+  padding: .7rem;
+  margin-right: 2rem;
+  border-radius: .5rem;
+  &:hover{
+    background-color: lighten($color_01, 20%);
+  }
+
+}

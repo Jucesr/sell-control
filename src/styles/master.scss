@@ -3,78 +3,14 @@
 @import "react-table.css";
 @import "./components/Header";
 @import "./components/SideBar";
+@import "./components/CustomForm";
+@import "./components/Page";
 
 .Body{
   width: 100%;
 }
 
-.ClientPage{
-  // width: 100%;
-  position: relative;
-  transition: all $sidebar_animation linear;
-}
 
-.Page__open{
-  width: calc(100% - #{$sidebar_width_open});
-  left: $sidebar_width_open;
-}
-.Page__closed{
-  width: calc(100% - #{$sidebar_width_close});
-  left: $sidebar_width_close;
-}
-
-.ClientPage__title{
-  font-size: $font_page_title;
-  padding: 1rem 2rem;
-  min-height: 4.6rem;
-  background-color: lighten($color_01, 30%);
-  color: white;
-}
-
-.ClientPage__actions{
-  position: sticky;
-  top: $header_height;
-  z-index: 1000000;
-  background: lighten($color_02, 10%);
-  width: 100%;
-}
-
-.ClientPage__actions button{
-  text-decoration: none;
-  outline: 0;
-  border: none;
-  border-right: .2rem solid lighten($color_02, 5%);
-  padding: 1rem;
-}
-
-.ClientPage__button_page{
-  background-color: lighten($color_02, 10%);
-}
-
-.ClientPage__button_page_active{
-  background-color: darken($color_02, 10%);
-}
-
-.ClientPage__content{
-  padding-top: $top_padding_page;
-  padding-left: $side_padding_page;
-  padding-right: $side_padding_page;
-}
-
-.form_field{
-  margin-bottom: $vertical_space_fields;
-  display: flex;
-}
-
-.form_field label{
-  display: block;
-  width: $label_min_width;
-}
-
-.form_field input{
-  width: $input_min_width;
-  padding: $input_padding;
-}
 
 //List styles
 

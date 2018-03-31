@@ -5,6 +5,9 @@ $sidebar_width_open: 15rem;
 $sidebar_width_close: 5rem;
 $sidebar_animation: 300ms;
 
+//Font family
+$font_secondary: 'IBM Plex Mono', monospace;
+
 // Font sizes
 
 $font_document: 1.4rem;
@@ -19,18 +22,17 @@ $color_01: #524656; //Header#
 $color_02:  rgb(228, 220, 203);; //Sidebar
 $color_03: #CF4747;
 
-//$color_02:#524656
-
 // Module pages
 
 $side_padding_page: 5rem;
 $top_padding_page: 3rem;
+$page_title_height: 4.2rem;
 
 // Form
 
 $vertical_space_fields: 1rem;
 $label_min_width: 8rem;
 $input_min_width: 25rem;
-$input_padding: .2rem;
+$input_padding: .5rem;
 
 $primary_color: black;

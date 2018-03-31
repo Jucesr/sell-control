@@ -23,6 +23,7 @@ export const NewPage = ({onSubmit, clients}) => (
     })}
     onSubmit={onSubmit}
     automaticReset={false}
+    textSubmitButton="Add"
   />
 
 )

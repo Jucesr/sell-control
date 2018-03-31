@@ -12,7 +12,7 @@ class ClientPage extends React.Component{
   constructor(props){
     super(props)
     this.state = {
-      active_page: 'list',
+      active_page: 'new',
       edit_client: {
         fist_name: '',
         last_name: '',
@@ -71,13 +71,20 @@ class ClientPage extends React.Component{
       ...updatedClient,
       _id: this.state.edit_client._id
     }
-    this.props.updateClient(updatedClient).then(
-      () => {
-        alert('Client saved');
-        this.onCancelEdit();
-      },
-      e => alert(e)
-    )
+
+    const search = this.props.clients.filter((item) => item.email == updatedClient.email);
+
+    if(search.length == 0){
+      this.props.updateClient(updatedClient).then(
+        () => {
+          alert('Client saved');
+          this.onCancelEdit();
+        },
+        e => alert(e)
+      )
+    }else{
+      setErrors({email: 'The email is alredy taken'})
+    }
   }
 
   onCancelEdit = () => {
@@ -109,39 +116,41 @@ class ClientPage extends React.Component{
 
     return (
       <div className ={`ClientPage ${this.props.sidebar_open ? 'Page__open': 'Page__closed'}`}>
-        <h2 className= 'ClientPage__title'>Clients</h2>
+        <div className= 'ClientPage__title'><h2> Clients </h2></div>
+
         <div className="ClientPage__actions">
           <button className={this.state.active_page == 'list' ? 'ClientPage__button_page_active' : 'ClientPage__button_page'} id="list" onClick={this.togglePage}>List</button>
           <button className={this.state.active_page == 'new' ? 'ClientPage__button_page_active' : 'ClientPage__button_page'} id="new" onClick={this.togglePage}>New</button>
           <button className={this.state.active_page == 'edit' ? 'ClientPage__button_page_active' : 'ClientPage__button_page'} id="edit" onClick={this.togglePage}>Edit</button>
         </div>
 
-        <div className="ClientPage__content">
+        <div className="ClientPage__content_wrapper">
+          <div className="ClientPage__content">
+            { this.state.active_page == 'list' &&
+              <ListPage
+                clients={this.props.clients}
+                fetchClients={this.props.fetchClients}
+                isFetching={this.props.isFetching}
+                onClickItemTable={this.onClickItemTable}
+              />
+            }
 
-          { this.state.active_page == 'list' &&
-            <ListPage
-              clients={this.props.clients}
-              fetchClients={this.props.fetchClients}
-              isFetching={this.props.isFetching}
-              onClickItemTable={this.onClickItemTable}
-            />
-          }
+            { this.state.active_page == 'new' &&
+              <NewPage
+                onSubmit={this.onAddClient}
+              />
+            }
 
-          { this.state.active_page == 'new' &&
-            <NewPage
-              onSubmit={this.onAddClient}
-            />
-          }
-
-          { this.state.active_page == 'edit' &&
-            <EditPage
-              defaults={this.state.edit_client}
-              onSubmit={this.onEditClient}
-              onDelete={this.props.removeClient}
-              onCancel={this.onCancelEdit}
-              onSearch={this.onSearch}
-            />
-          }
+            { this.state.active_page == 'edit' &&
+              <EditPage
+                defaults={this.state.edit_client}
+                onSubmit={this.onEditClient}
+                onDelete={this.props.removeClient}
+                onCancel={this.onCancelEdit}
+                onSearch={this.onSearch}
+              />
+            }
+          </div>
         </div>
       </div>
     )

@@ -20,6 +20,9 @@ h1, h2{
 
 button {
   cursor: pointer;
+  text-decoration: none;
+  outline: 0;
+  border: none;
 }
 
 button:disabled{

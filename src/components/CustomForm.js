@@ -16,7 +16,7 @@ const formatText = (text) => {
 const cleanForm = (values) => Object.keys(values).map(key => values[key] = '');
 
 const CustomField = (props) => (
-  <div className="form_field">
+  <div className="CustomForm__form_field">
     <label>{props.label}</label>
     <Field disabled={props.enable} className="field_input" type="text" name={props.name}  />
     {props.touched && props.error && <div>{props.error}</div>}
@@ -30,7 +30,7 @@ const CustomForm = ({
   buttons,
   disabledForm,
   automaticReset = true,
-  textSubmitButton = 'Ok',
+  textSubmitButton = 'Submit',
   textCancelButton = 'Cancel',
   cancelButton = true
 }) => (
@@ -72,26 +72,33 @@ const CustomForm = ({
               )
             })
           }
-          <button disabled={disabledForm}>{textSubmitButton}</button>
+          <div className="CustomForm__buttons" >
+            <button
+              className="CustomForm__submit_button"
+              disabled={disabledForm}>
+              {textSubmitButton}
+            </button>
 
-          {
-            buttons &&
-            Object.keys(buttons).map(function(key, index) {
-              return (
-                <button
-                  key={index}
-                  disabled={disabledForm}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    buttons[key](e);
-                  }}
-                >
-                  {key}
-                </button>
-              )
-            })
-          }
-          {cancelButton && <button disabled={disabledForm} onClick={onCancel || handleReset} type="reset">{textCancelButton}</button>}
+            {
+              buttons &&
+              Object.keys(buttons).map(function(key, index) {
+                return (
+                  <button
+                    key={index}
+                    disabled={disabledForm}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      buttons[key](e);
+                    }}
+                  >
+                    {key}
+                  </button>
+                )
+              })
+            }
+            {cancelButton && <button disabled={disabledForm} onClick={onCancel || handleReset} type="reset">{textCancelButton}</button>}
+          </div>
+
         </Form>
       )}
 
