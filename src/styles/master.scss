@@ -4,19 +4,28 @@
 @import "./components/Header";
 @import "./components/SideBar";
 
-// .Body{
-//   padding-top: 5rem;
-// }
+.Body{
+  width: 100%;
+}
 
 .ClientPage{
-  width: 100%;
-  // padding-left: 5rem;
-  padding-top: $header_height;
+  // width: 100%;
+  position: relative;
+  transition: all $sidebar_animation linear;
+}
+
+.Page__open{
+  width: calc(100% - #{$sidebar_width_open});
+  left: $sidebar_width_open;
+}
+.Page__closed{
+  width: calc(100% - #{$sidebar_width_close});
+  left: $sidebar_width_close;
 }
 
 .ClientPage__title{
   font-size: $font_page_title;
-  padding: 1rem 1.5rem;
+  padding: 1rem 2rem;
   min-height: 4.6rem;
   background-color: lighten($color_01, 30%);
   color: white;

@@ -4,7 +4,6 @@ import React from 'react'
 import ReactDom from 'react-dom'
 import { Provider } from 'react-redux'
 
-import ClientPage from './pages/ClientPage'
 import Header from './components/Header'
 import Body from './components/Body'
 import store from './store/store'
@@ -14,7 +13,6 @@ const App = () => (
     <div>
       <Header/>
       <Body/>
-
     </div>
 
   </Provider>

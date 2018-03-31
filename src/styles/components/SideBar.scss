@@ -1,16 +1,27 @@
 .SideBar{
+  font-family: 'IBM Plex Mono', monospace;
   display: flex;
   flex-direction: column;
   background: $color_02;
-  padding: $header_height 0;
-  // position: fixed;
-  // height: 100vh;
-  max-width: 5rem;
-  // z-index: 1000000;
+  position: fixed;
+  height: 100vh;
+  transition: width $sidebar_animation linear;
+  overflow: hidden;
+  // width: $sidebar_width_close;
+}
+
+.SideBar_open{
+  width: $sidebar_width_open;
+}
+
+.SideBar_close{
+  width: $sidebar_width_close;
 }
 
 .SideBar__item{
   padding: .6rem 1rem ;
+  display: flex;
+  text-align: left;
   &:hover{
     background: darken($color_02,20%);
     cursor: pointer;
@@ -18,5 +29,11 @@
 }
 
 .SideBar__items img {
-  width: 30px;
+  min-width: 3rem;
+  height: 3rem;
+}
+
+.SideBar__item__title{
+  margin: auto 0 ;
+  padding-left: 2rem;
 }

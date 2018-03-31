@@ -108,7 +108,7 @@ class ClientPage extends React.Component{
   render(){
 
     return (
-      <div className = "ClientPage">
+      <div className ={`ClientPage ${this.props.sidebar_open ? 'Page__open': 'Page__closed'}`}>
         <h2 className= 'ClientPage__title'>Clients</h2>
         <div className="ClientPage__actions">
           <button className={this.state.active_page == 'list' ? 'ClientPage__button_page_active' : 'ClientPage__button_page'} id="list" onClick={this.togglePage}>List</button>
@@ -150,7 +150,8 @@ class ClientPage extends React.Component{
 
 const mapStateToProps = state => ({
   clients: state.clients.items,
-  isFetching: state.clients.isFetching
+  isFetching: state.clients.isFetching,
+  sidebar_open: state.ui.sidebar_open
 })
 
 const mapDispatchToProps = dispatch => ({

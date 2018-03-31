@@ -1,5 +1,5 @@
 const initialState = {
-  sidebar_open: true
+  sidebar_open: false
 }
 
 export default (state = initialState, action) => {

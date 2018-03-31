@@ -4,7 +4,6 @@
   justify-content: space-between;
   background: $color_01;
   color: white;
-  // padding: $header_padding_vertical $header_padding_horizontal;
   position: sticky;
   top: 0;
   z-index: 1000000;
@@ -14,12 +13,9 @@
 
 .Header__left{
   display: flex;
-
 }
 
 .Header__menu {
-  // height: 3rem;
-  //margin: auto 1rem;
   padding: calc((#{$header_height}  - #{$header_menu_button_height}) /2) 1rem;
   &:hover{
     background: lighten($color_01, 20%);
@@ -29,6 +25,11 @@
 
 .Header__menu img{
   height: $header_menu_button_height;
+}
+
+.Header__title{
+  margin: auto;
+  padding-left: 2rem;
 }
 
 

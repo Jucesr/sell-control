@@ -1,8 +1,9 @@
-$header_padding_horizontal: 0;
-$header_padding_vertical: .3rem;
 $header_height: 3.6rem;
 $header_menu_button_height: 3rem;
-//$header_total_height: $header_padding_vertical + $header_padding_vertical + $header_width;
+
+$sidebar_width_open: 15rem;
+$sidebar_width_close: 5rem;
+$sidebar_animation: 300ms;
 
 // Font sizes
 
