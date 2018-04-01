@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import Yup from 'yup'
 
 import {NewPage} from '../components/NewPage'
 import {ListPage} from '../components/ListPage'
@@ -13,7 +14,7 @@ class ClientPage extends React.Component{
     super(props)
     this.state = {
       active_page: 'new',
-      edit_client: {
+      clientToEdit: {
         fist_name: '',
         last_name: '',
         address: '',
@@ -27,7 +28,7 @@ class ClientPage extends React.Component{
     this.props.fetchClients();
   }
 
-  togglePage = (e) => {
+  changePage = (e) => {
     let page = e.target.id
     this.setState(() => ({
       active_page: page
@@ -40,7 +41,7 @@ class ClientPage extends React.Component{
     return new Promise((resolve, reject) => {
       if(client){
         this.setState(() => ({
-            edit_client: client
+            clientToEdit: client
         }), resolve())
       }else{
         //TODO: Search in Database.
@@ -49,7 +50,7 @@ class ClientPage extends React.Component{
     });
   }
 
-  onAddClient = (client, resetForm, setErrors) => {
+  onAdd = (client, resetForm, setErrors) => {
     const search = this.props.clients.filter((item) => item.email == client.email)
     if(search.length == 0){
       this.props.addClient(client).then(
@@ -65,11 +66,25 @@ class ClientPage extends React.Component{
 
   }
 
-  onEditClient = (updatedClient, resetForm, setErrors) => {
+  onDelete = (client) => {
+
+    client = {
+      ...client,
+      _id: this.state.clientToEdit._id
+    }
+
+    this.props.removeClient(client).then(
+      () => alert('Client deleted'),
+      e => alert(e)
+    ).then(() => this.onCancelEdit());
+
+  }
+
+  onEdit = (updatedClient, resetForm, setErrors) => {
 
     updatedClient = {
       ...updatedClient,
-      _id: this.state.edit_client._id
+      _id: this.state.clientToEdit._id
     }
 
     const search = this.props.clients.filter((item) => item.email == updatedClient.email);
@@ -89,7 +104,7 @@ class ClientPage extends React.Component{
 
   onCancelEdit = () => {
     this.setState(() => ({
-        edit_client: {
+        clientToEdit: {
           fist_name: '',
           last_name: '',
           address: '',
@@ -101,53 +116,105 @@ class ClientPage extends React.Component{
 
   onClickItemTable = (client) => {
     this.setState(() => ({
-        edit_client: client,
+        clientToEdit: client,
         active_page: 'edit'
     }))
   }
 
-  setStateProm = (newState) => {
-    return new Promise((resolve) => {
-      this.setState(newState, resolve())
-    });
-  }
-
   render(){
 
-    return (
-      <div className ={`ClientPage ${this.props.sidebar_open ? 'Page__open': 'Page__closed'}`}>
-        <div className= 'ClientPage__title'><h2> Clients </h2></div>
+    const require_message = 'This field is required';
+    const {clientToEdit} = this.state;
 
-        <div className="ClientPage__actions">
-          <button className={this.state.active_page == 'list' ? 'ClientPage__button_page_active' : 'ClientPage__button_page'} id="list" onClick={this.togglePage}>List</button>
-          <button className={this.state.active_page == 'new' ? 'ClientPage__button_page_active' : 'ClientPage__button_page'} id="new" onClick={this.togglePage}>New</button>
-          <button className={this.state.active_page == 'edit' ? 'ClientPage__button_page_active' : 'ClientPage__button_page'} id="edit" onClick={this.togglePage}>Edit</button>
+    return (
+      <div className ={`Page ${this.props.sidebar_open ? 'Page__open': 'Page__closed'}`}>
+        <div className= 'Page__title'><h2> Clients </h2></div>
+
+        <div className="Page__actions">
+          <button className={this.state.active_page == 'list' ? 'Page__button_page_active' : 'Page__button_page'} id="list" onClick={this.changePage}>List</button>
+          <button className={this.state.active_page == 'new' ? 'Page__button_page_active' : 'Page__button_page'} id="new" onClick={this.changePage}>New</button>
+          <button className={this.state.active_page == 'edit' ? 'Page__button_page_active' : 'Page__button_page'} id="edit" onClick={this.changePage}>Edit</button>
         </div>
 
-        <div className="ClientPage__content_wrapper">
-          <div className="ClientPage__content">
+        <div className="Page__content_wrapper">
+          <div className="Page__content">
             { this.state.active_page == 'list' &&
               <ListPage
-                clients={this.props.clients}
-                fetchClients={this.props.fetchClients}
-                isFetching={this.props.isFetching}
+                columns={[
+                  {
+                    Header: 'Fist name',
+                    accessor: 'fist_name'
+                  },{
+                    Header: 'Last name',
+                    accessor: 'last_name'
+                  },{
+                    Header: 'Address',
+                    accessor: 'address'
+                  },{
+                    Header: 'Email',
+                    accessor: 'email'
+                  },{
+                    Header: 'Phone',
+                    accessor: 'phone'
+                  }
+                ]}
+                items={this.props.clients}
+                loading={this.props.isFetching}
                 onClickItemTable={this.onClickItemTable}
               />
             }
 
             { this.state.active_page == 'new' &&
               <NewPage
-                onSubmit={this.onAddClient}
+                formFields={{
+                  fist_name: '',
+                  last_name: '',
+                  address: '',
+                  email: '',
+                  phone: ''
+                }}
+                onAdd={this.onAdd}
+                validationSchema={Yup.object().shape({
+                  fist_name: Yup.string().required(require_message),
+                  last_name: Yup.string(),
+                  address: Yup.string().max(40),
+                  email: Yup.string().email().required(require_message),
+                  phone: Yup.string().min(8)
+                })}
               />
             }
 
             { this.state.active_page == 'edit' &&
               <EditPage
-                defaults={this.state.edit_client}
-                onSubmit={this.onEditClient}
-                onDelete={this.props.removeClient}
+                editForm={{
+                  fields: {
+                    fist_name: clientToEdit.fist_name,
+                    last_name: clientToEdit.last_name,
+                    address: clientToEdit.address,
+                    email: clientToEdit.email,
+                    phone: clientToEdit.phone
+                  },
+                  validationSchema: Yup.object().shape({
+                    email: Yup.string().email().required(require_message)
+                  })
+                }}
+                searchForm={{
+                  fields: {
+                    email: ''
+                  },
+                  validationSchema: Yup.object().shape({
+                    fist_name: Yup.string().required(require_message),
+                    last_name: Yup.string(),
+                    address: Yup.string().max(40),
+                    email: Yup.string().email().required(require_message),
+                    phone: Yup.string().min(8)
+                  })
+                }}
+                onSave={this.onEdit}
+                onDelete={this.onDelete}
                 onCancel={this.onCancelEdit}
                 onSearch={this.onSearch}
+                disabledForm={clientToEdit.hasOwnProperty('_id')}
               />
             }
           </div>

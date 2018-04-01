@@ -1,33 +1,18 @@
 import React from 'react'
 import Form from '../components/CustomForm'
 import PropTypes from 'prop-types'
-import Yup from 'yup'
 
-const require_message = 'This field is required'
-
-export const NewPage = ({onSubmit, clients}) => (
+export const NewPage = ({onAdd, formFields, validationSchema}) => (
   <Form
-    fields={{
-      fist_name: '',
-      last_name: '',
-      address: '',
-      email: '',
-      phone: ''
-    }}
-    validationSchema={Yup.object().shape({
-      fist_name: Yup.string().required(require_message),
-      last_name: Yup.string(),
-      address: Yup.string().max(40),
-      email: Yup.string().email().required(require_message),
-      phone: Yup.string().min(8)
-    })}
-    onSubmit={onSubmit}
+    fields={formFields}
+    validationSchema={validationSchema}
+    onSubmit={onAdd}
     automaticReset={false}
     textSubmitButton="Add"
   />
-
 )
 
 NewPage.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
+  onAdd: PropTypes.func.isRequired,
+  formFields: PropTypes.object.isRequired
 }

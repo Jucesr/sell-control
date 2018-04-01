@@ -1,23 +1,18 @@
 import React from 'react'
 import Form from '../components/CustomForm'
 import PropTypes from 'prop-types'
-import Yup from 'yup'
 
 const require_message = 'This field is required';
 const invalid_email = 'Invalid email';
 
-export const EditPage = ({onSubmit, onSearch, onCancel, onDelete, defaults}) => (
+export const EditPage = ({editForm, searchForm, onSave, onSearch, onCancel, onDelete, disabledForm}) => (
   <div>
     <Form
-      fields={{
-        email: ''
-      }}
+      fields={searchForm.fields}
       cancelButton={false}
-      disabledForm={defaults.hasOwnProperty('_id')}
+      disabledForm={disabledForm}
       textSubmitButton="Search"
-      validationSchema={Yup.object().shape({
-        email: Yup.string().email(invalid_email).required(require_message)
-      })}
+      validationSchema={searchForm.validationSchema}
       onSubmit={(props) => {
         onSearch(props).then(
           null,
@@ -26,38 +21,26 @@ export const EditPage = ({onSubmit, onSearch, onCancel, onDelete, defaults}) => 
       }}
 
     />
-    { defaults.hasOwnProperty('_id') &&
+    { disabledForm &&
       <Form
-      textSubmitButton="Save"
-      onCancel={onCancel}
-      fields={{
-        fist_name: defaults.fist_name,
-        last_name: defaults.last_name,
-        address: defaults.address,
-        email: defaults.email,
-        phone: defaults.phone
-      }}
-      buttons={{
-        Delete: () => {
-          console.log(defaults);
-          onDelete(defaults).then(
-            () => alert('Client deleted'),
-            e => alert(e)
-          ).then(() => onCancel());
-
-        }
-      }}
-      validationSchema={Yup.object().shape({
-        fist_name: Yup.string().required(require_message),
-        last_name: Yup.string(),
-        address: Yup.string().max(40),
-        email: Yup.string().email().required(require_message),
-        phone: Yup.string().min(8)
-      })}
-      onSubmit={onSubmit}/>
-
+        textSubmitButton="Save"
+        onCancel={onCancel}
+        fields={editForm.fields}
+        buttons={{
+          Delete: onDelete
+        }}
+        validationSchema={editForm.validationSchema}
+        onSubmit={onSave}
+      />
     }
-
   </div>
-
 )
+
+EditPage.propTypes = {
+  editForm: PropTypes.object.isRequired,
+  searchForm: PropTypes.object.isRequired,
+  onSave: PropTypes.func.isRequired,
+  onSearch: PropTypes.func.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+}

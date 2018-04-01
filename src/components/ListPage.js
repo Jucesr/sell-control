@@ -14,36 +14,17 @@ function filterCaseInsensitive(filter, row) {
 	);
 }
 
-export const ListPage = ({clients, fetchClients, isFetching, onClickItemTable}) => (
+export const ListPage = ({columns, items, loading, onClickItemTable}) => (
   <div>
         <ReactTable
-          data={clients}
+          data={items}
           filterable={true}
           defaultFilterMethod={filterCaseInsensitive}
-          columns={[
-            {
-              Header: 'Fist name',
-              accessor: 'fist_name',
-              headerClassName: 'table_header'
-            },{
-              Header: 'Last name',
-              accessor: 'last_name',
-              headerClassName: 'table_header',
-            },{
-              Header: 'Address',
-              accessor: 'address',
-              headerClassName: 'table_header'
-            },{
-              Header: 'Email',
-              accessor: 'email',
-              headerClassName: 'table_header'
-            },{
-              Header: 'Phone',
-              accessor: 'phone',
-              headerClassName: 'table_header'
-            }
-          ]}
-          loading={isFetching}
+          columns={columns.map(column => ({
+						...column,
+						headerClassName: 'table_header'
+					}))}
+          loading={loading}
           getTdProps={(state, rowInfo, column, instance) => {
               return {
                 onClick: (e, handleOriginal) => {
@@ -68,14 +49,8 @@ export const ListPage = ({clients, fetchClients, isFetching, onClickItemTable}) 
 )
 
 ListPage.propTypes = {
-  clients: PropTypes.arrayOf(
-    PropTypes.shape({
-      // id: PropTypes.string.isRequired,
-      fist_name: PropTypes.string.isRequired,
-      last_name: PropTypes.string,
-      address: PropTypes.string,
-      email: PropTypes.string.isRequired,
-      phone: PropTypes.string,
-    }).isRequired
-  ).isRequired,
+	columns: PropTypes.array.isRequired,
+  items: PropTypes.array.isRequired,
+	loading: PropTypes.bool.isRequired,
+	onClickItemTable: PropTypes.func.isRequired
 }

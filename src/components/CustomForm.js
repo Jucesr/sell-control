@@ -88,7 +88,7 @@ const CustomForm = ({
                     disabled={disabledForm}
                     onClick={(e) => {
                       e.preventDefault();
-                      buttons[key](e);
+                      buttons[key](values);
                     }}
                   >
                     {key}
