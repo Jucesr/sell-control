@@ -1,15 +1,19 @@
 import React from 'react'
+import {Link } from "react-router-dom";
+import { connect } from 'react-redux'
 
-export const SideBarContent = ({open}) => {
+const SideBar = ({open}) => {
   const items_class = `SideBar__item__title `;//${open ? 'SideBar__item__title_show' : 'SideBar__item__title_hide'}`;
   const sidebar_class = `SideBar ${open ? 'SideBar_open' : 'SideBar_close'}`;
   return (
     <div className={sidebar_class}>
       <div className="SideBar__items">
-        <div className="SideBar__item">
-          <img src="/img/client.png"></img>
-          <div className={items_class}>Clients</div>
-        </div>
+        <Link to="/client" >
+          <div className="SideBar__item">
+            <img src="/img/client.png"></img>
+            <div className={items_class}>Clients</div>
+          </div>
+        </Link>
         <div className="SideBar__item">
           <img src="/img/supplier.png"></img>
           <div className={items_class}>Suppliers</div>
@@ -30,3 +34,10 @@ export const SideBarContent = ({open}) => {
   </div>
   )
 }
+
+
+const mapStateToProps = state => ({
+  open: state.ui.sidebar_open
+})
+
+export default connect(mapStateToProps)(SideBar)

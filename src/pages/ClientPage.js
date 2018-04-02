@@ -87,7 +87,7 @@ class ClientPage extends React.Component{
       _id: this.state.clientToEdit._id
     }
 
-    const search = this.props.clients.filter((item) => item.email == updatedClient.email);
+    const search = this.props.clients.filter((item) => (item.email == updatedClient.email && item._id != updatedClient._id));
 
     if(search.length == 0){
       this.props.updateClient(updatedClient).then(
