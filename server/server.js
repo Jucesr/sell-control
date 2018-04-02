@@ -24,3 +24,26 @@ app.use('/api/supplier', suppliers);
 app.listen(port, ()=> {
   console.log(`Server runing in ${port}`)
 })
+
+// import fetch from 'cross-fetch'
+//
+// const client = {
+//   fist_name: 'Julio',
+//   last_name: 'Ojeda',
+//   address: 'Asti 1411 gran venecia',
+//   email: 'jcom.94m@gmail.com',
+//   phone: '696839404'
+// }
+//
+// const requestObj = {
+//       headers: {
+//         'content-type': 'application/json'
+//       },
+//       method: 'POST',
+//       body: client
+//     }
+//
+// fetch('https://localhost:3000/api/client', requestObj)
+//   .then(response => response.json())
+//   .then(client => console.log(client))
+//   .catch(e => console.log(e))

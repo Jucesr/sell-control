@@ -37,16 +37,30 @@ export const dispatchAsyncAction = (actionType, httpMethod, url, dataToSend, dis
     if(!!dispatchBeforeRequest){
       dispatch(dispatchBeforeRequest)
     }
+
     return httpRequest(url, httpMethod, dataToSend)
       .then(
-        data => dispatch({
-          ...actionType,
-          entity: data
-        })
-      ).catch(
-        e => {
-           throw new Error(e);
+        data => {
+
+          if(!data.message){
+            return dispatch({
+              ...actionType,
+              entity: data
+            })
+          }else{
+            return dispatch({
+              type: `ERROR_${actionType.type}`,
+              error: data.message
+            })
+          }
+
+
         }
+      ).catch(
+        e => dispatch({
+          type: `ERROR_${actionType.type}`,
+          error: e
+        })
       )
   }
 }

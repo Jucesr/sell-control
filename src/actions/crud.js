@@ -1,6 +1,14 @@
 import {dispatchAsyncAction} from './async'
 
 // crud('create','client', client);
+const env = process.env.NODE_ENV || 'development';
+const port = process.env.PORT || 3000;
+let host = '';
+
+if(env == 'test'){
+  host=`http://localhost:${port}`;
+}
+
 
 export const crud = (action, entity, dataToSend) => {
   let httpMethod, dispatchBeforeRequest;
@@ -8,9 +16,9 @@ export const crud = (action, entity, dataToSend) => {
 
   const actionType = {
     type: `${action}_${entity.toUpperCase()}`
-  } 
+  }
 
-  let url = `/api/${entity.toLowerCase()}/`
+  let url = `${host}/api/${entity.toLowerCase()}/`
 
   switch (action) {
     case 'CREATE':
@@ -28,8 +36,8 @@ export const crud = (action, entity, dataToSend) => {
       httpMethod = 'GET'
       url += `${dataToSend['_id']}`
     break;
-    case
-      'FETCH': httpMethod = 'GET'
+    case 'FETCH':
+      httpMethod = 'GET'
       dispatchBeforeRequest = {
           type: `REQUEST_${entity.toUpperCase()}`
         }
