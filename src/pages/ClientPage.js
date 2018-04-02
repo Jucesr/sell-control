@@ -35,19 +35,18 @@ class ClientPage extends React.Component{
     }))
   }
 
-  onSearch = ({email}) => {
+  onSearch = ({email}, resetForm, setErrors) => {
     const client = this.props.clients.filter(client => client.email == email)[0];
 
-    return new Promise((resolve, reject) => {
-      if(client){
-        this.setState(() => ({
-            clientToEdit: client
-        }), resolve())
-      }else{
-        //TODO: Search in Database.
-        reject('Client was not found');
-      }
-    });
+    if(client){
+      this.setState(() => ({
+          clientToEdit: client
+      }))
+    }else{
+      //TODO: Search in Database.
+      setErrors({email: 'Client was not found'})
+    }
+
   }
 
   onAdd = (client, resetForm, setErrors) => {
@@ -195,7 +194,11 @@ class ClientPage extends React.Component{
                     phone: clientToEdit.phone
                   },
                   validationSchema: Yup.object().shape({
-                    email: Yup.string().email().required(require_message)
+                    fist_name: Yup.string().required(require_message),
+                    last_name: Yup.string(),
+                    address: Yup.string().max(40),
+                    email: Yup.string().email().required(require_message),
+                    phone: Yup.string().min(8)
                   })
                 }}
                 searchForm={{
@@ -203,11 +206,7 @@ class ClientPage extends React.Component{
                     email: ''
                   },
                   validationSchema: Yup.object().shape({
-                    fist_name: Yup.string().required(require_message),
-                    last_name: Yup.string(),
-                    address: Yup.string().max(40),
-                    email: Yup.string().email().required(require_message),
-                    phone: Yup.string().min(8)
+                    email: Yup.string().email().required(require_message)
                   })
                 }}
                 onSave={this.onEdit}

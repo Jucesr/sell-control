@@ -19,13 +19,19 @@
 }
 
 .SideBar__item{
+  text-decoration: none;
   padding: .6rem 1rem ;
   display: flex;
   text-align: left;
+  color: black;
   &:hover{
     background: darken($color_02,20%);
     cursor: pointer;
   }
+}
+
+.SideBar__item_active{
+  background: darken($color_02,20%);
 }
 
 .SideBar__items img {

@@ -13,12 +13,7 @@ export const EditPage = ({editForm, searchForm, onSave, onSearch, onCancel, onDe
       disabledForm={disabledForm}
       textSubmitButton="Search"
       validationSchema={searchForm.validationSchema}
-      onSubmit={(props) => {
-        onSearch(props).then(
-          null,
-          e => alert(e)
-        );
-      }}
+      onSubmit={onSearch}
 
     />
     { disabledForm &&
