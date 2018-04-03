@@ -36,6 +36,7 @@
 
   border-right: .2rem solid lighten($color_02, 5%);
   padding: 1rem;
+  height: $page_title_height;
 }
 
 .Page__button_page{
@@ -53,6 +54,7 @@
   padding-top: $top_padding_page;
   padding-left: $side_padding_page;
   padding-right: $side_padding_page;
+  min-height: calc(100vh - (#{$page_title_height}*2) - #{$header_height});
 }
 
 .Page__content{
@@ -60,5 +62,5 @@
   // box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   // border: .1rem solid blackrgb(250, 250, 250);
   // padding: 2rem;
-  min-height: 80vh;
+
 }

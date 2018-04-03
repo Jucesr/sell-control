@@ -15,3 +15,14 @@ export const replaceNullWithBlank = (target) => {
 export const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1)
 }
+
+export const arrayToObject = (array, values) => {
+  let v;
+  return array.reduce((o, key) => {
+    v = values ? values[key] : '';
+    return {
+      ...o,
+      [key]: v
+    }
+  }, {})
+}
