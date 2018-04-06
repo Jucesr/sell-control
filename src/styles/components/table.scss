@@ -1,0 +1,14 @@
+.table_header{
+  font-size: $font_table_header;
+  font-weight: bold;
+  color: $color_01;
+}
+
+.table_row{
+  cursor: pointer;
+  color: lighten(black,10%);
+  font-family: $font_secondary;
+  // &:hover{
+  //   background: darken(white, 90%);
+  // }
+}

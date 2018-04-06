@@ -5,6 +5,7 @@ const path = require('path')
 const express = require('express')
 const clients = require('./routers/clients');
 const suppliers = require('./routers/supplier');
+const products = require('./routers/product');
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -16,6 +17,7 @@ app.use(express.static(publicPath))
 
 app.use('/api/client', clients);
 app.use('/api/supplier', suppliers);
+app.use('/api/product', products);
 
 // app.get('*', (req, res) => {
 //   res.sendFile(path.join(publicPath, 'index.html'))

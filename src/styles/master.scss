@@ -5,6 +5,7 @@
 @import "./components/SideBar";
 @import "./components/CustomForm";
 @import "./components/Page";
+@import "./components/Table";
 
 .Body{
   width: 100%;
@@ -13,15 +14,3 @@
 
 
 //List styles
-
-.table_header{
-  font-size: $font_table_header;
-  font-weight: bold;
-}
-
-.table_row{
-  cursor: pointer;
-  // &:hover{
-  //   background: darken(white, 90%);
-  // }
-}
