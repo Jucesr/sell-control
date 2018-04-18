@@ -2,26 +2,48 @@
 
 import React from 'react'
 import {Form, Field, Formik} from 'formik'
+import Cleave from 'cleave.js/react';
 
-import {replaceAll} from '../helpers/'
+import {replaceAll, extractValueFromFields, capitalizeFirstLetter, addPropertiesToFields, assignValueToFields} from '../helpers/'
 
-function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1)
-}
 
-const formatText = (text) => {
-  return capitalizeFirstLetter(replaceAll(text, '_', ' '))
-}
-
-const cleanForm = (values) => Object.keys(values).map(key => values[key] = '');
-
-const CustomField = (props) => (
-  <div className="CustomForm__form_field">
-    <label>{props.label}</label>
-    <Field disabled={props.enable} className="field_input" type="text" name={props.name}  />
-    {props.touched && props.error && <div>{props.error}</div>}
-  </div>
+const CF = ({field, form, ...props}) => (
+  <Cleave
+    {...field}
+    onChange={e => form.setFieldValue(field.name, e.target.rawValue)}
+    options={{
+      numeral: true,
+      rawValueTrimPrefix: true,
+      prefix: '$'}
+    }
+  />
 )
+
+
+const CustomField = (props) => {
+
+  if(props.type == 'currency'){
+    return (
+      <div className="CustomForm__form_field">
+        <label>{props.label}</label>
+        <Field disabled={props.disabled} className="field_input" name={props.name} component={CF}/>
+        {props.message && <p>{props.message}</p>}
+        {props.touched && props.error && <div>{props.error}</div>}
+      </div>
+    )
+  }
+
+    return (
+    <div className="CustomForm__form_field">
+      <label>{props.label}</label>
+      <Field type={props.type} disabled={props.disabled} className="field_input" name={props.name}/>
+      {props.message && <p>{props.message}</p>}
+      {props.touched && props.error && <div>{props.error}</div>}
+    </div>
+  )
+}
+
+
 const CustomForm = ({
   validationSchema,
   onSubmit,
@@ -35,16 +57,12 @@ const CustomForm = ({
   cancelButton = true
 }) => (
   <Formik
-    initialValues={{
-        ...fields
-      }}
+    initialValues={extractValueFromFields(fields)}
     validationSchema={validationSchema}
     onSubmit={
       (values, { resetForm, setErrors, setSubmitting, setValues}) => {
+        console.log(values);
         onSubmit(values, resetForm, setErrors);
-        // if(automaticReset){
-        //   cleanForm(values);
-        // }
       }}
     render={({
         values,
@@ -55,23 +73,33 @@ const CustomForm = ({
         handleSubmit,
         isSubmitting,
         handleReset,
-        isValid
-      }) => (
-        <Form>
+        isValid,
+        setValues,
+        resetForm
+      }) => {
+        fields = addPropertiesToFields(fields);
+        return (
+          <Form>
           {
-            Object.keys(fields).map(function(key, index) {
-              return (
-                <CustomField
-                  key={index}
-                  label={formatText(key)}
-                  name={key}
-                  error={errors[key]}
-                  enable={disabledForm}
-                  touched={touched[key]}
-                />
-              )
+            Object.keys(fields).map( (key, index) => {
+              if(fields[key]['render']){
+                return (
+                  <CustomField
+                    key={index}
+                    type={fields[key]['type']}
+                    label={fields[key]['label']}
+                    message={fields[key]['message']}
+                    name={key}
+                    error={errors[key]}
+                    disabled={disabledForm}
+                    touched={touched[key]}
+
+                  />
+                )
+              }
             })
-          }
+            }
+
           <div className="CustomForm__buttons" >
             <button
               className="CustomForm__submit_button"
@@ -96,11 +124,15 @@ const CustomForm = ({
                 )
               })
             }
-            {cancelButton && <button disabled={disabledForm} onClick={onCancel || handleReset} type="reset">{textCancelButton}</button>}
+            {cancelButton && <button disabled={disabledForm} onClick={e => {
+                resetForm(extractValueFromFields(assignValueToFields(fields)));
+              if(onCancel)
+                onCancel(e)
+            }} type="reset">{textCancelButton}</button>}
           </div>
 
         </Form>
-      )}
+      )}}
 
   />
 );

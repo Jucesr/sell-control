@@ -18,7 +18,7 @@ router.post('/', (req, res) => {
       console.log('A supplier was saved');
     }, e => {
       res.status(400).send(e);
-      console.log('Error has occurred');
+      console.log('Error has occurred while saving supplier', e);
     }
   )
 });
@@ -40,7 +40,10 @@ router.delete('/:id', (req, res) => {
     res.status(200).send(doc);
     console.log('A supplier was deleted');
 
-  }).catch( (e) => res.status(404).send(e));
+  }).catch( (e) => {
+    console.log('Error has occurred while deleting suppliers', e);
+    res.status(404).send(e)
+  });
 
 });
 
@@ -60,6 +63,7 @@ router.patch('/:id', (req, res) => {
       res.status(200).send(doc);
       console.log('A supplier was updated');
     }).catch( (e) => {
+    console.log('Error has occurred while updating suppliers', e);
     res.status(404).send(e);
   } );
 
@@ -74,7 +78,7 @@ router.get('/',  (req, res) => {
       console.log('suppliers were sent');
     }, e => {
       res.status(404).send(e);
-      console.log('Error has occurred');
+      console.log('Error has occurred while sending suppliers', e);
     }
   );
 });

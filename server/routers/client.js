@@ -13,16 +13,14 @@ router.post('/', (req, res) => {
   });
 
   client.save().then(
-      doc => {
-        res.send(doc);
-        console.log('A client was saved');
-      }
-    ).catch(
-      e => {
-        res.status(404).send(e);
-        console.error('Error has occurred while saving client', e);
-      }
-    )
+    doc => {
+      res.send(doc);
+      console.log('A client was saved');
+    }, e => {
+      res.status(400).send(e);
+      console.log('Error has occurred while saving client', e);
+    }
+  )
 });
 
 router.delete('/:id', (req, res) => {
@@ -42,12 +40,10 @@ router.delete('/:id', (req, res) => {
     res.status(200).send(doc);
     console.log('A client was deleted');
 
-  }).catch(
-    e => {
-      res.status(404).send(e);
-      console.error('Error has occurred while deleting client', e);
-    }
-  )
+  }).catch( (e) => {
+    console.log('Error has occurred while deleting clients', e);
+    res.status(404).send(e)
+  });
 
 });
 
@@ -66,12 +62,10 @@ router.patch('/:id', (req, res) => {
         return res.status(404).send('No client was found');
       res.status(200).send(doc);
       console.log('A client was updated');
-    }).catch(
-      e => {
-        res.status(404).send(e);
-        console.error('Error has occurred while updating client', e);
-      }
-    );
+    }).catch( (e) => {
+    console.log('Error has occurred while updating clients', e);
+    res.status(404).send(e);
+  } );
 
 
 });
@@ -81,10 +75,10 @@ router.get('/',  (req, res) => {
   Client.getAll().then(
     (clients) => {
       res.send(clients);
-      console.log('client were sent');
+      console.log('clients were sent');
     }, e => {
       res.status(404).send(e);
-      console.log('Error has occurred');
+      console.log('Error has occurred while sending clients', e);
     }
   );
 });

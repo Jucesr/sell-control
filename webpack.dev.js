@@ -31,7 +31,8 @@ module.exports = {
       publicPath: '/dist/',
       proxy: {
         "/api/*": "http://localhost:3000"
-      }
+      },
+      port: 9000
     }
 
 }

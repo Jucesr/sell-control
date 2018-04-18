@@ -37,8 +37,51 @@
   }
 }
 
+.CustomForm__form_field_horizontal{
+  margin-bottom: $vertical_space_fields;
+  display: flex;
+  flex-direction: row;
+  margin-top: 1.5rem;
+}
+
+.CustomForm__form_field_horizontal label{
+  display: block;
+  width: calc(#{$input_min_width} / 2);
+  color: lighten($color_01, 30%);
+  // margin-bottom: .5rem;
+}
+
+.CustomForm__form_field_horizontal input{
+  width: calc(#{$input_min_width} / 2);
+  padding: $input_padding;
+  // background-color: lighten($color_02, 10%);
+  border: 1px solid $color_02;
+  font-size: 1.3rem;
+  color: darken($color_02,30%);
+  border-radius: .5rem;
+
+  &:focus {
+    outline: none !important;
+  }
+
+  &:-webkit-autofill {
+      -webkit-text-fill-color: darken($color_02,30%) !important;
+      -webkit-box-shadow: 0 0 0 30px white inset;
+  }
+}
+
+
 .CustomForm__form_field div{
+  // Error message
   color: red;
+  font-size: 1rem;
+  margin-top: .5rem;
+  font-style: italic;
+}
+
+.CustomForm__form_field p{
+  // Optional message
+  color: black;
   font-size: 1rem;
   margin-top: .5rem;
   font-style: italic;

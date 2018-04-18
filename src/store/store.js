@@ -9,6 +9,7 @@ const store = createStore(
   combineReducers({
     clients: crudReducer('client'),
     suppliers: crudReducer('supplier'),
+    products: crudReducer('product'),
     ui: uiReducer
   }),
   composeEnhancers(applyMiddleware(thunkMiddleware))

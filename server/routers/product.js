@@ -18,7 +18,7 @@ router.post('/', (req, res) => {
       console.log('A product was saved');
     }, e => {
       res.status(400).send(e);
-      console.log('Error has occurred');
+      console.log('Error has occurred while saving product', e);
     }
   )
 });
@@ -40,7 +40,10 @@ router.delete('/:id', (req, res) => {
     res.status(200).send(doc);
     console.log('A product was deleted');
 
-  }).catch( (e) => res.status(404).send(e));
+  }).catch( (e) => {
+    console.log('Error has occurred while deleting products', e);
+    res.status(404).send(e)
+  });
 
 });
 
@@ -60,6 +63,7 @@ router.patch('/:id', (req, res) => {
       res.status(200).send(doc);
       console.log('A product was updated');
     }).catch( (e) => {
+    console.log('Error has occurred while updating products', e);
     res.status(404).send(e);
   } );
 
@@ -74,7 +78,7 @@ router.get('/',  (req, res) => {
       console.log('products were sent');
     }, e => {
       res.status(404).send(e);
-      console.log('Error has occurred');
+      console.log('Error has occurred while sending products', e);
     }
   );
 });

@@ -3,7 +3,7 @@ require('./db/mongoose');
 
 const path = require('path')
 const express = require('express')
-const clients = require('./routers/clients');
+const clients = require('./routers/client');
 const suppliers = require('./routers/supplier');
 const products = require('./routers/product');
 
