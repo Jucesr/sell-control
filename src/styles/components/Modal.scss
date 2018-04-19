@@ -35,7 +35,11 @@
 
 .Modal__async{
   background: white;
-    color: $color_01;
+  color: $color_01;
+}
+
+.Modal__question{
+  @extend .Modal__async;
 }
 
 .Modal__title {
@@ -48,8 +52,24 @@
   margin: 0 0 3.2rem 0;
 }
 
-.Modal__close_button{
+.Modal__buttons{
+  display: flex;
+  justify-content: space-between;
+}
+
+.Modal__button{
   border-radius: 1rem;
   padding: .5rem 1rem;
   min-width: 5rem;
+}
+
+.Modal__button_yes{
+  background: $color_success;
+  color: white;
+  // padding-right: 1rem;
+}
+
+.Modal__button_no{
+  background: $color_error;
+  color: white;
 }

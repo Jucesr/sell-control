@@ -128,21 +128,30 @@ class ProductPage extends React.Component{
       _id: this.state.fields._id.value
     }
 
-    this.props.removeProduct(product).then(
-      () => {
-        this.props.showMessage({
-          category: 'success',
-          title: 'Product deleted'
-        })
-      },
-      e => {
-        this.props.showMessage({
-          category: 'error',
-          title: 'Opps',
-          message: e
-        })
+    this.props.showMessage({
+      category: 'question',
+      title: 'Are you sure to delete it?',
+      onYes: () => {
+        this.props.removeProduct(product).then(
+          action => {
+            console.log(action);
+            if(!action.type.includes('ERROR')){
+              this.props.showMessage({
+                category: 'success',
+                title: 'Product deleted'
+              })
+            }else{
+              this.props.showMessage({
+                category: 'error',
+                title: 'Opps',
+                message: action.error
+              })
+            }
+
+          }
+        ).then(() => this.onCancelEdit());
       }
-    ).then(() => this.onCancelEdit());
+    })
 
   }
 

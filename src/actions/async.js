@@ -41,7 +41,6 @@ export const dispatchAsyncAction = (actionType, httpMethod, url, dataToSend, dis
     return httpRequest(url, httpMethod, dataToSend)
       .then(
         data => {
-
           if(!data.message){
             return dispatch({
               ...actionType,
@@ -53,14 +52,12 @@ export const dispatchAsyncAction = (actionType, httpMethod, url, dataToSend, dis
               error: data.message
             })
           }
-
-
         }
       ).catch(
         e => dispatch({
-          type: `ERROR_${actionType.type}`,
-          error: e
-        })
+            type: `ERROR_${actionType.type}`,
+            error: 'Connection with server is lost'
+          })
       )
   }
 }

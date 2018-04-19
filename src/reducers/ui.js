@@ -17,7 +17,8 @@ export default (state = initialState, action) => {
         modal: {
           title: action.title,
           message: action.message,
-          category: action.category
+          category: action.category,
+          onYes: action.onYes
         }
       }
     case 'CLOSE_MODAL':
