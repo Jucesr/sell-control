@@ -7,7 +7,9 @@ import {arrayToObject, assignValueToFields} from '../helpers'
 import {NewPage} from '../components/NewPage'
 import {ListPage} from '../components/ListPage'
 import {EditPage} from '../components/EditPage'
+
 import {addProduct, fetchProducts, updateProduct, removeProduct} from '../actions/products'
+import {openModal} from '../actions/ui'
 
 class ProductPage extends React.Component{
 
@@ -48,46 +50,72 @@ class ProductPage extends React.Component{
   }
 
   onSearch = ({code}, resetForm, setErrors) => {
+
+    this.props.showMessage({
+      category: 'async',
+      title: `Searching product...`
+    })
+
     const product = this.props.products.filter(product => product.code == code)[0];
 
     if(product){
 
-      this.setState((prevState) => {
-        let stateCopy = prevState.clone()
-        Object.keys(product).map(p => {
-          if(stateCopy[p]){
-            stateCopy[p]['value'] = product[p]
-          }else{
-            stateCopy[p] = {}
-            stateCopy[p]['value'] = product[p]
+      this.setState((prevState) => ({
+          fields: {
+            ...assignValueToFields(prevState.fields, product),
+            _id: {
+              value: product._id,
+              render: false
+            }
           }
+      }))
 
-        });
-        return {
-          fields: stateCopy
-        }
-      })
     }else{
       //TODO: Search in Database.
+      this.props.showMessage({
+        category: 'error',
+        title: `Product was not found`
+      })
       setErrors({code: 'Product was not found'})
     }
+
+
 
   }
 
   onAdd = (product, resetForm, setErrors) => {
+
+    this.props.showMessage({
+      category: 'async',
+      title: 'Adding product...'
+    })
+
     const search = this.props.products.filter((item) => item.code == product.code)
     if(search.length == 0){
       this.props.addProduct(product).then(
         (message) => {
           if(message.error){
-            alert(message.error)
+            this.props.showMessage({
+              category: 'error',
+              title: `Product could not be added`,
+              message: message.error
+            })
+
           }else{
-            alert('Product added')
+            this.props.showMessage({
+              category: 'success',
+              title: 'Product added'
+            })
           }
 
         }
       ).then(resetForm)
     }else{
+      this.props.showMessage({
+        category: 'error',
+        title: `Opps`,
+        message: 'The code is alredy used in another product'
+      })
       setErrors({code: 'The code is alredy used in another product'})
     }
 
@@ -101,8 +129,19 @@ class ProductPage extends React.Component{
     }
 
     this.props.removeProduct(product).then(
-      () => alert('Product deleted'),
-      e => alert(e)
+      () => {
+        this.props.showMessage({
+          category: 'success',
+          title: 'Product deleted'
+        })
+      },
+      e => {
+        this.props.showMessage({
+          category: 'error',
+          title: 'Opps',
+          message: e
+        })
+      }
     ).then(() => this.onCancelEdit());
 
   }
@@ -119,13 +158,20 @@ class ProductPage extends React.Component{
     if(search.length == 0){
       this.props.updateProduct(updatedProduct).then(
         (message) => {
-
-          alert('Product saved');
+          this.props.showMessage({
+            category: 'success',
+            title: 'Product saved'
+          })
           this.onCancelEdit();
         },
         e => alert(e)
       )
     }else{
+      this.props.showMessage({
+        category: 'error',
+        title: `Opps`,
+        message: 'The code is alredy used in another product'
+      })
       setErrors({code: 'The code is alredy taken'})
     }
   }
@@ -251,6 +297,7 @@ class ProductPage extends React.Component{
                 disabledForm={this.state.fields.hasOwnProperty('_id')}
               />
             }
+
           </div>
         </div>
       </div>
@@ -268,7 +315,8 @@ const mapDispatchToProps = dispatch => ({
   addProduct: product => dispatch(addProduct(product)),
   updateProduct: product => dispatch(updateProduct(product)),
   removeProduct: product => dispatch(removeProduct(product)),
-  fetchProducts: () => dispatch(fetchProducts())
+  fetchProducts: () => dispatch(fetchProducts()),
+  showMessage: (data) => dispatch(openModal(data))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductPage)

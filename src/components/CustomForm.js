@@ -7,7 +7,7 @@ import Cleave from 'cleave.js/react';
 import {replaceAll, extractValueFromFields, capitalizeFirstLetter, addPropertiesToFields, assignValueToFields} from '../helpers/'
 
 
-const CF = ({field, form, ...props}) => (
+const CleaveCurrency = ({field, form, ...props}) => (
   <Cleave
     {...field}
     onChange={e => form.setFieldValue(field.name, e.target.rawValue)}
@@ -19,6 +19,18 @@ const CF = ({field, form, ...props}) => (
   />
 )
 
+const CleavePhone = ({field, form, ...props}) => (
+  <Cleave
+    {...field}
+    onChange={e => form.setFieldValue(field.name, e.target.rawValue)}
+    options={{
+      phone: true,
+      phoneRegionCode: 'MX'
+      }
+    }
+  />
+)
+
 
 const CustomField = (props) => {
 
@@ -26,7 +38,16 @@ const CustomField = (props) => {
     return (
       <div className="CustomForm__form_field">
         <label>{props.label}</label>
-        <Field disabled={props.disabled} className="field_input" name={props.name} component={CF}/>
+        <Field disabled={props.disabled} className="field_input" name={props.name} component={CleaveCurrency}/>
+        {props.message && <p>{props.message}</p>}
+        {props.touched && props.error && <div>{props.error}</div>}
+      </div>
+    )
+  }else if(props.type == 'phone'){
+    return (
+      <div className="CustomForm__form_field">
+        <label>{props.label}</label>
+        <Field disabled={props.disabled} className="field_input" name={props.name} component={CleavePhone}/>
         {props.message && <p>{props.message}</p>}
         {props.touched && props.error && <div>{props.error}</div>}
       </div>
@@ -61,7 +82,6 @@ const CustomForm = ({
     validationSchema={validationSchema}
     onSubmit={
       (values, { resetForm, setErrors, setSubmitting, setValues}) => {
-        console.log(values);
         onSubmit(values, resetForm, setErrors);
       }}
     render={({

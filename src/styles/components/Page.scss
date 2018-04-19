@@ -27,7 +27,7 @@
   position: sticky;
   // box-shadow: 0px 4px 8px 0 rgba(0, 0, 0, 0.2);
   top: $header_height;
-  z-index: 1000000;
+  z-index: 1;
   background: lighten($color_02, 10%);
   width: 100%;
 }

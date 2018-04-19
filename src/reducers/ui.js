@@ -1,5 +1,6 @@
 const initialState = {
-  sidebar_open: false
+  sidebar_open: false,
+  modal: undefined
 }
 
 export default (state = initialState, action) => {
@@ -9,6 +10,20 @@ export default (state = initialState, action) => {
       return {
         ...state,
         sidebar_open: !state.sidebar_open
+      }
+    case 'OPEN_MODAL':
+      return {
+        ...state,
+        modal: {
+          title: action.title,
+          message: action.message,
+          category: action.category
+        }
+      }
+    case 'CLOSE_MODAL':
+      return {
+        ...state,
+        modal: undefined
       }
     default:
       return state

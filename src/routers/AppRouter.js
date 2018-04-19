@@ -6,6 +6,7 @@ import SideBar from '../components/SideBar'
 import ClientPage from '../pages/ClientPage'
 import SupplierPage from '../pages/SupplierPage'
 import ProductPage from '../pages/ProductPage'
+import Modal from '../components/Modal'
 
 
 const AppRouter = () => (
@@ -20,6 +21,7 @@ const AppRouter = () => (
         <Route path="/product" component={ProductPage} />
         {/* <Route component={NotFoundPage} /> */}
       </Switch>
+      <Modal/>
     </div>
   </BrowserRouter>
 )

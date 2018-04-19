@@ -1,0 +1,55 @@
+.ReactModal__Body--open {
+    overflow: hidden;
+}
+
+
+.ReactModalPortal .ReactModal__Overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 200ms ease-in-out;
+}
+
+.ReactModal__Overlay{
+  z-index: 10;
+  background-Color: rgba(0, 0, 0, 0.75) !important;
+}
+
+.Modal {
+  max-width: 30rem;
+  outline: none;
+  padding: 3.2rem;
+  text-align: center;
+  border-radius: 1rem;
+}
+
+.Modal__error{
+  background: $color_error;
+  color: white;
+}
+
+.Modal__success{
+  background: $color_success;
+  color: white;
+}
+
+.Modal__async{
+  background: white;
+    color: $color_01;
+}
+
+.Modal__title {
+  margin: 1.6rem 0;
+
+}
+
+.Modal__body{
+  font-weight: 300;
+  margin: 0 0 3.2rem 0;
+}
+
+.Modal__close_button{
+  border-radius: 1rem;
+  padding: .5rem 1rem;
+  min-width: 5rem;
+}
