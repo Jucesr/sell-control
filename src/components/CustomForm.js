@@ -3,6 +3,7 @@
 import React from 'react'
 import {Form, Field, Formik} from 'formik'
 import Cleave from 'cleave.js/react';
+import 'cleave.js/dist/addons/cleave-phone.mx';
 
 import {replaceAll, extractValueFromFields, capitalizeFirstLetter, addPropertiesToFields, assignValueToFields} from '../helpers/'
 
