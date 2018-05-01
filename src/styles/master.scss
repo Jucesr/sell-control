@@ -1,17 +1,12 @@
 @import "./base/settings";
 @import "./base/base";
-@import "react-table.css";
+
+@import "./modules/react-table.css";
+@import "./modules/react-select.css";
+
 @import "./components/Header";
 @import "./components/SideBar";
 @import "./components/CustomForm";
 @import "./components/Page";
 @import "./components/Table";
 @import "./components/Modal";
-
-.Body{
-  width: 100%;
-}
-
-
-
-//List styles

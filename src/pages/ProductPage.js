@@ -5,26 +5,55 @@ import Yup from 'yup'
 
 import Page from './Page'
 import {addProduct, fetchProducts, updateProduct, removeProduct} from '../actions/products'
+import {fetchSuppliers} from '../actions/suppliers'
 
-const ProductPage = (props) => {
+class ProductPage extends React.Component {
 
-    const fields = {
-      code: {},
-      name: {},
-      description: {},
-      uom: {},
-      cost: {
-        type: 'currency'
-      },
-      price: {
-        type: 'currency'
-      },
-      how_many: {
-        type: 'number',
-        label: 'Stock',
-        message: `Leave it empty if you don't want to handle inventory`
+  constructor(props){
+    super(props)
+    this.state = {
+      fields: {
+        supplier: {
+          type: 'combo',
+          combo_data: []
+        },
+        code: {
+          label: 'Product code'
+        },
+        name: {},
+        description: {},
+        uom: {},
+        cost: {
+          type: 'currency'
+        },
+        price: {
+          type: 'currency'
+        },
+        how_many: {
+          type: 'number',
+          label: 'Stock',
+          message: `Leave it empty if you don't want to handle inventory`
+        }
       }
     }
+  }
+
+  componentDidMount(){
+    this.props.fetchSuppliers().then(
+      () => this.setState((prevState) => ({
+        fields: {
+          ...prevState.fields,
+          supplier:{
+            ...prevState.fields.supplier,
+            combo_data: getSuppliers(this.props.suppliers)
+          }
+        }
+      }))
+    )
+  }
+
+  render(){
+
 
     const require_message = 'This field is required';
 
@@ -74,25 +103,34 @@ const ProductPage = (props) => {
     return (
       <Page
         entity="product"
-        entities={props.products}
-        isFetching={props.isFetching}
-        fields={fields}
+        entities={this.props.products}
+        isFetching={this.props.isFetching}
+        fields={this.state.fields}
         fieldValidation={fieldValidation}
         searchField="code"
         searchValidation={searchValidation}
-        fetchItems={props.fetchProducts}
-        addEntity={props.addProduct}
-        updateEntity={props.updateProduct}
-        removeEntity={props.removeProduct}
+        fetchItems={this.props.fetchProducts}
+        addEntity={this.props.addProduct}
+        updateEntity={this.props.updateProduct}
+        removeEntity={this.props.removeProduct}
         columns={columns}
 
       />
     )
-  }
+  };
+}
 
+// export default ProductPage;
+
+
+const getSuppliers = suppliers => suppliers.map( supplier => ({
+  value: supplier._id,
+  label: supplier.contact_name
+}))
 
 const mapStateToProps = state => ({
   products: state.products.items,
+  suppliers: state.suppliers.items,
   isFetching: state.products.isFetching,
 })
 
@@ -101,6 +139,7 @@ const mapDispatchToProps = dispatch => ({
   updateProduct: product => dispatch(updateProduct(product)),
   removeProduct: product => dispatch(removeProduct(product)),
   fetchProducts: () => dispatch(fetchProducts()),
+  fetchSuppliers: () => dispatch(fetchSuppliers())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductPage)

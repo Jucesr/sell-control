@@ -17,20 +17,6 @@ export const httpRequest = (url, method, body = null) => {
     .then(response => response.json())
 }
 
-// export const dispatchAsyncAction = (action, method, requestData) => {
-//   return (dispatch) => {
-//
-//     return method(requestData)
-//       .then(
-//         data => dispatch(action(data))
-//       ).catch(
-//         e => {
-//            throw new Error(e);
-//         }
-//       )
-//   }
-// }
-
 export const dispatchAsyncAction = (actionType, httpMethod, url, dataToSend, dispatchBeforeRequest) => {
 
   return (dispatch) => {

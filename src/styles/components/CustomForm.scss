@@ -12,21 +12,20 @@
   // margin-bottom: .5rem;
 }
 
-.CustomForm__form_field input{
+.CustomForm__form_field_input{
   width: $input_min_width;
   padding: $input_padding;
   // background-color: lighten($color_02, 10%);
   border: 1px solid $color_02;
   font-size: 1.3rem;
-  color: darken($color_02,30%);
+  color: darken($color_02,30%) ;
   border-radius: .5rem;
 
   &:focus {
     outline: none !important;
     border:1px solid $color_01;
     box-shadow: 0 0 5px lighten($color_01,10%);
-}
-
+  }
   &:disabled{
     // background-color: darken($color_02, 10%);
   }
@@ -34,6 +33,17 @@
   &:-webkit-autofill {
       -webkit-text-fill-color: darken($color_02,30%) !important;
       -webkit-box-shadow: 0 0 0 30px white inset;
+  }
+}
+
+.CustomForm__form_field_combo{
+  @extend .CustomForm__form_field_input;
+  padding: 0;
+  margin: 0 !important;
+
+  div{
+    margin: 0 !important;
+    border: none !important;
   }
 }
 
@@ -71,7 +81,7 @@
 }
 
 
-.CustomForm__form_field div{
+.CustomForm__form_field_error{
   // Error message
   color: red;
   font-size: 1rem;
@@ -105,4 +115,10 @@
     background-color: lighten($color_01, 20%);
   }
 
+}
+
+.Select-value-label,
+.Select-menu-outer,
+.Select-option{
+  color: darken($color_02,30%) !important;
 }

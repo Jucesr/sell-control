@@ -23,6 +23,13 @@ class Page extends React.Component{
     this.props.fetchItems();
   }
 
+  componentWillReceiveProps(nextProps) {
+  // You don't have to do this check first, but it can help prevent an unneeded render
+  if (nextProps.fields !== this.state.fields) {
+    this.setState({ fields: nextProps.fields });
+  }
+}
+
   changePage = (e) => {
     let page = e.target.id
     this.setState(() => ({

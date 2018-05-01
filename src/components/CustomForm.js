@@ -1,8 +1,8 @@
-//TODO: BUSCA UNA MANERA DE LIMPIAR EL FORMULARIO DESDE AQUI, ES DECIR QUE TODOS LOS CAMPOS SE PONGAN EN BLANCO
 
 import React from 'react'
 import {Form, Field, Formik} from 'formik'
 import Cleave from 'cleave.js/react';
+import Select from 'react-select';
 import 'cleave.js/dist/addons/cleave-phone.mx';
 
 import {replaceAll, extractValueFromFields, capitalizeFirstLetter, addPropertiesToFields, assignValueToFields} from '../helpers/'
@@ -11,6 +11,7 @@ import {replaceAll, extractValueFromFields, capitalizeFirstLetter, addProperties
 const CleaveCurrency = ({field, form, ...props}) => (
   <Cleave
     {...field}
+    className={props.className}
     onChange={e => form.setFieldValue(field.name, e.target.rawValue)}
     options={{
       numeral: true,
@@ -23,6 +24,7 @@ const CleaveCurrency = ({field, form, ...props}) => (
 const CleavePhone = ({field, form, ...props}) => (
   <Cleave
     {...field}
+    className={props.className}
     onChange={e => form.setFieldValue(field.name, e.target.rawValue)}
     options={{
       phone: true,
@@ -32,6 +34,25 @@ const CleavePhone = ({field, form, ...props}) => (
   />
 )
 
+const Combo = ({field, form, ...props}) => {
+//console.log(field);
+ // console.log(props);
+return (
+  <Select
+    {...field}
+    className={props.className}
+    id={field.name}
+    value={form.values[field.name]}
+    placeholder={`Select a ${field.name}`}
+    clearable={false}
+    onChange={value => {
+      form.setFieldValue(field.name, value.value)
+    }}
+    options={props.combo_data}
+  />
+)
+}
+
 
 const CustomField = (props) => {
 
@@ -39,18 +60,27 @@ const CustomField = (props) => {
     return (
       <div className="CustomForm__form_field">
         <label>{props.label}</label>
-        <Field disabled={props.disabled} className="field_input" name={props.name} component={CleaveCurrency}/>
+        <Field disabled={props.disabled} className="CustomForm__form_field_input" name={props.name} component={CleaveCurrency}/>
         {props.message && <p>{props.message}</p>}
-        {props.touched && props.error && <div>{props.error}</div>}
+        {props.touched && props.error && <div className="CustomForm__form_field_error">{props.error}</div>}
       </div>
     )
   }else if(props.type == 'phone'){
     return (
       <div className="CustomForm__form_field">
         <label>{props.label}</label>
-        <Field disabled={props.disabled} className="field_input" name={props.name} component={CleavePhone}/>
+        <Field disabled={props.disabled} className="CustomForm__form_field_input" name={props.name} component={CleavePhone}/>
         {props.message && <p>{props.message}</p>}
-        {props.touched && props.error && <div>{props.error}</div>}
+        {props.touched && props.error && <div className="CustomForm__form_field_error">{props.error}</div>}
+      </div>
+    )
+  }else if(props.type == 'combo'){
+    return (
+      <div className="CustomForm__form_field">
+        <label>{props.label}</label>
+        <Field disabled={props.disabled} className="CustomForm__form_field_combo" name={props.name} combo_data={props.combo_data} component={Combo}/>
+        {props.message && <p>{props.message}</p>}
+        {props.touched && props.error && <div className="CustomForm__form_field_error">{props.error}</div>}
       </div>
     )
   }
@@ -58,9 +88,9 @@ const CustomField = (props) => {
     return (
     <div className="CustomForm__form_field">
       <label>{props.label}</label>
-      <Field type={props.type} disabled={props.disabled} className="field_input" name={props.name}/>
+      <Field type={props.type} className="CustomForm__form_field_input" disabled={props.disabled} name={props.name}/>
       {props.message && <p>{props.message}</p>}
-      {props.touched && props.error && <div>{props.error}</div>}
+      {props.touched && props.error && <div className="CustomForm__form_field_error">{props.error}</div>}
     </div>
   )
 }
@@ -98,6 +128,7 @@ const CustomForm = ({
         setValues,
         resetForm
       }) => {
+
         fields = addPropertiesToFields(fields);
         return (
           <Form>
@@ -110,6 +141,7 @@ const CustomForm = ({
                     type={fields[key]['type']}
                     label={fields[key]['label']}
                     message={fields[key]['message']}
+                    combo_data={fields[key]['combo_data']}
                     name={key}
                     error={errors[key]}
                     disabled={disabledForm}
