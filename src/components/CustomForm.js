@@ -43,7 +43,7 @@ return (
     className={props.className}
     id={field.name}
     value={form.values[field.name]}
-    placeholder={`Select a ${field.name}`}
+    placeholder={`Select a ${props.label}`}
     clearable={false}
     onChange={value => {
       form.setFieldValue(field.name, value.value)
@@ -78,7 +78,13 @@ const CustomField = (props) => {
     return (
       <div className="CustomForm__form_field">
         <label>{props.label}</label>
-        <Field disabled={props.disabled} className="CustomForm__form_field_combo" name={props.name} combo_data={props.combo_data} component={Combo}/>
+        <Field
+          disabled={props.disabled}
+          className="CustomForm__form_field_combo"
+          name={props.name}
+          label={props.label}
+          combo_data={props.combo_data}
+          component={Combo}/>
         {props.message && <p>{props.message}</p>}
         {props.touched && props.error && <div className="CustomForm__form_field_error">{props.error}</div>}
       </div>

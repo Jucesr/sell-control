@@ -12,9 +12,9 @@ class ProductPage extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      fields: {
-        supplier: {
+        supplier_id: {
           type: 'combo',
+          label: 'Supplier',
           combo_data: []
         },
         code: {
@@ -34,20 +34,17 @@ class ProductPage extends React.Component {
           label: 'Stock',
           message: `Leave it empty if you don't want to handle inventory`
         }
-      }
     }
   }
 
   componentDidMount(){
     this.props.fetchSuppliers().then(
       () => this.setState((prevState) => ({
-        fields: {
           ...prevState.fields,
-          supplier:{
-            ...prevState.fields.supplier,
+          supplier_id:{
+            ...prevState.supplier_id,
             combo_data: getSuppliers(this.props.suppliers)
           }
-        }
       }))
     )
   }
@@ -58,6 +55,7 @@ class ProductPage extends React.Component {
     const require_message = 'This field is required';
 
     const fieldValidation = Yup.object().shape({
+      supplier_id: Yup.string().required(require_message),
       code: Yup.string().required(require_message),
       name: Yup.string().required(require_message),
       description: Yup.string(),
@@ -105,12 +103,13 @@ class ProductPage extends React.Component {
         entity="product"
         entities={this.props.products}
         isFetching={this.props.isFetching}
-        fields={this.state.fields}
+        fields={this.state}
         fieldValidation={fieldValidation}
         searchField="code"
         searchValidation={searchValidation}
         fetchItems={this.props.fetchProducts}
         addEntity={this.props.addProduct}
+        // addEntity={product => console.log(product)}
         updateEntity={this.props.updateProduct}
         removeEntity={this.props.removeProduct}
         columns={columns}
@@ -125,7 +124,7 @@ class ProductPage extends React.Component {
 
 const getSuppliers = suppliers => suppliers.map( supplier => ({
   value: supplier._id,
-  label: supplier.contact_name
+  label: supplier.name
 }))
 
 const mapStateToProps = state => ({

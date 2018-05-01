@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 const moment = require('moment');
 
 const ProductSchema = new mongoose.Schema({
+  supplier_id: {
+    type: String,
+    required: true,
+    default: '-1'
+  },
   code: {
     type: String,
     required: true,
