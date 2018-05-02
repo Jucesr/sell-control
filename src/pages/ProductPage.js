@@ -72,6 +72,10 @@ class ProductPage extends React.Component {
 
     const columns = [
       {
+        Header: 'Supplier',
+        accessor: 'supplier.name'
+      },
+      {
         Header: 'Code',
         accessor: 'code'
       },{
@@ -101,7 +105,15 @@ class ProductPage extends React.Component {
     return (
       <Page
         entity="product"
-        entities={this.props.products}
+        // entities={this.props.products}
+        entities = {this.props.products.map( item => {
+          let supplier = this.props.suppliers.filter( sup => sup._id == item.supplier_id)[0];
+
+
+          return {
+          ...item,
+          supplier: !!supplier ? supplier : 'No supplier' 
+        }}) }
         isFetching={this.props.isFetching}
         fields={this.state}
         fieldValidation={fieldValidation}

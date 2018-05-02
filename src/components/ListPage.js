@@ -27,7 +27,7 @@ export const ListPage = ({columns, items, loading, onClickItemTable}) => (
           loading={loading}
           getTdProps={(state, rowInfo, column, instance) => {
               return {
-                onClick: (e, handleOriginal) => {
+                onDoubleClick: (e, handleOriginal) => {
                   if(rowInfo){
                     onClickItemTable(replaceNullWithBlank(rowInfo.original));
                   }

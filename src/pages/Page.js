@@ -190,13 +190,13 @@ class Page extends React.Component{
     }));
   }
 
-  onClickItemTable = (supplier) => {
+  onClickItemTable = (entity) => {
 
     this.setState((prevState) => ({
         fields: {
-          ...assignValueToFields(prevState.fields, supplier),
+          ...assignValueToFields(prevState.fields, entity),
           _id: {
-            value: supplier._id,
+            value: entity._id,
             render: false
           }
         },
