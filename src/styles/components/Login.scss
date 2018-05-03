@@ -1,5 +1,30 @@
+.LoginPage{
+  width: 100vw;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  // background: linear-gradient(180deg, lighten($color_02, 7%), $color_02);
+  background: linear-gradient(180deg, lighten($color_01, 7%), $color_01);
+}
+
 .LoginPage_wrapper{
   width: 30rem;
-  padding: 10rem;
-  background: $color_01;
+  // padding: 10rem;
+  margin: auto;
+  background: lighten($color_02, 10%);
+  border-radius: 1rem;
+}
+
+.LoginPage_box{
+  margin: 1rem;
+}
+
+.LoginPage_buttons{
+  display: flex;
+}
+
+.LoginPage_buttons button {
+  height: 5rem;
+  width: 15rem;
 }
