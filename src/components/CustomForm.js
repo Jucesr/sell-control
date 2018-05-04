@@ -59,7 +59,7 @@ const CustomField = (props) => {
   if(props.type == 'currency'){
     return (
       <div className="CustomForm__form_field">
-        <label>{props.label}</label>
+        {!props.labelAsPlaceholder && <label>{props.label}</label>}
         <Field disabled={props.disabled} className="CustomForm__form_field_input" name={props.name} component={CleaveCurrency}/>
         {props.message && <p>{props.message}</p>}
         {props.touched && props.error && <div className="CustomForm__form_field_error">{props.error}</div>}
@@ -68,7 +68,7 @@ const CustomField = (props) => {
   }else if(props.type == 'phone'){
     return (
       <div className="CustomForm__form_field">
-        <label>{props.label}</label>
+        {!props.labelAsPlaceholder && <label>{props.label}</label>}
         <Field disabled={props.disabled} className="CustomForm__form_field_input" name={props.name} component={CleavePhone}/>
         {props.message && <p>{props.message}</p>}
         {props.touched && props.error && <div className="CustomForm__form_field_error">{props.error}</div>}
@@ -77,7 +77,7 @@ const CustomField = (props) => {
   }else if(props.type == 'combo'){
     return (
       <div className="CustomForm__form_field">
-        <label>{props.label}</label>
+        {!props.labelAsPlaceholder && <label>{props.label}</label>}
         <Field
           disabled={props.disabled}
           className="CustomForm__form_field_combo"
@@ -93,8 +93,14 @@ const CustomField = (props) => {
 
     return (
     <div className="CustomForm__form_field">
-      <label>{props.label}</label>
-      <Field type={props.type} className="CustomForm__form_field_input" disabled={props.disabled} name={props.name}/>
+      {!props.labelAsPlaceholder && <label>{props.label}</label>}
+      <Field
+        type={props.type}
+        className="CustomForm__form_field_input"
+        disabled={props.disabled}
+        name={props.name}
+        placeholder={props.labelAsPlaceholder ? props.label : undefined}
+      />
       {props.message && <p>{props.message}</p>}
       {props.touched && props.error && <div className="CustomForm__form_field_error">{props.error}</div>}
     </div>
@@ -112,7 +118,8 @@ const CustomForm = ({
   automaticReset = true,
   textSubmitButton = 'Submit',
   textCancelButton = 'Cancel',
-  cancelButton = true
+  cancelButton = true,
+  labelAsPlaceholder = false,
 }) => (
   <Formik
     initialValues={extractValueFromFields(fields)}
@@ -152,6 +159,7 @@ const CustomForm = ({
                     error={errors[key]}
                     disabled={disabledForm}
                     touched={touched[key]}
+                    labelAsPlaceholder={labelAsPlaceholder}
 
                   />
                 )

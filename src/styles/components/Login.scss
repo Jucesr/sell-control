@@ -1,30 +1,146 @@
 .LoginPage{
   width: 100vw;
   height: 100vh;
-  align-items: center;
-  justify-content: center;
+  // align-items: center;
+  // justify-content: center;
   display: flex;
   // background: linear-gradient(180deg, lighten($color_02, 7%), $color_02);
-  background: linear-gradient(180deg, lighten($color_01, 7%), $color_01);
 }
 
-.LoginPage_wrapper{
-  width: 30rem;
-  // padding: 10rem;
-  margin: auto;
-  background: lighten($color_02, 10%);
-  border-radius: 1rem;
+
+
+.LoginPage_left{
+  background: white;
+  width: 50vw;
+  // -webkit-box-shadow: 6px 1px 19px 0px #000000;
+  // box-shadow: 6px 1px 19px 0px #000000;
+
+  -webkit-box-shadow: 6px 1px 47px 2px darken($color_01, 5%);
+  box-shadow: 6px 1px 47px 2px darken($color_01, 5%);
+  z-index: 100;
+}
+
+.LoginPage_right{
+  width: 50vw;
+  background: linear-gradient(180deg, lighten($color_01, 7%), $color_01);
+  // border-left: 3px solid rgba(0,0,0,0.23);
+  // background: linear-gradient(180deg, lighten($color_02, 7%), $color_02);
+}
+
+.LoginPage_layout{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .LoginPage_box{
-  margin: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: $input_min_width + 2rem;
+  background: white;
+  box-shadow: 10px 10px 30px -5px rgba(24, 24, 24, 1);
+  // padding: 0 1rem;
 }
 
 .LoginPage_buttons{
   display: flex;
+  width: 100%;
 }
 
 .LoginPage_buttons button {
-  height: 5rem;
-  width: 15rem;
+  height: 4rem;
+  background: $color_02;
+  // border: 1px solid darken($color_01, 10%);
+  flex-grow: 1;
+
+  // &:first-child{
+  //   border-radius: 1rem 0px 0px 0px;
+  // }
+  // &:nth-child(2){
+  //   border-radius: 0px 1rem 0px 0px;
+  // }
+
+}
+
+.LoginPage_button_active{
+  background: darken($color_02, 20%) !important;
+  color: white !important;
+}
+
+.LoginPage_right_title{
+  font-family: 'Titillium Web', sans-serif;
+  font-weight: bold;
+  color: white;
+  font-size: 6rem;
+}
+
+.LoginPage_form_title{
+  margin: 3rem 1rem ;
+  font-family: 'Titillium Web', sans-serif;
+  font-weight: lighter;
+}
+
+.LoginPage_login_form{
+  display: flex;
+  flex-direction: column;
+}
+
+.LoginPage_form_input{
+  width: $input_min_width;
+  padding: $input_padding;
+  margin: $vertical_space_fields 1rem;
+  border: 1px solid $color_02;
+  font-size: 1.3rem;
+  border-radius: .5rem;
+  // background: rgb(250, 250, 250);
+
+  &:focus {
+    outline: none !important;
+    border-color: darken($color_success, 5%);
+    // box-shadow: 0 0 5px lighten($color_01,10%);
+    box-shadow: 0 0 10px darken($color_success, 5%);
+  }
+
+  &:-webkit-autofill {
+      -webkit-text-fill-color: darken($color_02,30%) !important;
+      -webkit-box-shadow: 0 0 0 30px white inset;
+  }
+}
+
+.LoginPage_form_error{
+  // Error message
+  color: red;
+  font-size: 1rem;
+  margin-top: .5rem;
+  font-style: italic;
+  margin: 0 1rem;
+}
+
+.LoginPage_login_message{
+  font-style: italic;
+  font-size: 1rem;
+  margin: 1rem 1rem;
+}
+
+.LoginPage_login_message span {
+  text-decoration: underline;
+  &:hover{
+    cursor: pointer;
+  }
+}
+
+.LoginPage_form_button{
+  height: 4rem;
+  width: $input_min_width + 2rem;
+  background: $color_success;
+  color: white;
+
+  &:hover{
+    background: darken($color_success, 20%)
+  }
 }

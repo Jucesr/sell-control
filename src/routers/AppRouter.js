@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter, Route, Switch} from 'react-router-dom';
+import {BrowserRouter, Route, Switch, Redirect} from 'react-router-dom';
 
 import PublicRoute from './PublicRoute'
 import PrivateRoute from './PrivateRoute'
@@ -22,6 +22,7 @@ const AppRouter = () => (
         <PrivateRoute path="/supplier" component={SupplierPage} />
         <PrivateRoute path="/product" component={ProductPage} />
         <PublicRoute path="/login" component={LoginPage} />
+        <Redirect to="/login" />
         {/* <Route component={NotFoundPage} /> */}
       </Switch>
       <Modal/>
