@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import {toggleSidebar} from '../actions/ui'
 
-const Header = ({toggleSidebar, pepe}) => (
+const Header = ({toggleSidebar, username}) => (
   <header className="Header">
     <div className="Header__left">
       <div
@@ -17,7 +17,7 @@ const Header = ({toggleSidebar, pepe}) => (
       </div>
     </div>
     <div className="Header__right">
-      <div className="Header__username">Jucesr</div>
+      <div className="Header__username">{username}</div>
       <div
         className="Header__avatar"
         >
@@ -32,4 +32,8 @@ const mapDispatchToProps = dispatch => ({
   toggleSidebar: () => dispatch(toggleSidebar())
 })
 
-export default connect(null, mapDispatchToProps)(Header)
+const mapStateToProps = state => ({
+  username: state.auth.username
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header)

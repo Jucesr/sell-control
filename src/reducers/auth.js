@@ -7,7 +7,7 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case 'LOGIN':
+    case 'LOG_IN':
       return {
         _id: action._id,
         token: action.token,
@@ -16,7 +16,17 @@ export default (state = initialState, action) => {
       };
     break;
 
-    case 'LOGOUT':
+    case 'SIGN_UP':
+      return {
+        _id: action.entity._id,
+        token: action.entity.token,
+        username: action.entity.username,
+        email: action.entity.email,
+        photoURL: action.entity.photoURL
+      };
+    break;
+
+    case 'LOG_OUT':
       return {};
     break;
     default:

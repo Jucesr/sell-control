@@ -1,9 +1,21 @@
+import {dispatchAsyncAction} from './async'
 
-export const login = (user) => ({
-  type: 'LOGIN',
+export const logIn = (user) => ({
+  type: 'LOG_IN',
   user
 })
 
-export const logout = () => ({
-  type: 'LOGOUT'
+export const signUp = (user) => {
+
+  return dispatchAsyncAction({
+    type: 'SIGN_UP'
+    },
+    'POST',
+    '/api/user',
+    user
+    )
+}
+
+export const logOut = () => ({
+  type: 'LOG_OUT'
 });

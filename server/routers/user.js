@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const router = express.Router()
 const {ObjectID} = require('mongodb')
 const {User} = require('../models/user');
+const {pick} = require('lodash');
 
 // middleware that is specific to this router
 router.use(bodyParser.json())
@@ -11,15 +12,19 @@ router.post('/', (req, res) => {
   const user = new User({
     ...req.body
   });
-
+  let user_doc;
   user.save().then(
     doc => {
+      user_doc = pick(doc.toObject(), ['_id', 'username','email']);
       console.log('A user was saved');
       return user.generateAuthToken();
     }
   ).then(
     token => {
-      res.header('x-auth', token).send(user)
+      res.header('x-auth', token).send({
+        ...user_doc,
+        token
+      })
     }
   ).catch(
     e => {

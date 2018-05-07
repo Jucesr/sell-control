@@ -1,8 +1,10 @@
 import React from 'react'
 import {Form, Field, Formik} from 'formik'
 import Yup from 'yup'
+import { connect } from 'react-redux'
 
 import CustomForm from '../components/CustomForm'
+import {signUp} from '../actions/auth'
 
 class LoginPage extends React.Component {
 
@@ -98,6 +100,7 @@ class LoginPage extends React.Component {
                     onSubmit={
                       (values, { resetForm, setErrors, setSubmitting, setValues}) => {
                         console.log(values);
+                        this.props.signUp(values)
                       }}
                     render={(props) => (
                       <Form className="LoginPage_login_form">
@@ -140,4 +143,8 @@ class LoginPage extends React.Component {
   };
 }
 
-export default LoginPage
+const mapDispatchToProps = dispatch => ({
+  signUp: user => dispatch(signUp(user))
+})
+
+export default connect(null, mapDispatchToProps)(LoginPage)
