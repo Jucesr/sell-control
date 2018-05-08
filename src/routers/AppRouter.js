@@ -17,7 +17,7 @@ const AppRouter = () => (
   <BrowserRouter >
     <div>
       <Switch>
-        <PublicRoute path="/" component={() => <div style={{padding: '10rem'}}>None</div>} exact={true} />
+        <PrivateRoute path="/" component={() => <div style={{padding: '10rem'}}>None</div>} exact={true} />
         <PrivateRoute path="/client" component={ClientPage} />
         <PrivateRoute path="/supplier" component={SupplierPage} />
         <PrivateRoute path="/product" component={ProductPage} />

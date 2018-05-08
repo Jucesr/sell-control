@@ -9,10 +9,11 @@ export default (state = initialState, action) => {
   switch (action.type) {
     case 'LOG_IN':
       return {
-        _id: action._id,
-        token: action.token,
-        username: action.username,
-        photoURL: action.photoURL
+        _id: action.user._id,
+        token: action.user.token,
+        username: action.user.username,
+        email: action.user.email,
+        photoURL: action.user.photoURL
       };
     break;
 

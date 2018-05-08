@@ -99,8 +99,11 @@ class LoginPage extends React.Component {
                     })}
                     onSubmit={
                       (values, { resetForm, setErrors, setSubmitting, setValues}) => {
-                        console.log(values);
-                        this.props.signUp(values)
+                        this.props.signUp(values).then(
+                          res => {
+                            localStorage.setItem('user', JSON.stringify(res.entity))
+                          }
+                        )
                       }}
                     render={(props) => (
                       <Form className="LoginPage_login_form">
