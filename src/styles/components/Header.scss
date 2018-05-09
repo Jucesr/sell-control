@@ -56,13 +56,54 @@
 }
 
 .Header__dropdown{
+  font-family: $font_secondary;
+  color: rgb(40, 40, 40);
   background: white;
   border: 1px solid rgb(230, 230, 230);
   position: absolute;
-  // width: $header_dropdown_menu_width;
-  // left: calc(#{$header_dropdown_menu_width} * -1);
   padding: 1rem;
   top: $header_height;
+  flex-direction: column;
+  outline: none;
+  box-shadow: -7px 5px 30px -5px rgba(112, 112, 112, 1);
+}
+
+.Header__account_info{
+  padding: 1rem 0;
+  border-bottom: 1px solid rgb(210, 210, 210);
+  margin: 0;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.Header__account_info_username{
+  margin: 0;
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+.Header__account_info_email{
+  margin: 0;
+  font-weight:lighter;
+  color: lighter($color_01, 0%);
+}
+
+.Header__role{
+  padding: 1rem 0;
+  font-style: italic;
+  border-bottom: 1px solid rgb(210, 210, 210);
+
+}
+
+.Header__log_out{
+  padding: 1rem 0;
+  color: lighten($color_01,30%);
+  &:hover{
+    cursor: pointer;
+    // background: darken(white, 10%);
+  }
 }
 
 .Header__arrow{
