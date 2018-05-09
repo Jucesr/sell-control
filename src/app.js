@@ -6,12 +6,12 @@ import { Provider } from 'react-redux'
 import store from './store/store'
 
 import AppRouter from './routers/AppRouter'
-import {logIn} from './actions/auth'
+import {logInByToken} from './actions/auth'
 
 let user = localStorage.getItem('user');
 
 if(user){
-  store.dispatch(logIn(JSON.parse(user)))
+  store.dispatch(logInByToken(JSON.parse(user)))
 }
 
 const App = () => (

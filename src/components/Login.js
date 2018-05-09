@@ -4,7 +4,7 @@ import Yup from 'yup'
 import { connect } from 'react-redux'
 
 import CustomForm from '../components/CustomForm'
-import {signUp} from '../actions/auth'
+import {signUp, logInByCredentials} from '../actions/auth'
 
 class LoginPage extends React.Component {
 
@@ -47,27 +47,38 @@ class LoginPage extends React.Component {
                   <h3 className="LoginPage_form_title">Log in to start using sell control!</h3>
                   <Formik
                     initialValues={{
-                      username: '',
+                      email: '',
                       password: ''
                     }}
                     validationSchema={Yup.object().shape({
-                      username: Yup.string().required(require_message),
+                      email: Yup.string().email('Email not valid').required(require_message),
                       password: Yup.string().required(require_message)
                     })}
                     onSubmit={
                       (values, { resetForm, setErrors, setSubmitting, setValues}) => {
-                        console.log(values);
+                        this.props.logInByCredentials(values).then(
+                          res => {
+                            if(!res.type.includes('ERROR')){
+                              localStorage.setItem('user', JSON.stringify(res.entity))
+                            }else{
+                              setErrors({
+                                'password': res.error
+                              })
+                            }
+
+                          }
+                        )
                       }}
                     render={(props) => (
                       <Form className="LoginPage_login_form">
                         <Field
                           className="LoginPage_form_input"
-                          name="username"
-                          placeholder="Username"
+                          name="email"
+                          placeholder="Email"
                         />
                         {/* {props.message && <p>{props.message}</p>} */}
-                        {props.touched.username && props.errors.username &&
-                          <div className="LoginPage_form_error">{props.errors.username}</div>}
+                        {props.touched.email && props.errors.email &&
+                          <div className="LoginPage_form_error">{props.errors.email}</div>}
                         <Field
                           type="password"
                           className="LoginPage_form_input"
@@ -101,7 +112,13 @@ class LoginPage extends React.Component {
                       (values, { resetForm, setErrors, setSubmitting, setValues}) => {
                         this.props.signUp(values).then(
                           res => {
-                            localStorage.setItem('user', JSON.stringify(res.entity))
+                            if(!res.type.includes('ERROR')){
+                              localStorage.setItem('user', JSON.stringify(res.entity))
+                            }else{
+                              setErrors({
+                                'password': res.error
+                              })
+                            }
                           }
                         )
                       }}
@@ -147,7 +164,8 @@ class LoginPage extends React.Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  signUp: user => dispatch(signUp(user))
+  signUp: user => dispatch(signUp(user)),
+  logInByCredentials: user => dispatch(logInByCredentials(user))
 })
 
 export default connect(null, mapDispatchToProps)(LoginPage)

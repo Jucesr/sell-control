@@ -28,8 +28,16 @@ class Header extends React.Component {
   }
 
   logOut = () => {
-    this.props.logOut();
-    localStorage.removeItem('user');
+    this.props.logOut(this.props.user).then(
+      res => {
+        if(!res.type.includes('ERROR')){
+          localStorage.removeItem('user');
+        }else{
+          console.log('Not able to log off');
+        }
+      }
+    );
+
   }
 
   componentDidMount(){
@@ -116,7 +124,7 @@ class Header extends React.Component {
               <p className="Header__account_info_email">{email}</p>
             </div>
             {/* <span className="Header__role">Administrator</span> */}
-            <span className="Header__log_out" onClick={this.logOut}>Sign out</span>
+            <span className="Header__log_out" onClick={this.logOut}>Log out</span>
           </div>
 
         </div>
@@ -127,12 +135,13 @@ class Header extends React.Component {
 
 const mapDispatchToProps = dispatch => ({
   toggleSidebar: () => dispatch(toggleSidebar()),
-  logOut : () => dispatch(logOut())
+  logOut : user => dispatch(logOut(user))
 })
 
 const mapStateToProps = state => ({
   username: state.auth.username,
-  email: state.auth.email
+  email: state.auth.email,
+  user: state.auth
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header)

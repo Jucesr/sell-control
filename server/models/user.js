@@ -73,34 +73,46 @@ UserSchema.methods.removeToken = function (token){
 UserSchema.statics.findByToken = function (token){
   var User = this;
   var decoded;
+  let error_message = {
+    error: 'Token has expired'
+  }
 
   try{
     decoded = jwt.verify(token, process.env.JWT_SECRET);
   } catch(e) {
-    return Promise.reject();
+    return Promise.reject({
+      error: 'Invalid token'
+    });
   }
 
   return User.findOne({
     '_id': decoded._id,
     'tokens.token': token,
     'tokens.access': 'auth'
-  });
+  }).then( user => {
+    if(!user)
+      return Promise.reject(error_message)
 
+    return Promise.resolve(user)
+  });
 };
 
 UserSchema.statics.findByCredentials = function (email, password){
   var User = this;
+  let error_message = {
+    error: 'Email or password are not valid'
+  }
 
   return User.findOne({email}).then( (user) => {
     if(!user)
-      return Promise.reject();
+      return Promise.reject(error_message);
 
     return new Promise( (resolve, reject) => {
       bcrypt.compare(password, user.password, (err, res) => {
         if(res){
           resolve(user);
         }else{
-          reject();
+          reject(error_message);
         }
       });
     } )

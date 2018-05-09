@@ -1,9 +1,28 @@
 import {dispatchAsyncAction} from './async'
 
-export const logIn = (user) => ({
-  type: 'LOG_IN',
-  user
-})
+export const logInByToken = (user) => {
+
+  return dispatchAsyncAction({
+    type: 'LOG_IN'
+    },
+    'POST',
+    '/api/user/login/token',
+    user
+    )
+
+}
+
+export const logInByCredentials = (user) => {
+
+  return dispatchAsyncAction({
+    type: 'LOG_IN'
+    },
+    'POST',
+    '/api/user/login',
+    user
+    )
+
+}
 
 export const signUp = (user) => {
 
@@ -16,6 +35,13 @@ export const signUp = (user) => {
     )
 }
 
-export const logOut = () => ({
-  type: 'LOG_OUT'
-});
+export const logOut = (user) => {
+
+  return dispatchAsyncAction({
+    type: 'LOG_OUT'
+    },
+    'DELETE',
+    '/api/user/login/token',
+    user
+    )
+}

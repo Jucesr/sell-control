@@ -3,10 +3,15 @@ const bodyParser = require('body-parser')
 const router = express.Router()
 const {ObjectID} = require('mongodb')
 const {User} = require('../models/user');
-const {pick} = require('lodash');
+const {objectHasProperties} = require('../helpers')
 
+const error_message = action => `An error has occurred while ${action} user`
+const missingPropertiesError = {
+  error: 'Properties were not provided'
+}
 // middleware that is specific to this router
 router.use(bodyParser.json())
+
 
 router.post('/', (req, res) => {
   const user = new User({
@@ -15,8 +20,8 @@ router.post('/', (req, res) => {
   let user_doc;
   user.save().then(
     doc => {
-      user_doc = pick(doc.toObject(), ['_id', 'username','email']);
-      console.log('A user was saved');
+      user_doc = doc.toJSON();
+      console.log('An user was created');
       return user.generateAuthToken();
     }
   ).then(
@@ -29,9 +34,79 @@ router.post('/', (req, res) => {
   ).catch(
     e => {
       res.status(400).send(e);
-      console.log('Error has occurred while saving user', e);
+      console.log(error_message('saving'), e);
     }
   )
+});
+
+router.post('/login', (req, res) => {
+
+  if(objectHasProperties(req.body, ['email','password'])){
+    let {email, password} = req.body
+
+    var user_doc;
+
+    User.findByCredentials(email, password).then(
+      doc => {
+        user_doc = doc.toJSON();
+        return doc.generateAuthToken()
+      }).then( (token) =>{
+        console.log('An user was login in by credentials');
+        res.header('x-auth',token).send({
+          ...user_doc,
+          token
+        });
+      }).catch( (e) => {
+        res.status(400).send(e);
+        console.log(error_message('logging'), e);
+      });
+  }else{
+    res.status(400).send(missingPropertiesError)
+    console.log(error_message('logging'), missingPropertiesError);
+  }
+});
+
+router.post('/login/token', (req, res) => {
+
+  if(objectHasProperties(req.body, ['token'])){
+    let {token} = req.body
+    var user_doc;
+
+    User.findByToken(token).then(
+      doc => {
+        console.log('A user was login in by token');
+        res.send({
+          ...doc.toJSON(),
+          token
+        })
+      }).catch( (e) => {
+        res.status(400).send(e);
+        console.log(error_message('logging'), e);
+      });
+    }else{
+      res.status(400).send(missingPropertiesError)
+      console.log(error_message('logging'), missingPropertiesError);
+    }
+});
+
+router.delete('/login/token', (req, res) => {
+
+  if(objectHasProperties(req.body, ['token'])){
+    let {token} = req.body
+
+    User.findByToken(token).then(
+      doc => doc.removeToken(token))
+      .then( () =>{
+        console.log('An user has logged off');
+        res.send({});
+      }).catch( (e) => {
+        res.status(400).send(e);
+        console.log(error_message('logging'), e);
+      });
+    }else{
+      res.status(400).send(missingPropertiesError)
+      console.log(error_message('logging'), missingPropertiesError);
+    }
 });
 
 router.delete('/:id', (req, res) => {
