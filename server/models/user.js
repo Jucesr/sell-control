@@ -9,13 +9,13 @@ var UserSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    minlength: 1
+    minlength: 1,
+    trim: true
   },
   email: {
     required: true,
     trim: true,
     type: String,
-    minLengh: 1,
     unique: true,
     validate: {
       validator: (value) =>{
@@ -38,7 +38,14 @@ var UserSchema = new mongoose.Schema({
       type: String,
       required: true
     }
-  }]
+  }],
+  max_companies: {
+    type: Number,
+    default: 1
+  },
+  default_company_id:{
+    type: String
+  }
 });
 
 UserSchema.methods.toJSON = function () {

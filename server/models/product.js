@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const moment = require('moment');
+const {pre_save_trim} = require('../helpers');
 
 const ProductSchema = new mongoose.Schema({
   supplier_id: {
@@ -9,13 +10,11 @@ const ProductSchema = new mongoose.Schema({
   },
   code: {
     type: String,
-    required: true,
-    minlength: 1
+    required: true
   },
   name: {
     type: String,
-    required: true,
-    minlength: 1
+    required: true
   },
   description: {
     type: String
@@ -37,6 +36,10 @@ const ProductSchema = new mongoose.Schema({
   how_many: {
     type: Number
   },
+  company_id:{
+    type: String,
+    required: true
+  },
   createdAt: {
     type: Number,
     default: moment()
@@ -44,11 +47,11 @@ const ProductSchema = new mongoose.Schema({
 });
 
 ProductSchema.statics.getAll = function (){
-
   return this.find({})
-
 };
 
+//All string fields will be trimmed
+ProductSchema.pre('save', pre_save_trim);
 
 const Product = mongoose.model('Product', ProductSchema);
 

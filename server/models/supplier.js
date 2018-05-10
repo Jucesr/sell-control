@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
 const moment = require('moment');
+const {pre_save_trim} = require('../helpers');
 
 const SupplierSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
-    minlength: 1
+    required: true
   },
   contact_name: {
     type: String
@@ -16,10 +17,20 @@ const SupplierSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    minlength: 3
+    unique: true,
+    validate: {
+      validator: (value) =>{
+        return validator.isEmail(value);
+      },
+      message: '{VALUE} is not a valid email'
+    }
   },
   phone: {
     type: String
+  },
+  company_id:{
+    type: String,
+    required: true
   },
   createdAt: {
     type: Number,
@@ -28,11 +39,11 @@ const SupplierSchema = new mongoose.Schema({
 });
 
 SupplierSchema.statics.getAll = function (){
-
   return this.find({})
-
 };
 
+//All string fields will be trimmed
+SupplierSchema.pre('save', pre_save_trim);
 
 const Supplier = mongoose.model('Supplier', SupplierSchema);
 
