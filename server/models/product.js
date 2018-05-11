@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const moment = require('moment');
-const {pre_save_trim} = require('../helpers');
+const {pre_save_trim} = require('../middleware/pre_trim');
 
 const ProductSchema = new mongoose.Schema({
   supplier_id: {

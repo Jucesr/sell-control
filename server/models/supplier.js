@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const moment = require('moment');
-const {pre_save_trim} = require('../helpers');
+const {pre_save_trim} = require('../middleware/pre_trim');
 
 const SupplierSchema = new mongoose.Schema({
   name: {

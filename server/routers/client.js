@@ -3,11 +3,16 @@ const bodyParser = require('body-parser')
 const router = express.Router()
 const {ObjectID} = require('mongodb')
 const {Client} = require('../models/client');
+const {authenticate} = require('../middleware/authenticate');
+const {verify_company} = require('../middleware/verify_company');
+const {validateClientEmail} = require('../middleware/validation');
 
 // middleware that is specific to this router
 router.use(bodyParser.json())
+router.use(authenticate)
+router.use(verify_company)
 
-router.post('/', (req, res) => {
+router.post('/', validateClientEmail, (req, res) => {
   const client = new Client({
     ...req.body
   });

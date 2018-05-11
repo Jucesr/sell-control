@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const moment = require('moment');
-const {pre_save_trim} = require('../helpers');
+const pick = require('lodash/pick');
+const {pre_save_trim} = require('../middleware/pre_trim');
 
 const ClientSchema = new mongoose.Schema({
   fist_name: {
@@ -18,7 +19,6 @@ const ClientSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: true,
     validate: {
       validator: (value) =>{
         return validator.isEmail(value);
@@ -41,6 +41,20 @@ const ClientSchema = new mongoose.Schema({
 
 ClientSchema.statics.getAll = function (){
   return this.find({})
+};
+
+ClientSchema.methods.toJSON = function () {
+  let user = this;
+  let userObject = user.toObject();
+
+  return pick(userObject, [
+    '_id',
+    'last_name',
+    'address',
+    'email',
+    'phone',
+    'createdAt'
+  ]);
 };
 
 //All string fields will be trimmed

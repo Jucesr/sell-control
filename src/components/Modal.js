@@ -31,7 +31,7 @@ export const Modal = ({isOpen, title, message, category, closeModal, onYes}) => 
               ]
             }
 
-            {category != 'async' && category != 'question' && <button className="Modal__button" onClick={closeModal}>Close</button>}
+            {category != 'async' && category != 'question' && <button className={`Modal__button Modal__button__${category}`} onClick={closeModal}>Close</button>}
           </div>
 
 

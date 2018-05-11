@@ -207,54 +207,62 @@ class Page extends React.Component{
   render(){
     return (
       <div className ={`Page ${this.props.sidebar_open ? 'Page__open': 'Page__closed'}`}>
-        <div className= 'Page__title'><h2> {`${capitalizeFirstLetter(this.props.entity)}s`} </h2></div>
 
-        <div className="Page__actions">
-          <button className={this.state.active_page == 'list' ? 'Page__button_page_active' : 'Page__button_page'} id="list" onClick={this.changePage}>List</button>
-          <button className={this.state.active_page == 'new' ? 'Page__button_page_active' : 'Page__button_page'} id="new" onClick={this.changePage}>New</button>
-          <button className={this.state.active_page == 'edit' ? 'Page__button_page_active' : 'Page__button_page'} id="edit" onClick={this.changePage}>Edit</button>
-        </div>
+          {false ? <div>
+          <div className= 'Page__title'><h2> {`${capitalizeFirstLetter(this.props.entity)}s`} </h2></div>
 
-        <div className="Page__content_wrapper">
-          <div className="Page__content">
-            { this.state.active_page == 'list' &&
-              <ListPage
-                columns={this.props.columns}
-                items={this.props.entities}
-                loading={this.props.isFetching}
-                onClickItemTable={this.onClickItemTable}
-              />
-            }
-
-            { this.state.active_page == 'new' &&
-              <NewPage
-                formFields={this.state.fields}
-                onAdd={this.onAdd}
-                validationSchema={this.props.fieldValidation}
-              />
-            }
-
-            { this.state.active_page == 'edit' &&
-              <EditPage
-                editForm={{
-                  fields: this.state.fields,
-                  validationSchema: this.props.fieldValidation
-                }}
-                searchForm={{
-                  fields: {
-                    [this.props.searchField]: {}
-                  },
-                  validationSchema: this.props.searchValidation
-                }}
-                onSave={this.onEdit}
-                onDelete={this.onDelete}
-                onCancel={this.onCancelEdit}
-                onSearch={this.onSearch}
-                disabledForm={this.state.fields.hasOwnProperty('_id')}
-              />
-            }
+          <div className="Page__actions">
+            <button className={this.state.active_page == 'list' ? 'Page__button_page_active' : 'Page__button_page'} id="list" onClick={this.changePage}>List</button>
+            <button className={this.state.active_page == 'new' ? 'Page__button_page_active' : 'Page__button_page'} id="new" onClick={this.changePage}>New</button>
+            <button className={this.state.active_page == 'edit' ? 'Page__button_page_active' : 'Page__button_page'} id="edit" onClick={this.changePage}>Edit</button>
           </div>
-        </div>
+
+          <div className="Page__content_wrapper">
+            <div className="Page__content">
+              { this.state.active_page == 'list' &&
+                <ListPage
+                  columns={this.props.columns}
+                  items={this.props.entities}
+                  loading={this.props.isFetching}
+                  onClickItemTable={this.onClickItemTable}
+                />
+              }
+
+              { this.state.active_page == 'new' &&
+                <NewPage
+                  formFields={this.state.fields}
+                  onAdd={this.onAdd}
+                  validationSchema={this.props.fieldValidation}
+                />
+              }
+
+              { this.state.active_page == 'edit' &&
+                <EditPage
+                  editForm={{
+                    fields: this.state.fields,
+                    validationSchema: this.props.fieldValidation
+                  }}
+                  searchForm={{
+                    fields: {
+                      [this.props.searchField]: {}
+                    },
+                    validationSchema: this.props.searchValidation
+                  }}
+                  onSave={this.onEdit}
+                  onDelete={this.onDelete}
+                  onCancel={this.onCancelEdit}
+                  onSearch={this.onSearch}
+                  disabledForm={this.state.fields.hasOwnProperty('_id')}
+                />
+              }
+            </div>
+          </div>
+        </div> :
+          <div className="Page__noCompany">
+            <p>Add or select a company to take control</p>
+          </div>
+
+        }
       </div>
     )
   }

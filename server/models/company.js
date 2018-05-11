@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const {pre_save_trim} = require('../middleware/pre_trim');
 
 var CompanySchema = new mongoose.Schema({
   name: {

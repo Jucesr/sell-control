@@ -64,3 +64,24 @@
   // padding: 2rem;
 
 }
+
+.Page__noCompany{
+  font-size: 2rem;
+  background: rgb(245, 245, 245);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - #{$header_height});
+
+  p{
+    background: rgb(240, 240, 240);
+    padding: 6rem;
+    margin: 0;
+    border: 1px solid rgb(220, 220, 220)
+
+  }
+  p:hover{
+    background: rgb(235, 235, 235);
+    cursor: pointer;
+  }
+}

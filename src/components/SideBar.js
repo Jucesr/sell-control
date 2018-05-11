@@ -2,6 +2,7 @@ import React from 'react'
 import {Link } from "react-router-dom";
 import { connect } from 'react-redux'
 import {capitalizeFirstLetter} from '../helpers'
+import {openModal, closeModal} from '../actions/ui'
 
 class SideBar extends React.Component {
 
@@ -16,10 +17,21 @@ class SideBar extends React.Component {
 
   changeModule = (e) => {
     e.stopPropagation();
-    let module = e.target.id;
-    this.setState(() => ({
-      active_module: module
-    }))
+
+    if(this.props.disabled){
+      this.props.openModal({
+        category: 'info',
+        title: 'Opps',
+        message: 'Add or select a company to start working'
+      })
+    }else{
+      let module = e.target.id;
+      this.setState(() => ({
+        active_module: module
+      }))
+    }
+
+
   }
 
   render(){
@@ -29,29 +41,39 @@ class SideBar extends React.Component {
       <div className={sidebar_class}>
         <div className="SideBar__items">
           <SideBarItem
+            name="company"
+            onClick={this.changeModule}
+            active={this.state.active_module}
+          />
+          <SideBarItem
             name="client"
             onClick={this.changeModule}
             active={this.state.active_module}
+            disabled={this.props.disabled}
           />
           <SideBarItem
             name="supplier"
             onClick={this.changeModule}
             active={this.state.active_module}
+            disabled={this.props.disabled}
           />
           <SideBarItem
             name="product"
             onClick={this.changeModule}
             active={this.state.active_module}
+            disabled={this.props.disabled}
           />
           <SideBarItem
             name="sell"
             onClick={this.changeModule}
             active={this.state.active_module}
+            disabled={this.props.disabled}
           />
           <SideBarItem
             name="settings"
             onClick={this.changeModule}
             active={this.state.active_module}
+            disabled={this.props.disabled}
           />
       </div>
     </div>
@@ -59,20 +81,43 @@ class SideBar extends React.Component {
   };
 }
 
-const SideBarItem = ({name, onClick, active}) => (
-  <Link
-    id={name}
-    to={`/${name}`}
-    className={`SideBar__item ${active == name ? 'SideBar__item_active' : ''}`}
-    onClick={onClick}
-  >
-    <img id={name} src={`/img/${name}.png`}></img>
-    <div id={name} className="SideBar__item__title" >{capitalizeFirstLetter(name)}</div>
-  </Link>
-)
+const SideBarItem = ({name, onClick, active, disabled}) => {
+
+  if(!disabled)
+    return (
+      <Link
+        id={name}
+        to={`/${name}`}
+        className={`SideBar__item ${active == name ? 'SideBar__item_active' : ''}`}
+        onClick={onClick}
+      >
+        <img id={name} src={`/img/${name}.png`}></img>
+        <div id={name} className="SideBar__item__title" >{capitalizeFirstLetter(name)}</div>
+      </Link>
+    )
+
+    return (
+      <div
+        id={name}
+        className={`SideBar__item ${active == name ? 'SideBar__item_active' : ''}`}
+        onClick={onClick}
+      >
+        <img id={name} src={`/img/${name}.png`}></img>
+        <div id={name} className="SideBar__item__title" >{capitalizeFirstLetter(name)}</div>
+      </div>
+    )
+
+}
+
+
 
 const mapStateToProps = state => ({
-  open: state.ui.sidebar_open
+  open: state.ui.sidebar_open,
+  disabled: true
 })
 
-export default connect(mapStateToProps)(SideBar)
+const mapDispatchToProps = dispatch => ({
+  openModal: data => dispatch(openModal(data))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(SideBar)
