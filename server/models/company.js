@@ -20,8 +20,10 @@ var CompanySchema = new mongoose.Schema({
   }
 });
 
-CompanySchema.statics.getAll = function (){
-  return this.find({})
+CompanySchema.statics.getAll = function (user_id){
+  return this.find({
+    user_owner_id: user_id
+  })
 };
 
 //All string fields will be trimmed

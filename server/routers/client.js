@@ -5,14 +5,15 @@ const {ObjectID} = require('mongodb')
 const {Client} = require('../models/client');
 const {authenticate} = require('../middleware/authenticate');
 const {verify_company} = require('../middleware/verify_company');
-const {validateClientEmail} = require('../middleware/validation');
+
+const {getAll} = require('./_base')
 
 // middleware that is specific to this router
 router.use(bodyParser.json())
 router.use(authenticate)
 router.use(verify_company)
 
-router.post('/', validateClientEmail, (req, res) => {
+router.post('/', (req, res) => {
   const client = new Client({
     ...req.body
   });
@@ -75,18 +76,7 @@ router.patch('/:id', (req, res) => {
 
 });
 
-router.get('/',  (req, res) => {
-
-  Client.getAll().then(
-    (clients) => {
-      res.send(clients);
-      console.log('clients were sent');
-    }, e => {
-      res.status(404).send(e);
-      console.log('Error has occurred while sending clients', e);
-    }
-  );
-});
+router.get('/', getAll(Client));
 
 
 module.exports = router

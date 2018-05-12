@@ -4,12 +4,15 @@ const router = express.Router()
 const {ObjectID} = require('mongodb')
 const {Company} = require('../models/company');
 const {User} = require('../models/user');
+
 const {authenticate} = require('../middleware/authenticate');
+const {getAll} = require('./_base')
 
 // middleware that is specific to this router
 router.use(bodyParser.json())
+router.use(authenticate)
 
-router.post('/', authenticate, (req, res) => {
+router.post('/', (req, res) => {
 
   let company_doc;
 
@@ -25,7 +28,7 @@ router.post('/', authenticate, (req, res) => {
         _id: req.user._id
       }, {
         $set: {
-          default_company_id: doc._id
+          company_id: doc._id
         }
       }, {
         new: true
@@ -35,13 +38,13 @@ router.post('/', authenticate, (req, res) => {
     user_doc => {
       if(!user_doc)
         return res.status(400).send({
-          error: 'Could not update user default_company_id'
+          error: 'Could not update user company_id'
         })
       res.status(200).send(company_doc);
       console.log('A company was created');
     }
   ).catch( (e) => {
-    console.log('Error has occurred while saving company', e);
+    console.error('Error has occurred while saving company', e);
     res.status(404).send(e);
   });
 });
@@ -64,7 +67,7 @@ router.delete('/:id', (req, res) => {
     console.log('A company was deleted');
 
   }).catch( (e) => {
-    console.log('Error has occurred while deleting companies', e);
+    console.error('Error has occurred while deleting companies', e);
     res.status(404).send(e)
   });
 
@@ -86,25 +89,14 @@ router.patch('/:id', (req, res) => {
       res.status(200).send(doc);
       console.log('A company was updated');
     }).catch( (e) => {
-    console.log('Error has occurred while updating companies', e);
+    console.error('Error has occurred while updating companies', e);
     res.status(404).send(e);
   } );
 
 
 });
 
-router.get('/',  (req, res) => {
-
-  Company.getAll().then(
-    (companies) => {
-      res.send(companies);
-      console.log('companies were sent');
-    }, e => {
-      res.status(404).send(e);
-      console.log('Error has occurred while sending companies', e);
-    }
-  );
-});
+router.get('/', getAll(Company));
 
 
 module.exports = router

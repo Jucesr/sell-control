@@ -43,7 +43,7 @@ var UserSchema = new mongoose.Schema({
     type: Number,
     default: 1
   },
-  default_company_id:{
+  company_id:{
     type: String
   }
 });

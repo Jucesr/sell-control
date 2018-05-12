@@ -4,8 +4,14 @@ const router = express.Router()
 const {ObjectID} = require('mongodb')
 const {Supplier} = require('../models/supplier');
 
+const {authenticate} = require('../middleware/authenticate');
+const {verify_company} = require('../middleware/verify_company');
+const {getAll} = require('./_base')
+
 // middleware that is specific to this router
 router.use(bodyParser.json())
+router.use(authenticate)
+router.use(verify_company)
 
 router.post('/', (req, res) => {
   const supplier = new Supplier({
@@ -70,18 +76,7 @@ router.patch('/:id', (req, res) => {
 
 });
 
-router.get('/',  (req, res) => {
-
-  Supplier.getAll().then(
-    (suppliers) => {
-      res.send(suppliers);
-      console.log('suppliers were sent');
-    }, e => {
-      res.status(404).send(e);
-      console.log('Error has occurred while sending suppliers', e);
-    }
-  );
-});
+router.get('/', getAll(Supplier));
 
 
 module.exports = router

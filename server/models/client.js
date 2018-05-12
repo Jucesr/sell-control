@@ -39,15 +39,18 @@ const ClientSchema = new mongoose.Schema({
   }
 });
 
-ClientSchema.statics.getAll = function (){
-  return this.find({})
+ClientSchema.index({email: 1, company_id: 1}, {unique: true});
+
+ClientSchema.statics.getAll = function (_id){
+  return this.find({
+    company_id: _id
+  })
 };
 
 ClientSchema.methods.toJSON = function () {
-  let user = this;
-  let userObject = user.toObject();
+  let objDoc = this.toObject();
 
-  return pick(userObject, [
+  return pick(objDoc, [
     '_id',
     'last_name',
     'address',
