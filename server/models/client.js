@@ -5,7 +5,7 @@ const pick = require('lodash/pick');
 const {pre_save_trim} = require('../middleware/pre_trim');
 
 const ClientSchema = new mongoose.Schema({
-  fist_name: {
+  first_name: {
     type: String,
     required: true,
     minlength: 1
@@ -52,6 +52,7 @@ ClientSchema.methods.toJSON = function () {
 
   return pick(objDoc, [
     '_id',
+    'first_name',
     'last_name',
     'address',
     'email',

@@ -1,5 +1,6 @@
 const {ObjectID} = require('mongodb')
 
+
 export const add = (Entity) => {
 
   return (req, res) => {
@@ -47,6 +48,37 @@ export const remove = (Entity) => {
       res.status(404).send(e)
     });
 
+  }
+}
+
+export const update = (Entity) => {
+
+
+  return (req, res) => {
+
+    var id = req.params.id;
+  
+    if(!ObjectID.isValid(id))
+      return res.status(404).send({
+        error: 'ID has invalid format'
+      });
+  
+    Entity.findOneAndUpdate( {
+      _id: id
+    }, { $set: req.body}, { new: true }).then(
+      (doc) => {
+        if(!doc)
+          return res.status(404).send({
+            error: `${Entity.modelName} was not found`
+          });
+          res.status(200).send(doc);
+          console.log(`${Entity.modelName} was updated`);
+      }).catch( (e) => {
+      console.error(`Error has occurred while deleting ${Entity.modelName}`, e);
+      res.status(404).send(e);
+    } );
+  
+  
   }
 }
 
