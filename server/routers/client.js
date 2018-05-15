@@ -1,11 +1,10 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const router = express.Router()
-const {ObjectID} = require('mongodb')
 const {Client} = require('../models/client');
+
 const {authenticate} = require('../middleware/authenticate');
 const {verify_company} = require('../middleware/verify_company');
-
 const {add, remove, update, getAll} = require('./_base')
 
 // middleware that is specific to this router

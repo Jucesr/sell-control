@@ -6,7 +6,7 @@ const {Company} = require('../models/company');
 const {User} = require('../models/user');
 
 const {authenticate} = require('../middleware/authenticate');
-const {getAll} = require('./_base')
+const {remove, update, getAll} = require('./_base')
 
 // middleware that is specific to this router
 router.use(bodyParser.json())
@@ -49,52 +49,9 @@ router.post('/', (req, res) => {
   });
 });
 
-router.delete('/:id', (req, res) => {
-  var id = req.params.id;
+router.delete('/:id', remove(Company));
 
-  if(!ObjectID.isValid(id)){
-    return res.status(404).send('ID has invalid format');
-  }
-
-  Company.findOneAndRemove({
-    _id: id,
-  }).then( (doc) => {
-
-    if(!doc)
-      return res.status(404).send('No company was found');
-
-    res.status(200).send(doc);
-    console.log('A company was deleted');
-
-  }).catch( (e) => {
-    console.error('Error has occurred while deleting companies', e);
-    res.status(404).send(e)
-  });
-
-});
-
-router.patch('/:id', (req, res) => {
-
-  var id = req.params.id;
-
-  if(!ObjectID.isValid(id))
-    return res.status(404).send('ID has invalid format');
-
-  Company.findOneAndUpdate( {
-    _id: id
-  }, { $set: req.body}, { new: true }).then(
-    (doc) => {
-      if(!doc)
-        return res.status(404).send('No company was found');
-      res.status(200).send(doc);
-      console.log('A company was updated');
-    }).catch( (e) => {
-    console.error('Error has occurred while updating companies', e);
-    res.status(404).send(e);
-  } );
-
-
-});
+router.patch('/:id', update(Company));
 
 router.get('/', getAll(Company));
 

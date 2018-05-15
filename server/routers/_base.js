@@ -1,5 +1,13 @@
 const {ObjectID} = require('mongodb')
+const {log} = require('../helpers')
 
+const error_handler = (e, res, entity) => {
+  let error_message = e.message || e.errmsg;
+    res.status(400).send({
+      error: e.message
+    });
+  log(`Error has occurred ${entity} => ${error_message}`);
+}
 
 export const add = (Entity) => {
 
@@ -11,11 +19,8 @@ export const add = (Entity) => {
     entity.save().then(
       doc => {
         res.send(doc);
-        console.log(`${Entity.modelName} was saved`);
-      }, e => {
-        res.status(400).send(e);
-        console.error(`Error has occurred while saving ${Entity.modelName}`, e);
-      }
+        log(`${Entity.modelName} was saved`);
+      }, e => error_handler(e, res, Entity.modelName)
     )
   }
 }
@@ -41,30 +46,27 @@ export const remove = (Entity) => {
         });
 
       res.status(200).send(doc);
-      console.log(`${Entity.modelName} was removed`);
+      log(`${Entity.modelName} was removed`);
 
-    }).catch( (e) => {
-      console.error(`Error has occurred while deleting ${Entity.modelName}`, e);
-      res.status(404).send(e)
-    });
+    }).catch( e => error_handler(e, res, Entity.modelName) );
 
   }
 }
 
 export const update = (Entity) => {
 
-
   return (req, res) => {
 
     var id = req.params.id;
-  
+
     if(!ObjectID.isValid(id))
       return res.status(404).send({
         error: 'ID has invalid format'
       });
-  
+
     Entity.findOneAndUpdate( {
-      _id: id
+      _id: id,
+      company_id: req.user.company_id
     }, { $set: req.body}, { new: true }).then(
       (doc) => {
         if(!doc)
@@ -72,13 +74,10 @@ export const update = (Entity) => {
             error: `${Entity.modelName} was not found`
           });
           res.status(200).send(doc);
-          console.log(`${Entity.modelName} was updated`);
-      }).catch( (e) => {
-      console.error(`Error has occurred while deleting ${Entity.modelName}`, e);
-      res.status(404).send(e);
-    } );
-  
-  
+          log(`${Entity.modelName} was updated`);
+      }).catch( e => error_handler(e, res, Entity.modelName) );
+
+
   }
 }
 
@@ -89,11 +88,8 @@ export const getAll = (Entity) => {
     Entity.getAll(filter_id).then(
       (entities) => {
         res.send(entities);
-        console.log(`${Entity.modelName} items were sent`);
-      }, e => {
-        res.status(404).send(e);
-        console.error(`Error has occurred while sending ${Entity.modelName} items`, e);
-      }
+        log(`${Entity.modelName} items were sent`);
+      }, e => error_handler(e, res, Entity.modelName)
     );
   }
 }

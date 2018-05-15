@@ -1,7 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const router = express.Router()
-const {ObjectID} = require('mongodb')
 const {Supplier} = require('../models/supplier');
 
 const {authenticate} = require('../middleware/authenticate');
@@ -20,6 +19,5 @@ router.delete('/:id', remove(Supplier));
 router.patch('/:id', update(Supplier));
 
 router.get('/', getAll(Supplier));
-
 
 module.exports = router

@@ -3,15 +3,13 @@ const bodyParser = require('body-parser')
 const router = express.Router()
 const {ObjectID} = require('mongodb')
 const {User} = require('../models/user');
-const {objectHasProperties} = require('../helpers')
+
+const {authenticate} = require('../middleware/authenticate');
+const {remove, update, getAll} = require('./_base')
 
 const error_message = action => `An error has occurred while ${action} user`
-const missingPropertiesError = {
-  error: 'Properties were not provided'
-}
 // middleware that is specific to this router
 router.use(bodyParser.json())
-
 
 router.post('/', (req, res) => {
   const user = new User({
@@ -40,8 +38,6 @@ router.post('/', (req, res) => {
 });
 
 router.post('/login', (req, res) => {
-
-  if(objectHasProperties(req.body, ['email','password'])){
     let {email, password} = req.body
 
     var user_doc;
@@ -60,16 +56,10 @@ router.post('/login', (req, res) => {
         res.status(400).send(e);
         console.log(error_message('logging'), e);
       });
-  }else{
-    res.status(400).send(missingPropertiesError)
-    console.log(error_message('logging'), missingPropertiesError);
-  }
 });
 
 router.post('/login/token', (req, res) => {
-
-  if(objectHasProperties(req.body, ['token'])){
-    let {token} = req.body
+  let {token} = req.body
     var user_doc;
 
     User.findByToken(token).then(
@@ -83,91 +73,12 @@ router.post('/login/token', (req, res) => {
         res.status(400).send(e);
         console.log(error_message('logging'), e);
       });
-    }else{
-      res.status(400).send(missingPropertiesError)
-      console.log(error_message('logging'), missingPropertiesError);
-    }
 });
 
-router.delete('/login/token', (req, res) => {
+router.delete('/login/token', authenticate,  remove(User));
 
-  if(objectHasProperties(req.body, ['token'])){
-    let {token} = req.body
+router.patch('/:id', authenticate, update(User));
 
-    User.findByToken(token).then(
-      doc => doc.removeToken(token))
-      .then( () =>{
-        console.log('An user has logged off');
-        res.send({});
-      }).catch( (e) => {
-        res.status(400).send(e);
-        console.log(error_message('logging'), e);
-      });
-    }else{
-      res.status(400).send(missingPropertiesError)
-      console.log(error_message('logging'), missingPropertiesError);
-    }
-});
-
-router.delete('/:id', (req, res) => {
-  var id = req.params.id;
-
-  if(!ObjectID.isValid(id)){
-    return res.status(404).send('ID has invalid format');
-  }
-
-  User.findOneAndRemove({
-    _id: id,
-  }).then( (doc) => {
-
-    if(!doc)
-      return res.status(404).send('No user was found');
-
-    res.status(200).send(doc);
-    console.log('A user was deleted');
-
-  }).catch( (e) => {
-    console.log('Error has occurred while deleting users', e);
-    res.status(404).send(e)
-  });
-
-});
-
-router.patch('/:id', (req, res) => {
-
-  var id = req.params.id;
-
-  if(!ObjectID.isValid(id))
-    return res.status(404).send('ID has invalid format');
-
-  User.findOneAndUpdate( {
-    _id: id
-  }, { $set: req.body}, { new: true }).then(
-    (doc) => {
-      if(!doc)
-        return res.status(404).send('No user was found');
-      res.status(200).send(doc);
-      console.log('A user was updated');
-    }).catch( (e) => {
-    console.log('Error has occurred while updating users', e);
-    res.status(404).send(e);
-  } );
-
-
-});
-
-router.get('/',  (req, res) => {
-
-  User.getAll().then(
-    (users) => {
-      res.send(users);
-      console.log('users were sent');
-    }, e => {
-      res.status(404).send(e);
-      console.log('Error has occurred while sending users', e);
-    }
-  );
-});
-
+router.get('/', authenticate, getAll(User));
 
 module.exports = router

@@ -14,9 +14,9 @@
     "start-babel": "babel-node server/server.js",
     "start-moon": "nodemon --watch server server/server.js --exec babel-node",
     "start-test": "export NODE_ENV=test || SET \"NODE_ENV=test\" && babel-node server/server.js",
-    "heroku-postbuild": "npm run build-prd",
-    "test": "jest",
-    "test-watch": "jest --watch"
+    "heroku-postbuild": "npm run build-prd ",
+    "test": "export LOG=true || SET \"LOG=true\" && jest",
+    "test-watch": "export LOG=true || SET \"LOG=true\" && jest --watch"
   },
   "keywords": [
     "sell",

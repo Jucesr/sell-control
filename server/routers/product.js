@@ -1,7 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const router = express.Router()
-const {ObjectID} = require('mongodb')
 const {Product} = require('../models/product');
 
 const {authenticate} = require('../middleware/authenticate');

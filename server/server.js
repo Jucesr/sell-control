@@ -27,8 +27,8 @@ app.use('/api/user', users);
 //   res.sendFile(path.join(publicPath, 'index.html'))
 // })
 
-app.listen(port, ()=> {
+const server = app.listen(port, ()=> {
   console.log(`Server runing in ${port}`)
 })
 
-module.exports = {app}
+module.exports = {app, server}

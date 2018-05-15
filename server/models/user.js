@@ -4,18 +4,17 @@ const jwt = require('jsonwebtoken');
 const pick = require('lodash/pick');
 const bcrypt = require('bcryptjs');
 
+const {pre_save_trim} = require('../middleware/pre_trim');
+
 var UserSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    unique: true,
-    minlength: 1,
-    trim: true
+    unique: true
   },
   email: {
-    required: true,
-    trim: true,
     type: String,
+    required: true,
     unique: true,
     validate: {
       validator: (value) =>{
@@ -77,6 +76,17 @@ UserSchema.methods.removeToken = function (token){
   });
 };
 
+UserSchema.statics.getAll = function (_id){
+  if(_id){
+    return this.find({
+      company_id: _id
+    })
+  }
+
+  return Promise.resolve([])
+
+};
+
 UserSchema.statics.findByToken = function (token){
   var User = this;
   var decoded;
@@ -127,6 +137,8 @@ UserSchema.statics.findByCredentials = function (email, password){
 
 
 };
+
+UserSchema.pre('save', pre_save_trim);
 
 UserSchema.pre('save', function (next){
   var user = this;

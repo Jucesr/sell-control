@@ -20,3 +20,10 @@ export const objectHasProperties = (obj, properties) => {
     return false;
   }
 }
+
+
+export const log = (message) => {
+  if(!process.env.LOG){
+    console.log(message)
+  }
+}
