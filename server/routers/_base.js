@@ -93,3 +93,30 @@ export const getAll = (Entity) => {
     );
   }
 }
+
+export const getByID = (Entity) => {
+
+  return (req, res) => {
+
+    const id = req.params.id;
+    const filter_id = Entity.modelName == 'Company' ? req.user._id : req.user.company_id ;
+
+    if(!ObjectID.isValid(id))
+      return res.status(404).send({
+        error: 'ID has invalid format'
+      });
+
+      Entity.findOne({
+        _id: id,
+        company_id: filter_id
+      }).then(
+        (doc) => {
+          if(!doc)
+            return res.status(404).send({
+              error: `${Entity.modelName} was not found`
+            });
+            res.status(200).send(doc);
+            log(`${Entity.modelName} item was sent`);
+        }).catch( e => error_handler(e, res, Entity.modelName) );
+  }
+}
