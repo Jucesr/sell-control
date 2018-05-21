@@ -1,10 +1,14 @@
 const {ObjectID} = require('mongodb');
 const jwt = require('jsonwebtoken');
 const {Client} = require('../models/client');
+const {Supplier} = require('../models/supplier');
 const {User} = require('../models/user');
 
 const clientOneID = new ObjectID();
 const clientTwoID = new ObjectID();
+const supplierOneID = new ObjectID();
+const supplierTwoID = new ObjectID();
+
 const userOneId = new ObjectID();
 const userTwoId = new ObjectID();
 const userThreeId = new ObjectID();
@@ -22,6 +26,24 @@ const clients = [{
     phone: '6861449471'
   },{
     _id: clientTwoID,
+    first_name: 'Ericka',
+    last_name: 'Corral',
+    address: 'Mar chiquita',
+    email: 'eri.12.13@gmail.com',
+    company_id: companyTwoID,
+    phone: '686144546'
+  }]
+
+const suppliers = [{
+    _id: supplierOneID,
+    name: 'Vans',
+    contact_name: 'Jesus Perez',
+    address: '21st Hub Mall, Calexico CA',
+    email: 'jesus.perez@vans.com',
+    company_id: companyOneID,
+    phone: '6861449471'
+  },{
+    _id: supplierTwoID,
     first_name: 'Ericka',
     last_name: 'Corral',
     address: 'Mar chiquita',
