@@ -7,6 +7,18 @@ const bcrypt = require('bcryptjs');
 const {pre_save_trim} = require('../middleware/pre_trim');
 
 var UserSchema = new mongoose.Schema({
+  company_id:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Company'
+  },
+  companies: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Company'
+  }],
+  max_companies: {
+    type: Number,
+    default: 1
+  },
   username: {
     type: String,
     required: true,
@@ -37,14 +49,8 @@ var UserSchema = new mongoose.Schema({
       type: String,
       required: true
     }
-  }],
-  max_companies: {
-    type: Number,
-    default: 1
-  },
-  company_id:{
-    type: String
-  }
+  }]
+
 });
 
 UserSchema.methods.toJSON = function () {

@@ -2,22 +2,23 @@ const mongoose = require('mongoose');
 const {pre_save_trim} = require('../middleware/pre_trim');
 
 var CompanySchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true
-  },
   user_owner_id: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
     required: true
   },
+  users: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
   max_users: {
     type: Number,
     default: 2
   },
-  no_users: {
-    type: Number,
-    default: 1
-  }
+  name: {
+    type: String,
+    required: true
+  },
 });
 
 CompanySchema.statics.getAll = function (user_id){

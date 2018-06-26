@@ -5,6 +5,11 @@ const pick = require('lodash/pick');
 const {pre_save_trim} = require('../middleware/pre_trim');
 
 const SupplierSchema = new mongoose.Schema({
+  company_id:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Company',
+    required: true
+  },
   name: {
     type: String,
     required: true
@@ -28,10 +33,6 @@ const SupplierSchema = new mongoose.Schema({
   },
   phone: {
     type: String
-  },
-  company_id:{
-    type: String,
-    required: true
   },
   createdAt: {
     type: Number,

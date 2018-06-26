@@ -259,7 +259,7 @@ class Page extends React.Component{
           </div>
         </div> :
           <div className="Page__noCompany">
-            <p>Add or select a company to take control</p>
+            <p>Add a company to continue.</p>
           </div>
 
         }
