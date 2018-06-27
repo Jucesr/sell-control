@@ -4,7 +4,7 @@ const {pre_save_trim} = require('../middleware/pre_trim');
 var CompanySchema = new mongoose.Schema({
   user_owner_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
     required: true
   },
   users: [{

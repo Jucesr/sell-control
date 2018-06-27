@@ -16,7 +16,8 @@
     "start-test": "export NODE_ENV=test || SET \"NODE_ENV=test\" && babel-node server/server.js",
     "heroku-postbuild": "npm run build-prd ",
     "test": "export LOG=true || SET \"LOG=true\" && jest",
-    "test-watch": "export LOG=true || SET \"LOG=true\" && jest --watch"
+    "test-server": "export LOG=true && export NODE_ENV=jest || SET \"NODE_ENV=jest\" && SET \"LOG=true\" && jest server* --watch --runInBand",
+    "test-debugger": "export LOG=true && export NODE_ENV=jest || SET \"NODE_ENV=jest\" && SET \"LOG=true\" && node inspect ./node_modules/jest/bin/jest.js server* --runInBand --watch"
   },
   "keywords": [
     "sell",

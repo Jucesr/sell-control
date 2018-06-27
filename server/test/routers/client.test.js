@@ -1,5 +1,5 @@
 const request = require('supertest');
-const {app, server} = require('../../server');
+const {app} = require('../../server');
 const {Client} = require('../../models/client');
 jest.setTimeout(30000);
 
@@ -43,6 +43,7 @@ describe('POST', () => {
           Client.find({email: new_client.email}).then( (clients) => {
             expect(clients.length).toBe(1);
             expect(clients[0].email).toBe(new_client.email);
+            console.timeEnd("client_POST")
             done();
           }).catch( (e) => done(e) );
         })
@@ -345,5 +346,3 @@ describe('GET', () => {
   });
 
 });
-
-server.close();

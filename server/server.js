@@ -27,8 +27,13 @@ app.use('/api/user', users);
 //   res.sendFile(path.join(publicPath, 'index.html'))
 // })
 
-const server = app.listen(port, ()=> {
-  console.log(`Server runing in ${port}`)
-})
+if (process.env.NODE_ENV !== 'jest') {
+  app.listen(port, ()=> {
+    console.log(`Server runing in ${port}`)
+  })
+}
+// const server = app.listen(port, ()=> {
+//   console.log(`Server runing in ${port}`)
+// })
 
-module.exports = {app, server}
+module.exports = {app}

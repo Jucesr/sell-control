@@ -5,7 +5,7 @@ const {Supplier} = require('../models/supplier');
 
 const {authenticate} = require('../middleware/authenticate');
 const {verify_company} = require('../middleware/verify_company');
-const {add, remove, update, getAll} = require('./_base')
+const {add, remove, update, getByID, getAll} = require('./_base')
 
 // middleware that is specific to this router
 router.use(bodyParser.json())
@@ -17,6 +17,8 @@ router.post('/', add(Supplier) );
 router.delete('/:id', remove(Supplier));
 
 router.patch('/:id', update(Supplier));
+
+router.get('/:id', getByID(Supplier));
 
 router.get('/', getAll(Supplier));
 

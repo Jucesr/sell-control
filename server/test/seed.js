@@ -8,6 +8,8 @@ const clientOneID = new ObjectID();
 const clientTwoID = new ObjectID();
 const supplierOneID = new ObjectID();
 const supplierTwoID = new ObjectID();
+const productOneID = new ObjectID();
+const productTwoID = new ObjectID();
 
 const userOneId = new ObjectID();
 const userTwoId = new ObjectID();
@@ -41,15 +43,15 @@ const suppliers = [{
     address: '21st Hub Mall, Calexico CA',
     email: 'jesus.perez@vans.com',
     company_id: companyOneID,
-    phone: '6861449471'
+    phone: '7748955822'
   },{
     _id: supplierTwoID,
-    first_name: 'Ericka',
-    last_name: 'Corral',
-    address: 'Mar chiquita',
-    email: 'eri.12.13@gmail.com',
-    company_id: companyTwoID,
-    phone: '686144546'
+    name: 'Nike',
+    contact_name: 'Argelio Sanchez',
+    address: '101 Olie Ave, Calexico CA',
+    email: 'argelio.sanchez@nike.com',
+    company_id: companyOneID,
+    phone: '74487988955'
   }]
 
 const users = [{
@@ -84,6 +86,32 @@ const users = [{
     }
   ]
 
+const products = [{
+    _id: productOneID,
+    company_id: companyOneID,
+    supplier_id: supplierOneID,
+    code: '001',
+    name: 'Black shoe',
+    description: '',
+    uom: 'pair',
+    cost: 10.99,
+    price: 34.99,
+    inventory: false,
+    how_many: 0
+  },{
+    _id: productTwoID,
+    company_id: companyOneID,
+    supplier_id: supplierTwoID,
+    code: '002',
+    name: 'White shoe',
+    description: '',
+    uom: 'pair',
+    cost: 15.99,
+    price: 45.99,
+    inventory: true,
+    how_many: 10
+  }]
+
 const populateClients = done =>{
   Client.remove({
   }).then( () => {
@@ -95,20 +123,37 @@ const populateClients = done =>{
   });
 };
 
+const populateSuppliers = done =>{
+  Supplier.remove({
+  }).then( () => {
+    return Supplier.insertMany(suppliers);
+  }).then( () => {
+    done();
+  }).catch( (e) => {
+    done(e);
+  });
+};
+
 const populateUsers = (done) =>{
+
   User.remove({}).then( () =>{
+
     var userOne = new User(users[0]).save();
     var userTwo = new User(users[1]).save();
     var userThree = new User(users[2]).save();
-
     return Promise.all([userOne, userTwo, userThree]);
+
   }).then( () => done() );
 }
 
 module.exports = {
   users,
-  populateUsers,
+  suppliers,
   clients,
-  populateClients
+  populateClients,
+  populateUsers,
+  populateSuppliers,
+  companyOneID,
+  companyTwoID
   // populateUsers
 }
