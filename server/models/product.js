@@ -61,6 +61,7 @@ ProductSchema.methods.toJSON = function () {
 
   return pick(objDoc, [
     '_id',
+    'supplier_id',
     'code',
     'name',
     'description',

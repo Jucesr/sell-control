@@ -3,11 +3,13 @@ const jwt = require('jsonwebtoken');
 const {Client} = require('../models/client');
 const {Supplier} = require('../models/supplier');
 const {User} = require('../models/user');
+const {Product} = require('../models/product');
 
 const clientOneID = new ObjectID();
 const clientTwoID = new ObjectID();
 const supplierOneID = new ObjectID();
 const supplierTwoID = new ObjectID();
+const supplierThreeID = new ObjectID();
 const productOneID = new ObjectID();
 const productTwoID = new ObjectID();
 
@@ -134,6 +136,17 @@ const populateSuppliers = done =>{
   });
 };
 
+const populateProducts = done =>{
+  Product.remove({
+  }).then( () => {
+    return Product.insertMany(products);
+  }).then( () => {
+    done();
+  }).catch( (e) => {
+    done(e);
+  });
+};
+
 const populateUsers = (done) =>{
 
   User.remove({}).then( () =>{
@@ -150,10 +163,14 @@ module.exports = {
   users,
   suppliers,
   clients,
+  products,
   populateClients,
   populateUsers,
   populateSuppliers,
+  populateProducts,
   companyOneID,
-  companyTwoID
-  // populateUsers
+  companyTwoID,
+  supplierOneID,
+  supplierTwoID,
+  supplierThreeID
 }

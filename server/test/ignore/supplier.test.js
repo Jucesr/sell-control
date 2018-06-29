@@ -198,7 +198,6 @@ describe('PATCH', () => {
 
           Supplier.find({email: updated_supplier.email}).then( (suppliers) => {
             expect(suppliers.length).toBe(0);
-            expect(suppliers[0]).not.toBe(updated_supplier);
             done();
           }).catch( (e) => done(e) );
         })

@@ -12,6 +12,7 @@ const error_handler = (e, res, entity) => {
 export const add = (Entity) => {
 
   return (req, res) => {
+    //No need to validate because I used authenticate and verify_company middleware.
     const entity = new Entity({
       ...req.body
     });
@@ -31,7 +32,7 @@ export const remove = (Entity) => {
     var id = req.params.id;
 
     if(!ObjectID.isValid(id)){
-      return res.status(404).send({
+      return res.status(400).send({
         error: 'ID has invalid format'
       });
     }
@@ -60,7 +61,7 @@ export const update = (Entity) => {
     var id = req.params.id;
 
     if(!ObjectID.isValid(id))
-      return res.status(404).send({
+      return res.status(400).send({
         error: 'ID has invalid format'
       });
 
@@ -102,7 +103,7 @@ export const getByID = (Entity) => {
     const filter_id = Entity.modelName == 'Company' ? req.user._id : req.user.company_id ;
 
     if(!ObjectID.isValid(id))
-      return res.status(404).send({
+      return res.status(400).send({
         error: 'ID has invalid format'
       });
 
@@ -115,6 +116,7 @@ export const getByID = (Entity) => {
             return res.status(404).send({
               error: `${Entity.modelName} was not found`
             });
+
             res.status(200).send(doc);
             log(`${Entity.modelName} item was sent`);
         }).catch( e => error_handler(e, res, Entity.modelName) );
