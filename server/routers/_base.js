@@ -9,9 +9,16 @@ const error_handler = (e, res, entity) => {
   log(`Error has occurred ${entity} => ${error_message}`);
 }
 
-export const add = (Entity) => {
+export const add = (Entity , fieldsToExclude) => {
 
   return (req, res) => {
+
+    if(fieldsToExclude){
+      fieldsToExclude.map(field => {
+        delete req.body[field];
+      });
+    }
+
     //No need to validate because I used authenticate and verify_company middleware.
     const entity = new Entity({
       ...req.body
@@ -54,7 +61,7 @@ export const remove = (Entity) => {
   }
 }
 
-export const update = (Entity) => {
+export const update = (Entity, fieldsToExclude) => {
 
   return (req, res) => {
 
@@ -64,6 +71,12 @@ export const update = (Entity) => {
       return res.status(400).send({
         error: 'ID has invalid format'
       });
+
+    if(fieldsToExclude){
+      fieldsToExclude.map(field => {
+        delete req.body[field];
+      });
+    }
 
     Entity.findOneAndUpdate( {
       _id: id,
