@@ -9,6 +9,7 @@ const {
   populateUsers,
   products,
   populateProducts,
+  populateSuppliers,
   companyOneID,
   supplierOneID,
   supplierTwoID,
@@ -16,11 +17,11 @@ const {
 } = require('../seed');
 
 beforeAll(populateUsers);
+beforeAll(populateSuppliers);
 beforeEach(populateProducts);
 
 describe('POST', () => {
   let new_product = {
-    company_id: companyOneID,
     supplier_id: supplierOneID,
     code: '003',
     name: 'Chanclas',
@@ -83,7 +84,37 @@ describe('POST', () => {
         .end(done)
   });
 
-  it('should not create a new product with missing fields', (done) => {
+  it('should not create a new product with missing supplier_id', (done) => {
+      let item = {...new_product};
+      delete item.supplier_id;
+
+      request(app)
+        .post('/api/product')
+        .set('x-auth', token)
+        .send(item)
+        .expect(400)
+        .expect( (res) =>{
+          expect(res.body.error).toBeDefined();
+        })
+        .end(done)
+  });
+
+  it('should not create a new product with supplier_id that is not related to user', (done) => {
+      let item = {...new_product};
+      item.supplier_id = supplierThreeID;
+
+      request(app)
+        .post('/api/product')
+        .set('x-auth', token)
+        .send(item)
+        .expect(404)
+        .expect( (res) =>{
+          expect(res.body.error).toBeDefined();
+        })
+        .end(done)
+  });
+
+  it('should not create a new product with missing code', (done) => {
       let item = {...new_product};
       delete item.code;
 
@@ -300,109 +331,108 @@ describe('PATCH', () => {
   });
 });
 
-// describe('DELETE', () => {
-//   it('should remove a product ', (done) => {
-//
-//       let token = users[0].tokens[0].token;
-//       let email = products[0].email;
-//       let _id = products[0]._id;
-//
-//       request(app)
-//         .delete(`/api/product/${_id}`)
-//         .set('x-auth', token)
-//         .expect(200)
-//         .expect( (res) =>{
-//           expect(res.body._id).toBe(products[0]._id.toString());
-//         })
-//         .end((err, res) =>{
-//           if(err){
-//             return done(err);
-//           }
-//
-//           Product.find({email}).then( (products) => {
-//             expect(products.length).toBe(0);
-//             done();
-//           }).catch( (e) => done(e) );
-//         })
-//   });
-//
-//   it('should not remove a product if user is not logged', (done) => {
-//
-//       let token = users[0].tokens[0].token;
-//       let email = products[0].email;
-//       let _id = products[0]._id;
-//
-//       request(app)
-//         .delete(`/api/product/${_id}`)
-//         .expect(401)
-//         .expect( (res) =>{
-//           expect(res.body.error).toBeDefined();
-//         })
-//         .end((err, res) =>{
-//           if(err){
-//             return done(err);
-//           }
-//
-//           Product.find({email}).then( (products) => {
-//             expect(products.length).toBe(1);
-//             done();
-//           }).catch( (e) => done(e) );
-//         })
-//   });
-// });
-//
-// describe('GET', () => {
-//
-//   it('should fetch all products that belong to a company', (done) => {
-//       let token = users[0].tokens[0].token;
-//       request(app)
-//         .get(`/api/product/`)
-//         .set('x-auth', token)
-//         .expect(200)
-//         .expect( (res) =>{
-//           expect(res.body.length).toBe(2);
-//         })
-//         .end(done)
-//   });
-//
-//   it('should not fetch any product if user is not logged', (done) => {
-//
-//       request(app)
-//         .get(`/api/product/`)
-//         .expect(401)
-//         .expect( (res) =>{
-//           expect(res.body.error).toBeDefined()
-//         })
-//         .end(done)
-//   });
-//
-//   it('should fetch a product if user belongs to that company', (done) => {
-//
-//       let token = users[0].tokens[0].token;
-//       let id = products[0]._id;
-//       request(app)
-//         .get(`/api/product/${id}`)
-//         .set('x-auth', token)
-//         .expect(200)
-//         .expect( (res) =>{
-//           expect(res.body._id).toBe(id.toString())
-//         })
-//         .end(done)
-//   });
-//
-//   it('should not fetch a product if user does not belong to that company', (done) => {
-//
-//       let token = users[2].tokens[0].token;
-//       let id = products[0]._id;
-//
-//       request(app)
-//         .get(`/api/product/${id}`)
-//         .set('x-auth', token)
-//         .expect(404)
-//         .expect( (res) =>{
-//           expect(res.body.error).toBeDefined()
-//         })
-//         .end(done)
-//   });
-//
-// });
+describe('DELETE', () => {
+  it('should remove a product ', (done) => {
+
+      let token = users[0].tokens[0].token;
+      let code = products[0].code;
+      let _id = products[0]._id;
+
+      request(app)
+        .delete(`/api/product/${_id}`)
+        .set('x-auth', token)
+        .expect(200)
+        .expect( (res) =>{
+          expect(res.body._id).toBe(products[0]._id.toString());
+        })
+        .end((err, res) =>{
+          if(err){
+            return done(err);
+          }
+
+          Product.find({code}).then( (products) => {
+            expect(products.length).toBe(0);
+            done();
+          }).catch( (e) => done(e) );
+        })
+  });
+
+  it('should not remove a product if user is not logged', (done) => {
+
+      let code = products[0].code;
+      let _id = products[0]._id;
+
+      request(app)
+        .delete(`/api/product/${_id}`)
+        .expect(401)
+        .expect( (res) =>{
+          expect(res.body.error).toBeDefined();
+        })
+        .end((err, res) =>{
+          if(err){
+            return done(err);
+          }
+
+          Product.find({code}).then( (products) => {
+            expect(products.length).toBe(1);
+            done();
+          }).catch( (e) => done(e) );
+        })
+  });
+});
+
+describe('GET', () => {
+
+  it('should fetch all products that belong to a company', (done) => {
+      let token = users[0].tokens[0].token;
+      request(app)
+        .get(`/api/product/`)
+        .set('x-auth', token)
+        .expect(200)
+        .expect( (res) =>{
+          expect(res.body.length).toBe(2);
+        })
+        .end(done)
+  });
+
+  it('should not fetch any product if user is not logged', (done) => {
+
+      request(app)
+        .get(`/api/product/`)
+        .expect(401)
+        .expect( (res) =>{
+          expect(res.body.error).toBeDefined()
+        })
+        .end(done)
+  });
+
+  it('should fetch a product if user belongs to that company', (done) => {
+
+      let token = users[0].tokens[0].token;
+      let id = products[0]._id;
+      request(app)
+        .get(`/api/product/${id}`)
+        .set('x-auth', token)
+        .expect(200)
+        .expect( (res) =>{
+          expect(res.body._id).toBe(id.toString())
+        })
+        .end(done)
+  });
+
+  it('should not fetch a product if user does not belong to that company', (done) => {
+
+      let token = users[2].tokens[0].token;
+      let id = products[0]._id;
+
+      request(app)
+        .get(`/api/product/${id}`)
+        .set('x-auth', token)
+        .expect(404)
+        .expect( (res) =>{
+          expect(res.body.error).toBeDefined()
+        })
+        .end(done)
+  });
+
+});

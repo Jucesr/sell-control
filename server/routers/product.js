@@ -9,13 +9,18 @@ const {authenticate} = require('../middleware/authenticate')
 const {verify_company} = require('../middleware/verify_company')
 const {add, remove, update, getByID, getAll} = require('./_base')
 
-const verify_supplier = (req, res, next) => {
+// middleware that is specific to this router
+router.use(bodyParser.json())
+router.use(authenticate)
+router.use(verify_company)
+
+router.post('/', (req, res, next) => {
+
   if(!ObjectID.isValid(req.body.supplier_id)){
     return res.status(400).send({
       error: 'Supplier ID has invalid format'
     });
   }
-  //VER POST MAN ERROR
   let company_id = req.body.company_id;
   let supplier_id = req.body.supplier_id;
 
@@ -31,18 +36,39 @@ const verify_supplier = (req, res, next) => {
         next();
     });
 
-}
-
-// middleware that is specific to this router
-router.use(bodyParser.json())
-router.use(authenticate)
-router.use(verify_company)
-
-router.post('/', verify_supplier, add(Product) );
+}, add(Product) );
 
 router.delete('/:id', remove(Product));
 
-router.patch('/:id',verify_supplier, update(Product));
+router.patch('/:id',(req, res, next) => {
+
+  if(req.body.supplier_id){
+    if(!ObjectID.isValid(req.body.supplier_id)){
+      console.log('Invalid id');
+      return res.status(400).send({
+        error: 'Supplier ID has invalid format'
+      });
+    }
+
+    let company_id = req.body.company_id;
+    let supplier_id = req.body.supplier_id;
+
+    Supplier.findOne({
+      _id: supplier_id,
+      company_id
+    }).then(
+      (doc) => {
+        if(!doc)
+          return res.status(404).send({
+            error: `Supplier was not found`
+          });
+          next();
+      });
+  }else{
+    next();
+  }
+
+}, update(Product));
 
 router.get('/:id', getByID(Product));
 
