@@ -7,7 +7,7 @@ const bcrypt = require('bcryptjs');
 const {pre_save_trim} = require('../middleware/pre_trim');
 
 var UserSchema = new mongoose.Schema({
-  company_id:{
+  default_company_id:{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Company'
   },
@@ -41,6 +41,7 @@ var UserSchema = new mongoose.Schema({
     minLengh: 6
   },
   tokens: [{
+    _id:false,
     access: {
       type: String,
       required: true
@@ -57,7 +58,7 @@ UserSchema.methods.toJSON = function () {
   let user = this;
   let userObject = user.toObject();
 
-  return pick(userObject, ['_id', 'username','email']);
+  return pick(userObject, ['_id', 'username','email', 'default_company_id','companies']);
 };
 
 UserSchema.methods.generateAuthToken = function (){
@@ -123,12 +124,17 @@ UserSchema.statics.findByToken = function (token){
 UserSchema.statics.findByCredentials = function (username, email, password){
   //It can search user by email or by username
   let User = this;
-  let finder = email || username;
+  //let finder = email || username;
   let error_message = {
     error: 'Email or password are not valid'
   }
 
-  return User.findOne({finder}).then( (user) => {
+  return User.findOne({
+    $or:[
+      {email},
+      {username}
+    ]
+  }).then( (user) => {
     if(!user)
       return Promise.reject(error_message);
 
