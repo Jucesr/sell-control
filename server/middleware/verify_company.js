@@ -4,7 +4,7 @@ var {Company} = require('../models/company');
 export const verify_company = (req, res, next) => {
   const user = req.user;
 
-  if(!user.selected_company_id){
+  if(!user.selected_company_id || user.selected_company_id == null){
       res.status(401).send({
         error: 'User does not belong to a company'
       });
@@ -18,7 +18,8 @@ export const verify_company = (req, res, next) => {
         }
         let result = doc.users.find(u => u.equals(user._id))
         if(result){
-          req.body.company_id = user.selected_company_id
+          req.body.company_id = user.selected_company_id;
+          req.company = doc;
           next();
         }else{
           res.status(401).send({

@@ -1,4 +1,4 @@
-export const pre_save_trim = function(next){
+const pre_save_trim = function(next){
   var paths = this.schema.paths;
   Object.keys(paths).forEach(function (field) {
     if (paths[field].instance != 'String') {
@@ -20,3 +20,5 @@ export const pre_save_trim = function(next){
 
   next();
 }
+
+module.exports = {pre_save_trim};

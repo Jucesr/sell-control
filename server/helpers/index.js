@@ -10,7 +10,7 @@
 //     }
 // }
 
-export const objectHasProperties = (obj, properties) => {
+const objectHasProperties = (obj, properties) => {
   if( Array.isArray(properties) && typeof obj == "object" ){
     return properties.reduce((acum, prop) => {
       return acum && obj.hasOwnProperty(prop)
@@ -22,8 +22,12 @@ export const objectHasProperties = (obj, properties) => {
 }
 
 
-export const log = (message) => {
+const log = (message, e) => {
   if(!process.env.LOG){
-    console.log(message)
+    console.log(message);
+    if(e)
+      console.error(e);
   }
 }
+
+module.exports = {objectHasProperties, log}

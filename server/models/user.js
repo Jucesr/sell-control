@@ -10,7 +10,8 @@ const {pre_save_trim} = require('../middleware/pre_trim');
 var UserSchema = new mongoose.Schema({
   selected_company_id:{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Company'
+    ref: 'Company',
+    default: null
   },
   companies: [{
     type: mongoose.Schema.Types.ObjectId,
@@ -88,22 +89,18 @@ UserSchema.methods.removeToken = function (token){
 
 UserSchema.methods.removeCompany = function (company_id){
   let user = this;
+  //let p2 = Promise.resolve();
   //Had to do this because $pull was not working with objectID
   user.companies = user.companies.filter(company => !company.equals(company_id))
-  let selected_company_id = user.selected_company_id
-  // console.log(typeof selected_company_id);
-  // console.log(typeof company_id);
-  // console.log(`selected_company_id: ${selected_company_id} == company_id: ${company_id}`);
-  // console.log(user.selected_company_id.equals(company_id));
+
   if(user.selected_company_id.equals(company_id)){
     if(user.companies.length > 0){
       user.selected_company_id = user.companies[Math.floor(Math.random() * user.companies.length)]
     }else{
-      user.selected_company_id = ''
+      user.set({ selected_company_id: null });
     }
   }
   return user.save();
-
   //Remove from company too.
 };
 

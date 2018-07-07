@@ -13,6 +13,9 @@ export const add = (Entity , fieldsToExclude) => {
 
   return (req, res) => {
 
+    //Don't ever let user assign _id
+    delete req.body._id;
+
     if(fieldsToExclude){
       fieldsToExclude.map(field => {
         delete req.body[field];
@@ -36,7 +39,7 @@ export const add = (Entity , fieldsToExclude) => {
 export const remove = (Entity) => {
 
   return (req, res) => {
-    var id = req.params.id;
+    let id = req.params.id;
 
     if(!ObjectID.isValid(id)){
       return res.status(400).send({
@@ -65,7 +68,7 @@ export const update = (Entity, fieldsToExclude) => {
 
   return (req, res) => {
 
-    var id = req.params.id;
+    let id = req.params.id;
 
     if(!ObjectID.isValid(id))
       return res.status(400).send({
