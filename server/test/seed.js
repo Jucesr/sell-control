@@ -4,6 +4,7 @@ const {Client} = require('../models/client');
 const {Supplier} = require('../models/supplier');
 const {User} = require('../models/user');
 const {Product} = require('../models/product');
+const {Company} = require('../models/company');
 
 const clientOneID = new ObjectID();
 const clientTwoID = new ObjectID();
@@ -12,13 +13,31 @@ const supplierTwoID = new ObjectID();
 const supplierThreeID = new ObjectID();
 const productOneID = new ObjectID();
 const productTwoID = new ObjectID();
+const productThreeID = new ObjectID();
 
 const userOneId = new ObjectID();
 const userTwoId = new ObjectID();
 const userThreeId = new ObjectID();
+const userFourId = new ObjectID();
 
 const companyOneID = new ObjectID();
 const companyTwoID = new ObjectID();
+
+const expiredToken = jwt.sign({_id: new ObjectID(), access: 'auth'}, process.env.JWT_SECRET).toString();
+
+const companies = [{
+    _id: companyOneID,
+    user_owner_id: userOneId,
+    users: [userOneId, userThreeId, userFourId],
+    max_users: 5,
+    name: 'Addidas'
+  },{
+    _id: companyTwoID,
+    user_owner_id: userThreeId,
+    users: [userThreeId, userFourId],
+    max_users: 2,
+    name: 'Nike'
+  }]
 
 const clients = [{
     _id: clientOneID,
@@ -65,12 +84,13 @@ const users = [{
       access: 'auth',
       token: jwt.sign({_id: userOneId, access: 'auth'}, process.env.JWT_SECRET).toString()
     }],
-    company_id: companyOneID
+    selected_company_id: companyOneID,
+    companies: [companyOneID]
   }, {
     _id: userTwoId,
     username: 'cesarxd',
     email: 'cesar@example.com',
-    password: 'myotherpassword',
+    password: 'mypassword',
     tokens: [{
       access: 'auth',
       token: jwt.sign({_id: userTwoId, access: 'auth'}, process.env.JWT_SECRET).toString()
@@ -79,12 +99,24 @@ const users = [{
     _id: userThreeId,
     username: 'juanito',
     email: 'juanito@example.com',
-    password: 'myotherpassword',
+    password: 'mypassword',
     tokens: [{
       access: 'auth',
       token: jwt.sign({_id: userThreeId, access: 'auth'}, process.env.JWT_SECRET).toString()
     }],
-    company_id: companyTwoID
+    selected_company_id: companyTwoID,
+    companies: [companyOneID, companyTwoID]
+  },{
+    _id: userFourId,
+    username: 'ericka',
+    email: 'ericka@example.com',
+    password: 'mypassword',
+    tokens: [{
+      access: 'auth',
+      token: jwt.sign({_id: userFourId, access: 'auth'}, process.env.JWT_SECRET).toString()
+    }],
+    selected_company_id: companyOneID,
+    companies: [companyOneID, companyTwoID]
     }
   ]
 
@@ -106,6 +138,18 @@ const products = [{
     supplier_id: supplierTwoID,
     code: '002',
     name: 'White shoe',
+    description: '',
+    uom: 'pair',
+    cost: 15.99,
+    price: 45.99,
+    inventory: true,
+    how_many: 10
+  },{
+    _id: productThreeID,
+    company_id: companyTwoID,
+    supplier_id: supplierTwoID,
+    code: '004',
+    name: 'T-shirt blue',
     description: '',
     uom: 'pair',
     cost: 15.99,
@@ -154,23 +198,41 @@ const populateUsers = (done) =>{
     var userOne = new User(users[0]).save();
     var userTwo = new User(users[1]).save();
     var userThree = new User(users[2]).save();
-    return Promise.all([userOne, userTwo, userThree]);
+    var userFour = new User(users[3]).save();
+    return Promise.all([userOne, userTwo, userThree, userFour]);
 
   }).then( () => done() );
 }
 
+const populateCompanies = (done) =>{
+
+  Company.remove({
+  }).then( () => {
+    return Company.insertMany(companies);
+  }).then( () => {
+    done();
+  }).catch( (e) => {
+    done(e);
+  });
+
+}
+
+
 module.exports = {
+  companies,
   users,
   suppliers,
   clients,
   products,
   populateClients,
   populateUsers,
+  populateCompanies,
   populateSuppliers,
   populateProducts,
   companyOneID,
   companyTwoID,
   supplierOneID,
   supplierTwoID,
-  supplierThreeID
+  supplierThreeID,
+  expiredToken
 }

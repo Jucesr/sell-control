@@ -49,8 +49,8 @@ export const remove = (Entity) => {
 
     Entity.findOneAndRemove({
       _id: id,
+      company_id: req.user.selected_company_id
     }).then( (doc) => {
-
       if(!doc)
         return res.status(404).send({
           error: `${Entity.modelName} was not found`
@@ -83,7 +83,7 @@ export const update = (Entity, fieldsToExclude) => {
 
     Entity.findOneAndUpdate( {
       _id: id,
-      company_id: req.user.company_id
+      company_id: req.user.selected_company_id
     }, { $set: req.body}, { new: true }).then(
       (doc) => {
         if(!doc)
@@ -101,7 +101,7 @@ export const update = (Entity, fieldsToExclude) => {
 export const getAll = (Entity) => {
 
   return (req, res) => {
-    const filter_id = Entity.modelName == 'Company' ? req.user._id : req.user.company_id ;
+    const filter_id = Entity.modelName == 'Company' ? req.user._id : req.user.selected_company_id ;
     Entity.getAll(filter_id).then(
       (entities) => {
         res.send(entities);
@@ -116,7 +116,7 @@ export const getByID = (Entity) => {
   return (req, res) => {
 
     const id = req.params.id;
-    const filter_id = Entity.modelName == 'Company' ? req.user._id : req.user.company_id ;
+    const filter_id = Entity.modelName == 'Company' ? req.user._id : req.user.selected_company_id ;
 
     if(!ObjectID.isValid(id))
       return res.status(400).send({

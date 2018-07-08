@@ -3,16 +3,17 @@ const {app} = require('../../server');
 const {Supplier} = require('../../models/supplier');
 jest.setTimeout(30000);
 
-
 const {
   users,
   populateUsers,
   suppliers,
+  companies,
   populateSuppliers,
-  companyOneID
+  populateCompanies
 } = require('../seed');
 
 beforeAll(populateUsers);
+beforeAll(populateCompanies);
 beforeEach(populateSuppliers);
 
 describe('POST', () => {
@@ -21,7 +22,6 @@ describe('POST', () => {
     contact_name: 'Juan Portillo',
     address: 'Los caracoles #504, Mexicali BC',
     email: 'jp@adidas.com',
-    company_id: companyOneID,
     phone: '6869865547'
   }
 

@@ -3,60 +3,54 @@ const {app} = require('../../server');
 const {Client} = require('../../models/client');
 jest.setTimeout(30000);
 
-
 const {
   users,
-  populateUsers,
   clients,
-  populateClients
+  companies,
+  populateUsers,
+  populateClients,
+  populateCompanies
 } = require('../seed');
 
 beforeAll(populateUsers);
+beforeAll(populateCompanies);
 beforeEach(populateClients);
 
 describe('POST', () => {
+  let new_client = {
+    first_name: "Gaby",
+    last_name: "Corral",
+    address: "",
+    email: "gabriela@gmail.com",
+    phone: "686144546"
+  }
+
   it('should create a new client', (done) => {
 
-    const new_client = {
-      first_name: "Gaby",
-      last_name: "Corral",
-      address: "",
-      email: "gabriela@gmail.com",
-      phone: "686144546"
-    }
+    let token = users[0].tokens[0].token;
 
-      let token = users[0].tokens[0].token;
+    request(app)
+      .post('/api/client')
+      .set('x-auth', token)
+      .send(new_client)
+      .expect(200)
+      .expect( (res) =>{
+        expect(res.body.email).toBe(new_client.email);
+      })
+      .end( (err, res) =>{
+        if(err){
+          return done(err);
+        }
 
-      request(app)
-        .post('/api/client')
-        .set('x-auth', token)
-        .send(new_client)
-        .expect(200)
-        .expect( (res) =>{
-          expect(res.body.email).toBe(new_client.email);
-        })
-        .end( (err, res) =>{
-          if(err){
-            return done(err);
-          }
-
-          Client.find({email: new_client.email}).then( (clients) => {
-            expect(clients.length).toBe(1);
-            expect(clients[0].email).toBe(new_client.email);
-            console.timeEnd("client_POST")
-            done();
-          }).catch( (e) => done(e) );
-        })
+        Client.find({email: new_client.email}).then( (clients) => {
+          expect(clients.length).toBe(1);
+          expect(clients[0].email).toBe(new_client.email);
+          done();
+        }).catch( (e) => done(e) );
+      })
   });
 
   it('should not create a new client if user is not logged', (done) => {
-      const new_client = {
-        first_name: "Gaby",
-        last_name: "Corral",
-        address: "",
-        email: "gabriela@gmail.com",
-        phone: "686144546"
-      }
       let token = users[1].tokens[0].token;
 
       request(app)
@@ -70,13 +64,6 @@ describe('POST', () => {
   });
 
   it('should not create a new client with user that does have a company id', (done) => {
-      const new_client = {
-        first_name: "Gaby",
-        last_name: "Corral",
-        address: "",
-        email: "gabriela@gmail.com",
-        phone: "686144546"
-      }
       let token = users[1].tokens[0].token;
 
       request(app)
@@ -91,18 +78,16 @@ describe('POST', () => {
   });
 
   it('should not create a new client with missing fields', (done) => {
-      const new_client = {
-        last_name: "Jose",
-        address: "",
-        email: "pedro@gmail.com",
-        phone: "686144546"
-      }
+
+      let client = {...new_client};
+      delete client.first_name;
+
       let token = users[0].tokens[0].token;
 
       request(app)
         .post('/api/client')
         .set('x-auth', token)
-        .send(new_client)
+        .send(client)
         .expect(400)
         .expect( (res) =>{
           expect(res.body.error).toBeDefined();
@@ -111,45 +96,37 @@ describe('POST', () => {
   });
 
   it('should not create a new client with duplicated email', (done) => {
-      const new_client = {
-        first_name: 'Julio',
-        last_name: 'Ojeda',
-        address: 'Oviedo #1081, Gran venecia',
-        email: 'jcom.94m@gmail.com',
-        phone: '6861449471'
-      }
-      let token = users[0].tokens[0].token;
 
-      request(app)
-        .post('/api/client')
-        .set('x-auth', token)
-        .send(new_client)
-        .expect(400)
-        .expect( (res) =>{
-          expect(res.body.error).toBeDefined();
-        })
-        .end(done)
+    let client = {...new_client};
+    client.email = 'jcom.94m@gmail.com';
+
+    let token = users[0].tokens[0].token;
+
+    request(app)
+      .post('/api/client')
+      .set('x-auth', token)
+      .send(client)
+      .expect(400)
+      .expect( (res) =>{
+        expect(res.body.error).toBeDefined();
+      })
+      .end(done)
   });
 
   it('should not create a new client with invalid email', (done) => {
-      const new_client = {
-        first_name: 'Julio',
-        last_name: 'Ojeda',
-        address: 'Oviedo #1081, Gran venecia',
-        email: 'jcom.94m.com',
-        phone: '6861449471'
-      }
-      let token = users[0].tokens[0].token;
+    let client = {...new_client};
+    client.email = 'invalidemail';
+    let token = users[0].tokens[0].token;
 
-      request(app)
-        .post('/api/client')
-        .set('x-auth', token)
-        .send(new_client)
-        .expect(400)
-        .expect( (res) =>{
-          expect(res.body.error).toBeDefined();
-        })
-        .end(done)
+    request(app)
+      .post('/api/client')
+      .set('x-auth', token)
+      .send(client)
+      .expect(400)
+      .expect( (res) =>{
+        expect(res.body.error).toBeDefined();
+      })
+      .end(done)
   });
 });
 
@@ -274,6 +251,31 @@ describe('DELETE', () => {
       request(app)
         .delete(`/api/client/${_id}`)
         .expect(401)
+        .expect( (res) =>{
+          expect(res.body.error).toBeDefined();
+        })
+        .end((err, res) =>{
+          if(err){
+            return done(err);
+          }
+
+          Client.find({email}).then( (clients) => {
+            expect(clients.length).toBe(1);
+            done();
+          }).catch( (e) => done(e) );
+        })
+  });
+
+  it('should not remove a client if user does not belong to the same company of the client', (done) => {
+
+      let token = users[0].tokens[0].token;
+      let email = clients[0].email;
+      let _id = clients[1]._id;
+
+      request(app)
+        .delete(`/api/client/${_id}`)
+        .set('x-auth', token)
+        .expect(404)
         .expect( (res) =>{
           expect(res.body.error).toBeDefined();
         })

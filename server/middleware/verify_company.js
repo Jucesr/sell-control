@@ -12,7 +12,7 @@ export const verify_company = (req, res, next) => {
     Company.findById(user.selected_company_id).then(
       doc => {
         if(!doc){
-          res.status(404).send({
+          return res.status(404).send({
             error: 'Company does not exists'
           });
         }

@@ -3,13 +3,13 @@ const {app} = require('../../server');
 const {Product} = require('../../models/product');
 jest.setTimeout(30000);
 
-
 const {
   users,
-  populateUsers,
   products,
+  populateUsers,
   populateProducts,
   populateSuppliers,
+  populateCompanies,
   companyOneID,
   supplierOneID,
   supplierTwoID,
@@ -17,6 +17,7 @@ const {
 } = require('../seed');
 
 beforeAll(populateUsers);
+beforeAll(populateCompanies);
 beforeAll(populateSuppliers);
 beforeEach(populateProducts);
 
@@ -365,6 +366,31 @@ describe('DELETE', () => {
       request(app)
         .delete(`/api/product/${_id}`)
         .expect(401)
+        .expect( (res) =>{
+          expect(res.body.error).toBeDefined();
+        })
+        .end((err, res) =>{
+          if(err){
+            return done(err);
+          }
+
+          Product.find({code}).then( (products) => {
+            expect(products.length).toBe(1);
+            done();
+          }).catch( (e) => done(e) );
+        })
+  });
+
+  it('should not remove a product if user does not belong to the same company of the client', (done) => {
+
+      let token = users[0].tokens[0].token;
+      let code = products[0].code;
+      let _id = products[2]._id;
+
+      request(app)
+        .delete(`/api/product/${_id}`)
+        .set('x-auth', token)
+        .expect(404)
         .expect( (res) =>{
           expect(res.body.error).toBeDefined();
         })
