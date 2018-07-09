@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const moment = require('moment');
 const {pre_save_trim} = require('../middleware/pre_trim');
 
-var SaleSchema = new mongoose.Schema({
+const SaleSchema = new mongoose.Schema({
   company_id:{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Company',
@@ -20,7 +20,7 @@ var SaleSchema = new mongoose.Schema({
   date: {
     type: Number,
     default: moment()
-  }
+  },
   total: {
     type: Number,
     required: true
@@ -54,6 +54,6 @@ var SaleSchema = new mongoose.Schema({
 //All string fields will be trimmed
 SaleSchema.pre('save', pre_save_trim);
 
-var Sale = mongoose.model('Sale', SaleSchema);
+const Sale = mongoose.model('Sale', SaleSchema);
 
 module.exports = {Sale};
