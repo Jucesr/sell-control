@@ -4,13 +4,13 @@ const router = express.Router()
 const {Supplier} = require('../models/supplier');
 
 const {authenticate} = require('../middleware/authenticate');
-const {verify_company} = require('../middleware/verify_company');
+const {validate_company} = require('../middleware/validate_company');
 const {add, remove, update, getByID, getAll} = require('./_base')
 
 // middleware that is specific to this router
 router.use(bodyParser.json())
 router.use(authenticate)
-router.use(verify_company)
+router.use(validate_company)
 
 router.post('/', add(Supplier) );
 

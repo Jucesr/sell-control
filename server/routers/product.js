@@ -6,37 +6,15 @@ const {Product} = require('../models/product')
 const {Supplier} = require('../models/supplier')
 
 const {authenticate} = require('../middleware/authenticate')
-const {verify_company} = require('../middleware/verify_company')
+const {validate_company} = require('../middleware/validate_company')
 const {add, remove, update, getByID, getAll} = require('./_base')
 
 // middleware that is specific to this router
 router.use(bodyParser.json())
 router.use(authenticate)
-router.use(verify_company)
+router.use(validate_company)
 
-router.post('/', (req, res, next) => {
-
-  if(!ObjectID.isValid(req.body.supplier_id)){
-    return res.status(400).send({
-      error: 'Supplier ID has invalid format'
-    });
-  }
-  let company_id = req.body.company_id;
-  let supplier_id = req.body.supplier_id;
-
-  Supplier.findOne({
-    _id: supplier_id,
-    company_id
-  }).then(
-    (doc) => {
-      if(!doc)
-        return res.status(404).send({
-          error: `Supplier was not found`
-        });
-        next();
-    });
-
-}, add(Product) );
+router.post('/', add(Product) );
 
 router.delete('/:id', remove(Product));
 

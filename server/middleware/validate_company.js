@@ -1,7 +1,6 @@
-var {User} = require('../models/user');
-var {Company} = require('../models/company');
+const {Company} = require('../models/company');
 
-export const verify_company = (req, res, next) => {
+export const validate_company = (req, res, next) => {
   const user = req.user;
 
   if(!user.selected_company_id || user.selected_company_id == null){
