@@ -130,8 +130,7 @@ const products = [{
     uom: 'pair',
     cost: 10.99,
     price: 34.99,
-    inventory: false,
-    how_many: 0
+    stock: 0
   },{
     _id: productTwoID,
     company_id: companyOneID,
@@ -142,8 +141,7 @@ const products = [{
     uom: 'pair',
     cost: 15.99,
     price: 45.99,
-    inventory: true,
-    how_many: 10
+    stock: 10
   },{
     _id: productThreeID,
     company_id: companyTwoID,
@@ -154,8 +152,7 @@ const products = [{
     uom: 'pair',
     cost: 15.99,
     price: 45.99,
-    inventory: true,
-    how_many: 10
+    stock: 10
   }]
 
 const populateClients = done =>{
