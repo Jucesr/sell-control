@@ -8,12 +8,13 @@ const {Company} = require('../models/company')
 
 const {authenticate} = require('../middleware/authenticate')
 const {validate_company} = require('../middleware/validate_company')
+const {error_handler} = require('../middleware/error_handler')
 const {remove, update, getAll} = require('./_base')
-const {log, error_handler} = require('../helpers')
+const {log} = require('../helpers')
 
 router.use(bodyParser.json())
 
-router.post('/', (req, res) => {
+router.post('/', (req, res, next) => {
   //Don't ever let user assign _id
   delete req.body._id;
   delete req.body.company_id;
@@ -35,10 +36,10 @@ router.post('/', (req, res) => {
         ...user_doc,
         token
       })
-  }).catch( e => error_handler(e, res, 'User', 'creating'));
+  }).catch( e => next(e));
 });
 
-router.post('/login', (req, res) => {
+router.post('/login', (req, res, next) => {
     let {email, password, username} = req.body
 
     let user_doc;
@@ -53,10 +54,10 @@ router.post('/login', (req, res) => {
           ...user_doc,
           token
         });
-      }).catch( e => error_handler(e, res, 'User', 'logging'));
+      }).catch( e => next(e));
 });
 
-router.post('/login/token', (req, res) => {
+router.post('/login/token', (req, res, next) => {
   let {token} = req.body
     let user_doc;
 
@@ -67,31 +68,31 @@ router.post('/login/token', (req, res) => {
           ...doc.toJSON(),
           token
         })
-      }).catch( e => error_handler(e, res, 'User', 'logging'));
+      }).catch( e => next(e));
 });
 
-router.delete('/login/token', authenticate,  (req, res) => {
+router.delete('/login/token', authenticate,  (req, res, next) => {
   req.user.removeToken(req.token).then( () => {
     log('An user logged off');
     res.status(200).send();
-  }).catch( e => error_handler(e, res, 'User', 'logging off'));
+  }).catch( e => next(e));
 });
 
-router.delete('/', authenticate,  (req, res) => {
+router.delete('/', authenticate,  (req, res, next) => {
   User.findByIdAndRemove(req.user._id).then(
     doc => {
       if(!doc){
-        return error_handler({
+        return next({
           message: `User was not found`,
           errcode: 404
-        }, res, 'User', 'removing')
+        })
       }
       res.status(200).send(doc);
       log(`User was removed`);
-  }).catch( e => error_handler(e, res, 'User', 'removing') );
+  }).catch( e => next(e) );
 });
 
-router.patch('/me', authenticate, (req, res) => {
+router.patch('/me', authenticate, (req, res, next) => {
   //Only selected_company_id can be updated.
   let company_id = req.body.selected_company_id;
   let user = req.user;
@@ -105,16 +106,16 @@ router.patch('/me', authenticate, (req, res) => {
         res.status(200).send(doc);
         log(`User was updated`);
       }
-    ).catch( e => error_handler(e, res, 'User', 'updating'));
+    ).catch( e => next(e));
   }else{
-    error_handler({
+    next({
       message: 'Company id is not part of available companies',
       errcode: 404
-    }, res, 'User', 'updating')
+    })
   }
 });
 
-router.patch('/unsubscribe/:id', authenticate, validate_company, (req, res) => {
+router.patch('/unsubscribe/:id', authenticate, validate_company, (req, res, next) => {
   /*
     -Unsubscribe an user from a company
 
@@ -133,10 +134,10 @@ router.patch('/unsubscribe/:id', authenticate, validate_company, (req, res) => {
   let user_owner_id = req.company.user_owner_id;
 
   if(!ut_id.equals(user_owner_id)){
-    return error_handler({
+    return next({
       message: 'User cannot unsubscribe other user because is not owner of the company',
       errcode: 401
-    }, res, 'User', 'unsubscribing')
+    })
   }
   User.findById(uu_id).then(
     uu => {
@@ -151,10 +152,10 @@ router.patch('/unsubscribe/:id', authenticate, validate_company, (req, res) => {
     user => {
       log(`${req.user.username} has unsubscribed ${user.username} from ${req.company.name}`);
       res.status(200).send(user);
-  }).catch( e => error_handler(e, res, 'User', 'unsubscribing'));
+  }).catch( e => next(e));
 });
 
-router.patch('/me/unsubscribe/', authenticate, validate_company, (req, res) => {
+router.patch('/me/unsubscribe/', authenticate, validate_company, (req, res, next) => {
   /*
     -Unsubscribe himself from a company
 
@@ -171,17 +172,19 @@ router.patch('/me/unsubscribe/', authenticate, validate_company, (req, res) => {
   let user_owner_id = req.company.user_owner_id;
 
   if(ut_id.equals(user_owner_id)){
-    return error_handler({
+    return next({
       message: 'User cannot be unsubscribed because is the only owner of the company',
       errcode: 401
-    }, res, 'User', 'unsubscribing')
+    })
   }
   req.user.removeCompany(company_id).then(
     user => {
       log(`${req.user.username} has been unsubscribed from ${req.company.name}`);
       res.status(200).send(user);
-  }).catch( e => error_handler(e, res, 'User', 'unsubscribing'));
+  }).catch( e => next(e));
 });
+
+router.use(error_handler('User'))
 
 
 module.exports = router

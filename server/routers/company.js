@@ -2,17 +2,20 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const router = express.Router()
 const {ObjectID} = require('mongodb')
-const {Company} = require('../models/company');
-const {User} = require('../models/user');
+const {Company} = require('../models/company')
+const {User} = require('../models/user')
 
-const {authenticate} = require('../middleware/authenticate');
+const {authenticate} = require('../middleware/authenticate')
+const {error_handler} = require('../middleware/error_handler')
+
 const {remove, update, getAll} = require('./_base')
+const {log} = require('../helpers')
 
 // middleware that is specific to this router
 router.use(bodyParser.json())
 router.use(authenticate)
 
-router.post('/', (req, res) => {
+router.post('/', (req, res, next) => {
 
   let company_doc;
 
@@ -37,16 +40,14 @@ router.post('/', (req, res) => {
   ).then(
     user_doc => {
       if(!user_doc)
-        return res.status(400).send({
-          error: 'Could not update user company_id'
+        return next({
+          message: 'Could not update user company_id',
+          html_code: 400
         })
       res.status(200).send(company_doc);
-      console.log('A company was created');
+      log('A company was created');
     }
-  ).catch( (e) => {
-    console.error('Error has occurred while saving company', e);
-    res.status(404).send(e);
-  });
+  ).catch( e => next(e));
 });
 
 router.delete('/:id', remove(Company));
@@ -54,6 +55,8 @@ router.delete('/:id', remove(Company));
 router.patch('/:id', update(Company));
 
 router.get('/', getAll(Company));
+
+router.use(error_handler('Company'))
 
 
 module.exports = router

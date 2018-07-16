@@ -1,31 +1,34 @@
-const {Company} = require('../models/company');
+import {Company} from '../models/company'
+import {error_handler} from '../helpers'
 
 export const validate_company = (req, res, next) => {
   const user = req.user;
 
   if(!user.selected_company_id || user.selected_company_id == null){
-      res.status(401).send({
-        error: 'User does not belong to a company'
-      });
-  }else{
-    Company.findById(user.selected_company_id).then(
-      doc => {
-        if(!doc){
-          return res.status(404).send({
-            error: 'Company does not exists'
-          });
-        }
-        let result = doc.users.find(u => u.equals(user._id))
-        if(result){
-          req.body.company_id = user.selected_company_id;
-          req.company = doc;
-          next();
-        }else{
-          res.status(401).send({
-            error: 'User does not belong to a company'
-          });
-        }
-      }
-    );
+    return next({
+      message: 'User does not belong to any company',
+      html_code: 401
+    })
   }
+  Company.findById(user.selected_company_id).then(
+    doc => {
+      if(!doc){
+        return next({
+          message: 'Company does not exists',
+          html_code: 404
+        });
+      }
+      let result = doc.users.find(u => u.equals(user._id))
+      if(!result){
+        return next({
+          message: 'User does not belong to that company',
+          html_code: 401
+        });
+      }
+      req.body.company_id = user.selected_company_id;
+      req.company = doc;
+      next();
+    }
+  );
+
 };
