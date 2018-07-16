@@ -1,11 +1,13 @@
 var {User} = require('../models/user');
 
 const error_token_expired = {
-  error: 'Token has expired'
+  message: 'Token has expired',
+  html_code: 401
 }
 
 const error_unauthorized = {
-  error: 'You are not allow to do this'
+  error: 'You are not allow to do this',
+  html_code: 401
 }
 
 var authenticate = (req, res, next) => {
@@ -19,9 +21,7 @@ var authenticate = (req, res, next) => {
     req.user = user;
     req.token = token;
     next();
-  }).catch( (e) => {
-    res.status(401).send(e);
-  });
+  }).catch( e => next(e));
 };
 
 module.exports = {authenticate};
