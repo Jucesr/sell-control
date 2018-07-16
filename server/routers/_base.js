@@ -1,17 +1,9 @@
 const {ObjectID} = require('mongodb')
 const {log} = require('../helpers')
 
-const error_handler = (e, res, entity) => {
-  let error_message = e.message || e.errmsg;
-    res.status(400).send({
-      error: e.message
-    });
-  log(`Error has occurred ${entity} => ${error_message}`);
-}
-
 export const add = (Entity , fieldsToExclude) => {
 
-  return (req, res) => {
+  return (req, res, next) => {
 
     //Don't ever let user assign _id
     delete req.body._id;
@@ -31,19 +23,19 @@ export const add = (Entity , fieldsToExclude) => {
       doc => {
         res.send(doc);
         log(`${Entity.modelName} was saved`);
-      }, e => error_handler(e, res, Entity.modelName)
-    )
+    }).catch( e => next(e))
   }
 }
 
 export const remove = (Entity) => {
 
-  return (req, res) => {
+  return (req, res, next) => {
     let id = req.params.id;
 
     if(!ObjectID.isValid(id)){
-      return res.status(400).send({
-        error: 'ID has invalid format'
+      return next({
+        message: 'ID has invalid format',
+        html_code: 400
       });
     }
 
@@ -52,27 +44,29 @@ export const remove = (Entity) => {
       company_id: req.user.selected_company_id
     }).then( (doc) => {
       if(!doc)
-        return res.status(404).send({
-          error: `${Entity.modelName} was not found`
+        return next({
+          message: `${Entity.modelName} was not found`,
+          html_code: 404
         });
 
       res.status(200).send(doc);
       log(`${Entity.modelName} was removed`);
 
-    }).catch( e => error_handler(e, res, Entity.modelName) );
+    }).catch( e => next(e) );
 
   }
 }
 
 export const update = (Entity, fieldsToExclude) => {
 
-  return (req, res) => {
+  return (req, res, next) => {
 
     let id = req.params.id;
 
     if(!ObjectID.isValid(id))
-      return res.status(400).send({
-        error: 'ID has invalid format'
+      return next({
+        message: 'ID has invalid format',
+        html_code: 400
       });
 
     if(fieldsToExclude){
@@ -81,46 +75,55 @@ export const update = (Entity, fieldsToExclude) => {
       });
     }
 
-    Entity.findOneAndUpdate( {
+    Entity.findOne( {
       _id: id,
       company_id: req.user.selected_company_id
-    }, { $set: req.body}, { new: true }).then(
-      (doc) => {
+    }).then(
+      doc => {
         if(!doc)
-          return res.status(404).send({
-            error: `${Entity.modelName} was not found`
+          return next({
+            error: `${Entity.modelName} was not found`,
+            html_code: 404
           });
+        doc.set({
+          ...req.body
+        })
+        return doc.save()
+
+      }).then(
+        doc => {
           res.status(200).send(doc);
           log(`${Entity.modelName} was updated`);
-      }).catch( e => error_handler(e, res, Entity.modelName) );
-
+        }
+      ).catch( e => next(e) );
 
   }
 }
 
 export const getAll = (Entity) => {
 
-  return (req, res) => {
+  return (req, res, next) => {
     const filter_id = Entity.modelName == 'Company' ? req.user._id : req.user.selected_company_id ;
     Entity.getAll(filter_id).then(
       (entities) => {
         res.send(entities);
         log(`${Entity.modelName} items were sent`);
-      }, e => error_handler(e, res, Entity.modelName)
+      }, e => next(e)
     );
   }
 }
 
 export const getByID = (Entity) => {
 
-  return (req, res) => {
+  return (req, res, next) => {
 
     const id = req.params.id;
     const filter_id = Entity.modelName == 'Company' ? req.user._id : req.user.selected_company_id ;
 
     if(!ObjectID.isValid(id))
-      return res.status(400).send({
-        error: 'ID has invalid format'
+      return next({
+        message: 'ID has invalid format',
+        html_code: 400
       });
 
       Entity.findOne({
@@ -129,12 +132,13 @@ export const getByID = (Entity) => {
       }).then(
         (doc) => {
           if(!doc)
-            return res.status(404).send({
-              error: `${Entity.modelName} was not found`
+            return next({
+              message: `${Entity.modelName} was not found`,
+              html_code: 404
             });
 
             res.status(200).send(doc);
             log(`${Entity.modelName} item was sent`);
-        }).catch( e => error_handler(e, res, Entity.modelName) );
+        }).catch( e => next(e) );
   }
 }
