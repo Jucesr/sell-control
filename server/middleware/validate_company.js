@@ -13,8 +13,9 @@ export const validate_company = (req, res, next) => {
   Company.findById(user.selected_company_id).then(
     doc => {
       if(!doc){
+        user.removeCompany(user.selected_company_id);
         return next({
-          message: 'Company does not exists',
+          message: 'Company does not exists anymore',
           html_code: 404
         });
       }

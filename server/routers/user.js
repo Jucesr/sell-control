@@ -15,13 +15,11 @@ const {log} = require('../helpers')
 router.use(bodyParser.json())
 
 router.post('/', (req, res, next) => {
-  //Don't ever let user assign _id
-  delete req.body._id;
-  delete req.body.company_id;
-  delete req.body.companies;
 
   const user = new User({
-    ...req.body
+    username: req.body.username,
+    email: req.body.email,
+    password: req.body.password
   });
   let user_doc;
   user.save().then(
@@ -59,16 +57,16 @@ router.post('/login', (req, res, next) => {
 
 router.post('/login/token', (req, res, next) => {
   let {token} = req.body
-    let user_doc;
+  let user_doc;
 
-    User.findByToken(token).then(
-      doc => {
-        log('An user logged in by token');
-        res.send({
-          ...doc.toJSON(),
-          token
-        })
-      }).catch( e => next(e));
+  User.findByToken(token).then(
+    doc => {
+      log('An user logged in by token');
+      res.send({
+        ...doc.toJSON(),
+        token
+      })
+    }).catch( e => next(e));
 });
 
 router.delete('/login/token', authenticate,  (req, res, next) => {
@@ -78,19 +76,7 @@ router.delete('/login/token', authenticate,  (req, res, next) => {
   }).catch( e => next(e));
 });
 
-router.delete('/', authenticate,  (req, res, next) => {
-  User.findByIdAndRemove(req.user._id).then(
-    doc => {
-      if(!doc){
-        return next({
-          message: `User was not found`,
-          errcode: 404
-        })
-      }
-      res.status(200).send(doc);
-      log(`User was removed`);
-  }).catch( e => next(e) );
-});
+router.delete('/', authenticate, remove(User));
 
 router.patch('/me', authenticate, (req, res, next) => {
   //Only selected_company_id can be updated.

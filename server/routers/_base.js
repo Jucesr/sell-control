@@ -1,7 +1,7 @@
 const {ObjectID} = require('mongodb')
 const {log} = require('../helpers')
 
-export const add = (Entity , fieldsToExclude) => {
+export const add = (Model, fieldsToExclude) => {
 
   return (req, res, next) => {
 
@@ -14,20 +14,23 @@ export const add = (Entity , fieldsToExclude) => {
       });
     }
 
-    //No need to validate because I used authenticate and verify_company middleware.
-    const entity = new Entity({
+    //No need to validate because I used authenticate and validate_company middleware.
+    const entity = new Model({
       ...req.body
     });
+
+    console.log(req.user.username);
+    console.log(req.body.company_id);
 
     entity.save().then(
       doc => {
         res.send(doc);
-        log(`${Entity.modelName} was saved`);
+        log(`${Model.modelName} was saved`);
     }).catch( e => next(e))
   }
 }
 
-export const remove = (Entity) => {
+export const remove = (Model) => {
 
   return (req, res, next) => {
     let id = req.params.id;
@@ -39,25 +42,38 @@ export const remove = (Entity) => {
       });
     }
 
-    Entity.findOneAndRemove({
-      _id: id,
-      company_id: req.user.selected_company_id
-    }).then( (doc) => {
-      if(!doc)
-        return next({
-          message: `${Entity.modelName} was not found`,
-          html_code: 404
-        });
+    // Model.findByIdAndRemove(id).then(
+    //   doc => {
+    //     if(!doc)
+    //       return next({
+    //         message: `${Model.modelName} was not found`,
+    //         html_code: 404
+    //       });
+    //
+    //     res.status(200).send(doc);
+    //     log(`${Model.modelName} was removed`);
+    //
+    // }).catch( e => next(e) );
 
-      res.status(200).send(doc);
-      log(`${Entity.modelName} was removed`);
-
-    }).catch( e => next(e) );
+    Model.findById(id).then(
+      doc => {
+        if(!doc)
+          return next({
+            message: `${Model.modelName} was not found`,
+            html_code: 404
+          });
+        return doc.remove()
+    }).then(
+      doc => {
+        res.status(200).send(doc);
+        log(`${Model.modelName} was removed`);
+      }
+    ).catch( e => next(e) );
 
   }
 }
 
-export const update = (Entity, fieldsToExclude) => {
+export const update = (Model, fieldsToExclude) => {
 
   return (req, res, next) => {
 
@@ -75,14 +91,14 @@ export const update = (Entity, fieldsToExclude) => {
       });
     }
 
-    Entity.findOne( {
+    Model.findOne( {
       _id: id,
       company_id: req.user.selected_company_id
     }).then(
       doc => {
         if(!doc)
           return next({
-            error: `${Entity.modelName} was not found`,
+            error: `${Model.modelName} was not found`,
             html_code: 404
           });
         doc.set({
@@ -93,32 +109,32 @@ export const update = (Entity, fieldsToExclude) => {
       }).then(
         doc => {
           res.status(200).send(doc);
-          log(`${Entity.modelName} was updated`);
+          log(`${Model.modelName} was updated`);
         }
       ).catch( e => next(e) );
+
 
   }
 }
 
-export const getAll = (Entity) => {
+export const getAll = (Model) => {
 
   return (req, res, next) => {
-    const filter_id = Entity.modelName == 'Company' ? req.user._id : req.user.selected_company_id ;
-    Entity.getAll(filter_id).then(
+    const filter_id = Model.modelName == 'Company' ? req.user._id : req.user.selected_company_id ;
+    Model.getAll(filter_id).then(
       (entities) => {
         res.send(entities);
-        log(`${Entity.modelName} items were sent`);
+        log(`${Model.modelName} were sent`);
       }, e => next(e)
     );
   }
 }
 
-export const getByID = (Entity) => {
+export const getByID = (Model) => {
 
   return (req, res, next) => {
 
     const id = req.params.id;
-    const filter_id = Entity.modelName == 'Company' ? req.user._id : req.user.selected_company_id ;
 
     if(!ObjectID.isValid(id))
       return next({
@@ -126,19 +142,16 @@ export const getByID = (Entity) => {
         html_code: 400
       });
 
-      Entity.findOne({
-        _id: id,
-        company_id: filter_id
-      }).then(
+      Model.findById(id).then(
         (doc) => {
           if(!doc)
             return next({
-              message: `${Entity.modelName} was not found`,
+              message: `${Model.modelName} was not found`,
               html_code: 404
             });
 
             res.status(200).send(doc);
-            log(`${Entity.modelName} item was sent`);
+            log(`${Model.modelName} was sent`);
         }).catch( e => next(e) );
   }
 }

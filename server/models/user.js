@@ -119,14 +119,16 @@ UserSchema.statics.findByToken = function (token){
   var User = this;
   var decoded;
   let error_message = {
-    error: 'Token has expired'
+    message: 'Token has expired',
+    html_code: 401
   }
 
   try{
     decoded = jwt.verify(token, process.env.JWT_SECRET);
   } catch(e) {
     return Promise.reject({
-      error: 'Invalid token'
+      message: 'Invalid token',
+      html_code: 400
     });
   }
 
@@ -147,7 +149,8 @@ UserSchema.statics.findByCredentials = function (username, email, password){
   let User = this;
   //let finder = email || username;
   let error_message = {
-    error: 'Email or password are not valid'
+    message: 'Email or password are not valid',
+    html_code: 400
   }
 
   return User.findOne({
