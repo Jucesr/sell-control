@@ -89,19 +89,21 @@ UserSchema.methods.removeToken = function (token){
 
 UserSchema.methods.removeCompany = function (company_id){
   let user = this;
-  //let p2 = Promise.resolve();
   //Had to do this because $pull was not working with objectID
   user.companies = user.companies.filter(company => !company.equals(company_id))
 
   if(user.selected_company_id.equals(company_id)){
-    if(user.companies.length > 0){
-      user.selected_company_id = user.companies[Math.floor(Math.random() * user.companies.length)]
-    }else{
-      user.set({ selected_company_id: null });
-    }
+    user.set({ selected_company_id: null });
+
+    //In case we'd like to select a ramdom company
+    //
+    // if(user.companies.length > 0){
+    //   user.selected_company_id = user.companies[Math.floor(Math.random() * user.companies.length)]
+    // }else{
+    //   user.set({ selected_company_id: null });
+    // }
   }
   return user.save();
-  //Remove from company too.
 };
 
 UserSchema.statics.getAll = function (_id){

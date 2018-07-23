@@ -72,11 +72,13 @@ router.post('/login/token', (req, res, next) => {
 router.delete('/login/token', authenticate,  (req, res, next) => {
   req.user.removeToken(req.token).then( () => {
     log('An user logged off');
-    res.status(200).send();
+    res.status(200).send({
+      message:'An user logged off'
+    });
   }).catch( e => next(e));
 });
 
-router.delete('/', authenticate, remove(User));
+// router.delete('/me', authenticate, remove(User));
 
 router.patch('/me', authenticate, (req, res, next) => {
   //Only selected_company_id can be updated.
@@ -96,78 +98,16 @@ router.patch('/me', authenticate, (req, res, next) => {
   }else{
     next({
       message: 'Company id is not part of available companies',
-      errcode: 404
+      html_code: 404
     })
   }
 });
 
-router.patch('/unsubscribe/:id', authenticate, validate_company, (req, res, next) => {
-  /*
-    -Unsubscribe an user from a company
-
-    -Actors
-    * UT - User that triggers the action.
-    * UU - User that will be unsubscribe.
-
-    -Action
-    1.- Verify if UT is owner of company
-    2.- Find UU
-    3.- Pull company_id from UU's companies
-  */
-  let uu_id = req.params.id;
-  let ut_id = req.user._id;
-  let company_id = req.user.selected_company_id;
-  let user_owner_id = req.company.user_owner_id;
-
-  if(!ut_id.equals(user_owner_id)){
-    return next({
-      message: 'User cannot unsubscribe other user because is not owner of the company',
-      errcode: 401
-    })
-  }
-  User.findById(uu_id).then(
-    uu => {
-      if(!uu || !uu.selected_company_id){
-        return Promise.reject({
-          message: 'User was not found',
-          errcode: 404
-        })
-      }
-      return uu.removeCompany(company_id)
-  }).then(
-    user => {
-      log(`${req.user.username} has unsubscribed ${user.username} from ${req.company.name}`);
-      res.status(200).send(user);
-  }).catch( e => next(e));
-});
-
-router.patch('/me/unsubscribe/', authenticate, validate_company, (req, res, next) => {
-  /*
-    -Unsubscribe himself from a company
-
-    -Actors
-    * UT - User that triggers the action and will be unsubscribe.
-
-    -Action
-    1.- Verify if UT is owner of company
-    2.- Pull company_id from UT's companies
-  */
-
-  let ut_id = req.user._id;
-  let company_id = req.user.selected_company_id;
-  let user_owner_id = req.company.user_owner_id;
-
-  if(ut_id.equals(user_owner_id)){
-    return next({
-      message: 'User cannot be unsubscribed because is the only owner of the company',
-      errcode: 401
-    })
-  }
-  req.user.removeCompany(company_id).then(
-    user => {
-      log(`${req.user.username} has been unsubscribed from ${req.company.name}`);
-      res.status(200).send(user);
-  }).catch( e => next(e));
+router.get('/me', authenticate, (req, res, next) =>{
+  log('An user was sent');
+  res.send({
+    ...req.user.toJSON()
+  });
 });
 
 router.use(error_handler('User'))
