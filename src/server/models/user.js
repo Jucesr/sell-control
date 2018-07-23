@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs'
 
 import {pre_save_trim} from '../middleware/pre_trim'
 
-var UserSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
   selected_company_id:{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Company',
@@ -106,6 +106,30 @@ UserSchema.methods.removeCompany = function (company_id){
   return user.save();
 };
 
+UserSchema.methods.addCompany = function (company_id){
+  let user = this
+  user.companies.push(company_id)
+  return user.save()
+};
+
+UserSchema.methods.selectCompany = function (company_id){
+  let user = this
+
+  let result = user.companies.find(company => company.equals(company_id))
+
+  if(!result){
+    return Promise.reject ({
+      message: 'Company is not part of available companies',
+      html_code: 404
+    })
+  }
+
+  user.selected_company_id = company_id
+
+  return user.save()
+
+};
+
 UserSchema.statics.getAll = function (_id){
   if(_id){
     return this.find({
@@ -196,6 +220,4 @@ UserSchema.pre('save', function (next){
   }
 });
 
-var User = mongoose.model('User', UserSchema);
-
-module.exports = {User};
+export const User = mongoose.model('User', UserSchema);

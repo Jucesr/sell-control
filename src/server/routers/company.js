@@ -31,7 +31,7 @@ router.post('/', (req, res, next) => {
     users: [req.user._id]
   });
 
-  company.save().then(
+  company.create().then(
     company_doc => {
       res.status(200).send(company_doc);
       log('A company was created');
@@ -60,6 +60,19 @@ router.patch('/unsubscribe/me', validate_company, (req, res, next) => {
   company.unsubscribeUser(user).then(
     user => {
       log(`${req.user.username} has been unsubscribed from ${req.company.name}`);
+      res.status(200).send(user);
+  }).catch( e => next(e));
+});
+
+router.patch('/subscribe/user/:id', validate_company, (req, res, next) => {
+
+  let company = req.company
+  let ut = req.user
+  let uu_id = req.params.id
+
+  company.subscribeUser(ut, uu_id).then(
+    user => {
+      log(`${req.user.username} has subscribed ${user.username} to ${req.company.name}`);
       res.status(200).send(user);
   }).catch( e => next(e));
 });

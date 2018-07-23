@@ -70,13 +70,15 @@ CompanySchema.methods.unsubscribeOtherUser = function () {
               4.- Remove company_id from UU's company array
               5.- Remove UU's id from company's user array
             */
+            debugger;
+
             company = this;
             ut_id = ut._id;
             company_id = ut.selected_company_id;
             user_owner_id = company.user_owner_id;
 
             if (!ut_id.equals(uu_id)) {
-              _context.next = 6;
+              _context.next = 7;
               break;
             }
 
@@ -85,9 +87,9 @@ CompanySchema.methods.unsubscribeOtherUser = function () {
               html_code: 400
             };
 
-          case 6:
+          case 7:
             if (ut_id.equals(user_owner_id)) {
-              _context.next = 8;
+              _context.next = 9;
               break;
             }
 
@@ -96,13 +98,13 @@ CompanySchema.methods.unsubscribeOtherUser = function () {
               html_code: 401
             };
 
-          case 8:
+          case 9:
             result = company.users.filter(function (user) {
               return user.equals(uu_id);
             });
 
             if (!(result.length == 0)) {
-              _context.next = 11;
+              _context.next = 12;
               break;
             }
 
@@ -111,15 +113,15 @@ CompanySchema.methods.unsubscribeOtherUser = function () {
               html_code: 400
             };
 
-          case 11:
-            _context.next = 13;
+          case 12:
+            _context.next = 14;
             return _user.User.findById(uu_id);
 
-          case 13:
+          case 14:
             uu = _context.sent;
 
             if (uu) {
-              _context.next = 16;
+              _context.next = 17;
               break;
             }
 
@@ -128,18 +130,18 @@ CompanySchema.methods.unsubscribeOtherUser = function () {
               html_code: 404
             };
 
-          case 16:
-            _context.next = 18;
+          case 17:
+            _context.next = 19;
             return company.removeUser(uu_id);
 
-          case 18:
-            _context.next = 20;
+          case 19:
+            _context.next = 21;
             return uu.removeCompany(company_id);
 
-          case 20:
+          case 21:
             return _context.abrupt('return', uu);
 
-          case 21:
+          case 22:
           case 'end':
             return _context.stop();
         }

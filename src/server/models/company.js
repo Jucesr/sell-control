@@ -43,6 +43,7 @@ CompanySchema.methods.unsubscribeOtherUser = async function (ut, uu_id){
     4.- Remove company_id from UU's company array
     5.- Remove UU's id from company's user array
   */
+
   let company = this;
   let ut_id = ut._id;
   let company_id = ut.selected_company_id;
@@ -80,6 +81,7 @@ CompanySchema.methods.unsubscribeOtherUser = async function (ut, uu_id){
       html_code: 404
     }
   }
+
   await company.removeUser(uu_id)
 
   await uu.removeCompany(company_id)
@@ -93,9 +95,9 @@ CompanySchema.methods.unsubscribeUser = async function (ut){
     -Unsubscribe himself from a company
 
     -Actors
-    * UT - User that triggers the action and will be unsubscribe.
+    * UT - User that triggers the action and will be unsubscribed.
 
-    -Action
+    -Actions
     1.- Verify if UT is owner of company
     2.- Pull company_id from UT's companies
   */
@@ -121,10 +123,110 @@ CompanySchema.methods.unsubscribeUser = async function (ut){
 
 }
 
+CompanySchema.methods.subscribeUser = async function (ut, uu_id){
+  /*
+    -Subscribe another company
+
+    -Actors
+    * UT - User that triggers the action.
+    * UU - User that will be subscribed.
+
+    -Actions
+    1.- Vefify max_users
+    2.- Vefify user UT is not equal to UU
+    3.- Verify if UT is owner of company
+    4.- Verify UU is on company user list
+    5.- Find UU
+    6.- Add company_id to UU's company array
+    7.- Add UU's id to company's user array
+  */
+
+  let company = this;
+  let ut_id = ut._id;
+  let company_id = ut.selected_company_id;
+  let user_owner_id = company.user_owner_id;
+
+  if(company.max_users == company.users.length){
+    throw {
+      message: 'Company cannot have more users.',
+      html_code: 400
+    }
+  }
+
+  if(ut_id.equals(uu_id)){
+    throw {
+      message: 'User cannot subscribe himself to a company',
+      html_code: 400
+    }
+  }
+
+  if(!ut_id.equals(user_owner_id)){
+    throw {
+      message: 'User cannot subscribe other user because is not owner of the company',
+      html_code: 401
+    }
+  }
+
+  let result = company.users.filter(user => user.equals(uu_id))
+
+  if(result.length > 0){
+
+    throw {
+      message: 'User is subscribed already',
+      html_code: 400
+    }
+  }
+
+  let uu = await User.findById(uu_id)
+
+  if(!uu){
+    throw {
+      message: 'User was not found',
+      html_code: 404
+    }
+  }
+
+  await company.addUser(uu_id)
+
+  await uu.addCompany(company_id)
+
+  return uu;
+
+
+}
+
+
 CompanySchema.methods.removeUser = function(user_id) {
   let company = this
   company.users = company.users.filter(user => !user.equals(user_id))
   return company.save()
+}
+
+CompanySchema.methods.addUser = function(user_id) {
+  let company = this
+  company.users.push(user_id)
+  return company.save()
+}
+
+CompanySchema.methods.create = async function() {
+  let company = this
+  //It will update user company
+
+  await User.findOneAndUpdate({
+    _id: company.user_owner_id
+  }, {
+    $set: {
+      selected_company_id: company._id
+    },
+    $push: { companies: company._id }
+  }, {
+    new: true
+  })
+
+  let company_doc = await company.save()
+
+  return company_doc
+
 }
 
 CompanySchema.statics.getAll = function (user_id){
@@ -134,22 +236,6 @@ CompanySchema.statics.getAll = function (user_id){
 };
 
 CompanySchema.pre('save', pre_save_trim);
-
-CompanySchema.post('save', function(company) {
-  //It will update user company
-  return User.findOneAndUpdate({
-    _id: company.user_owner_id
-  }, {
-    $set: {
-      selected_company_id: company._id
-    },
-    $push: { companies: company._id }
-  }, {
-    new: true
-  }).then(
-    user_doc => Promise.resolve(company)
-  )
-});
 
 CompanySchema.post('remove', function(company) {
   //It will delete all clients, suppliers, products and sales.
@@ -163,6 +249,6 @@ CompanySchema.post('remove', function(company) {
 
 });
 
-var Company = mongoose.model('Company', CompanySchema);
+const Company = mongoose.model('Company', CompanySchema);
 
 module.exports = {Company};
