@@ -54,6 +54,12 @@ const SaleSchema = new mongoose.Schema({
 //All string fields will be trimmed
 SaleSchema.pre('save', pre_save_trim);
 
+SaleSchema.pre('save', function(next){
+  let user = this;
+
+  
+});
+
 const Sale = mongoose.model('Sale', SaleSchema);
 
 module.exports = {Sale};

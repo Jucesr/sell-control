@@ -8,6 +8,7 @@ const clients = require('./routers/client')
 const suppliers = require('./routers/supplier')
 const products = require('./routers/product')
 const users = require('./routers/user')
+const sales = require('./routers/sale')
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -22,6 +23,7 @@ app.use('/api/client', clients);
 app.use('/api/supplier', suppliers);
 app.use('/api/product', products);
 app.use('/api/user', users);
+app.use('/api/sale', sales);
 
 // app.get('*', (req, res) => {
 //   res.sendFile(path.join(publicPath, 'index.html'))
