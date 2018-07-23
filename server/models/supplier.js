@@ -1,11 +1,15 @@
-const mongoose = require('mongoose');
-const validator = require('validator');
-const moment = require('moment');
-const pick = require('lodash/pick');
-const {pre_save_trim} = require('../middleware/pre_trim');
+'use strict';
 
-const SupplierSchema = new mongoose.Schema({
-  company_id:{
+var mongoose = require('mongoose');
+var _validator = require('validator');
+var moment = require('moment');
+var pick = require('lodash/pick');
+
+var _require = require('../middleware/pre_trim'),
+    pre_save_trim = _require.pre_save_trim;
+
+var SupplierSchema = new mongoose.Schema({
+  company_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Company',
     required: true
@@ -24,8 +28,8 @@ const SupplierSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: {
-      validator: (value) =>{
-        return validator.isEmail(value);
+      validator: function validator(value) {
+        return _validator.isEmail(value);
       },
       message: '{VALUE} is not a valid email'
     }
@@ -39,31 +43,24 @@ const SupplierSchema = new mongoose.Schema({
   }
 });
 
-SupplierSchema.index({email: 1, company_id: 1}, {unique: true});
+SupplierSchema.index({ email: 1, company_id: 1 }, { unique: true });
 
-SupplierSchema.statics.getAll = function (_id){
+SupplierSchema.statics.getAll = function (_id) {
   return this.find({
     company_id: _id
-  })
+  });
 };
 
 SupplierSchema.methods.toJSON = function () {
-  let objDoc = this.toObject();
+  var objDoc = this.toObject();
 
-  return pick(objDoc, [
-    '_id',
-    'name',
-    'contact_name',
-    'address',
-    'email',
-    'phone',
-    'createdAt'
-  ]);
+  return pick(objDoc, ['_id', 'name', 'contact_name', 'address', 'email', 'phone', 'createdAt']);
 };
 
 //All string fields will be trimmed
 SupplierSchema.pre('save', pre_save_trim);
 
-const Supplier = mongoose.model('Supplier', SupplierSchema);
+var Supplier = mongoose.model('Supplier', SupplierSchema);
 
-module.exports = {Supplier};
+module.exports = { Supplier: Supplier };
+//# sourceMappingURL=supplier.js.map

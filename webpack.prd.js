@@ -11,7 +11,7 @@ const CSSExtract = new ExtractTextPlugin('master.css');
 
 module.exports = {
   entry: {
-    app: './src/app.js'
+    app: './src/client/app.js'
   },
   output: {
     path: path.join(__dirname, 'public', 'dist'),

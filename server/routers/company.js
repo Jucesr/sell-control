@@ -1,83 +1,88 @@
-const express = require('express')
-const bodyParser = require('body-parser')
-const router = express.Router()
-const {ObjectID} = require('mongodb')
-const {Company} = require('../models/company')
-const {User} = require('../models/user')
+'use strict';
 
-const {authenticate} = require('../middleware/authenticate')
-const {validate_company} = require('../middleware/validate_company')
-const {error_handler} = require('../middleware/error_handler')
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-const {remove, update, getAll, getByID} = require('./_base')
-const {log} = require('../helpers')
+var _express = require('express');
+
+var _express2 = _interopRequireDefault(_express);
+
+var _bodyParser = require('body-parser');
+
+var _bodyParser2 = _interopRequireDefault(_bodyParser);
+
+var _mongodb = require('mongodb');
+
+var _company = require('../models/company');
+
+var _user = require('../models/user');
+
+var _authenticate = require('../middleware/authenticate');
+
+var _validate_company = require('../middleware/validate_company');
+
+var _error_handler = require('../middleware/error_handler');
+
+var _base = require('./_base');
+
+var _helpers = require('../helpers');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var router = _express2.default.Router();
 
 // middleware that is specific to this router
-router.use(bodyParser.json())
-router.use(authenticate)
+router.use(_bodyParser2.default.json());
+router.use(_authenticate.authenticate);
 
-router.post('/', (req, res, next) => {
-  if(req.user.max_companies <= req.user.companies.length){
+router.post('/', function (req, res, next) {
+  if (req.user.max_companies <= req.user.companies.length) {
     return next({
       message: 'User can not create more companies.',
       html_code: '400'
     });
   }
 
-  const company = new Company({
+  var company = new _company.Company({
     name: req.body.name,
     user_owner_id: req.user._id,
     users: [req.user._id]
   });
 
-  company.save().then(
-    company_doc => {
-      res.status(200).send(company_doc);
-      log('A company was created');
-    }
-  ).catch( e => next(e));
+  company.save().then(function (company_doc) {
+    res.status(200).send(company_doc);
+    (0, _helpers.log)('A company was created');
+  }).catch(function (e) {
+    return next(e);
+  });
 });
 
-router.patch('/unsubscribe/user/:id', validate_company, (req, res, next) => {
+router.patch('/unsubscribe/user/:id', _validate_company.validate_company, function (req, res, next) {
 
-  let uu_id = req.params.id
-  let ut = req.user
-  let company = req.company
+  var uu_id = req.params.id;
+  var ut = req.user;
+  var company = req.company;
 
-  company.unsubscribeUser(ut, uu_id).then(
-    user => {
-      log(`${ut.username} has unsubscribed ${user.username} from ${company.name}`)
-      res.status(200).send(user)
-  }).catch( e => next(e))
+  company.unsubscribeOtherUser(ut, uu_id).then(function (user) {
+    (0, _helpers.log)(ut.username + ' has unsubscribed ' + user.username + ' from ' + company.name);
+    res.status(200).send(user);
+  }).catch(function (e) {
+    return next(e);
+  });
 });
 
-router.patch('/unsubscribe/me', validate_company, (req, res, next) => {
-  /*
-    -Unsubscribe himself from a company
+router.patch('/unsubscribe/me', _validate_company.validate_company, function (req, res, next) {
 
-    -Actors
-    * UT - User that triggers the action and will be unsubscribe.
+  var company = req.company;
+  var user = req.user;
 
-    -Action
-    1.- Verify if UT is owner of company
-    2.- Pull company_id from UT's companies
-  */
-
-  let ut_id = req.user._id;
-  let company_id = req.user.selected_company_id;
-  let user_owner_id = req.company.user_owner_id;
-
-  if(ut_id.equals(user_owner_id)){
-    return next({
-      message: 'User cannot be unsubscribed because is the only owner of the company',
-      html_code: 401
-    })
-  }
-  req.user.removeCompany(company_id).then(
-    user => {
-      log(`${req.user.username} has been unsubscribed from ${req.company.name}`);
-      res.status(200).send(user);
-  }).catch( e => next(e));
+  company.unsubscribeUser(user).then(function (user) {
+    (0, _helpers.log)(req.user.username + ' has been unsubscribed from ' + req.company.name);
+    res.status(200).send(user);
+  }).catch(function (e) {
+    return next(e);
+  });
 });
 
 // router.delete('/:id', remove(Company));
@@ -86,9 +91,9 @@ router.patch('/unsubscribe/me', validate_company, (req, res, next) => {
 
 // router.get('/:id', getByID(Company));
 
-router.get('/', getAll(Company));
+router.get('/', (0, _base.getAll)(_company.Company));
 
-router.use(error_handler('Company'))
+router.use((0, _error_handler.error_handler)('Company'));
 
-
-module.exports = router
+exports.default = router;
+//# sourceMappingURL=company.js.map

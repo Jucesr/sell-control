@@ -1,19 +1,23 @@
-const mongoose = require('mongoose');
-const moment = require('moment');
-const {pre_save_trim} = require('../middleware/pre_trim');
+'use strict';
 
-const SaleSchema = new mongoose.Schema({
-  company_id:{
+var mongoose = require('mongoose');
+var moment = require('moment');
+
+var _require = require('../middleware/pre_trim'),
+    pre_save_trim = _require.pre_save_trim;
+
+var SaleSchema = new mongoose.Schema({
+  company_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Company',
     required: true
   },
-  user_id:{
+  user_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },
-  client_id:{
+  client_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Client'
   },
@@ -36,7 +40,7 @@ const SaleSchema = new mongoose.Schema({
       required: true
     },
     discount: {
-      type: Number,
+      type: Number
     },
     total: {
       type: Number,
@@ -54,12 +58,11 @@ const SaleSchema = new mongoose.Schema({
 //All string fields will be trimmed
 SaleSchema.pre('save', pre_save_trim);
 
-SaleSchema.pre('save', function(next){
-  let user = this;
-
-  
+SaleSchema.pre('save', function (next) {
+  var user = this;
 });
 
-const Sale = mongoose.model('Sale', SaleSchema);
+var Sale = mongoose.model('Sale', SaleSchema);
 
-module.exports = {Sale};
+module.exports = { Sale: Sale };
+//# sourceMappingURL=sale.js.map

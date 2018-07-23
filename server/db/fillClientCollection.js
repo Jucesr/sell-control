@@ -1,17 +1,26 @@
-require('../config/config');
+'use strict';
+
+({});
 require('./mongoose');
-const {Client} = require('../models/client');
-const faker = require('faker/locale/es_MX');
-const {ObjectID} = require('mongodb');
 
-const numberOfClients = 50000;
+var _require = require('../models/client'),
+    Client = _require.Client;
 
-const address = ({address}) => {
-  return `${address.streetAddress()}, ${address.country()}`
-}
+var faker = require('faker/locale/es_MX');
+
+var _require2 = require('mongodb'),
+    ObjectID = _require2.ObjectID;
+
+var numberOfClients = 50000;
+
+var address = function address(_ref) {
+  var address = _ref.address;
+
+  return address.streetAddress() + ', ' + address.country();
+};
 
 for (var i = 0; i < numberOfClients; i++) {
-  let client = new Client({
+  var client = new Client({
     first_name: faker.name.firstName(),
     last_name: faker.name.lastName(),
     address: address(faker),
@@ -24,3 +33,4 @@ for (var i = 0; i < numberOfClients; i++) {
 
   client.save();
 }
+//# sourceMappingURL=fillClientCollection.js.map

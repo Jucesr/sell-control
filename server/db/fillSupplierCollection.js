@@ -1,18 +1,25 @@
-require('../config/config');
+'use strict';
+
+({});
 require('./mongoose');
-const {Supplier} = require('../models/supplier');
-const faker = require('faker/locale/es_MX');
 
-const numberOfItems = 1000;
+var _require = require('../models/supplier'),
+    Supplier = _require.Supplier;
 
-const address = ({address}) => {
-  return `${address.streetAddress()}, ${address.country()}`
-}
+var faker = require('faker/locale/es_MX');
+
+var numberOfItems = 1000;
+
+var address = function address(_ref) {
+  var address = _ref.address;
+
+  return address.streetAddress() + ', ' + address.country();
+};
 
 for (var i = 0; i < numberOfItems; i++) {
-  let entity = new Supplier({
+  var entity = new Supplier({
     name: faker.company.companyName(),
-    contact_name: `${faker.name.firstName()} ${faker.name.lastName()}`,
+    contact_name: faker.name.firstName() + ' ' + faker.name.lastName(),
     address: address(faker),
     email: faker.internet.email(),
     phone: faker.phone.phoneNumber()
@@ -22,3 +29,4 @@ for (var i = 0; i < numberOfItems; i++) {
 
   entity.save();
 }
+//# sourceMappingURL=fillSupplierCollection.js.map

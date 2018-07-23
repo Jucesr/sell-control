@@ -1,5 +1,8 @@
+'use strict';
 
-import {log} from './log'
-import {objectHasProperties} from './objectHasProperties'
+var _log = require('./log');
 
-module.exports = {objectHasProperties, log}
+var _objectHasProperties = require('./objectHasProperties');
+
+module.exports = { objectHasProperties: _objectHasProperties.objectHasProperties, log: _log.log };
+//# sourceMappingURL=index.js.map

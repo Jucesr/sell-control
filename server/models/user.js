@@ -1,20 +1,43 @@
-const mongoose = require('mongoose');
-const {ObjectID} = require('mongodb');
-const validator = require('validator');
-const jwt = require('jsonwebtoken');
-const pick = require('lodash/pick');
-const bcrypt = require('bcryptjs');
+'use strict';
 
-const {pre_save_trim} = require('../middleware/pre_trim');
+var _promise = require('babel-runtime/core-js/promise');
 
-var UserSchema = new mongoose.Schema({
-  selected_company_id:{
-    type: mongoose.Schema.Types.ObjectId,
+var _promise2 = _interopRequireDefault(_promise);
+
+var _mongoose = require('mongoose');
+
+var _mongoose2 = _interopRequireDefault(_mongoose);
+
+var _mongodb = require('mongodb');
+
+var _validator2 = require('validator');
+
+var _validator3 = _interopRequireDefault(_validator2);
+
+var _jsonwebtoken = require('jsonwebtoken');
+
+var _jsonwebtoken2 = _interopRequireDefault(_jsonwebtoken);
+
+var _pick = require('lodash/pick');
+
+var _pick2 = _interopRequireDefault(_pick);
+
+var _bcryptjs = require('bcryptjs');
+
+var _bcryptjs2 = _interopRequireDefault(_bcryptjs);
+
+var _pre_trim = require('../middleware/pre_trim');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var UserSchema = new _mongoose2.default.Schema({
+  selected_company_id: {
+    type: _mongoose2.default.Schema.Types.ObjectId,
     ref: 'Company',
     default: null
   },
   companies: [{
-    type: mongoose.Schema.Types.ObjectId,
+    type: _mongoose2.default.Schema.Types.ObjectId,
     ref: 'Company'
   }],
   max_companies: {
@@ -31,8 +54,8 @@ var UserSchema = new mongoose.Schema({
     required: true,
     unique: true,
     validate: {
-      validator: (value) =>{
-        return validator.isEmail(value);
+      validator: function validator(value) {
+        return _validator3.default.isEmail(value);
       },
       message: '{VALUE} is not a valid email'
     }
@@ -43,7 +66,7 @@ var UserSchema = new mongoose.Schema({
     minLengh: 6
   },
   tokens: [{
-    _id:false,
+    _id: false,
     access: {
       type: String,
       required: true
@@ -57,42 +80,42 @@ var UserSchema = new mongoose.Schema({
 });
 
 UserSchema.methods.toJSON = function () {
-  let user = this;
-  let userObject = user.toObject();
+  var user = this;
+  var userObject = user.toObject();
 
-  return pick(userObject, ['_id', 'username','email', 'selected_company_id','companies']);
+  return (0, _pick2.default)(userObject, ['_id', 'username', 'email', 'selected_company_id', 'companies']);
 };
 
-UserSchema.methods.generateAuthToken = function (){
-  let user = this;
-  let access = 'auth';
-  let token = jwt.sign({_id: user._id.toHexString(), access}, process.env.JWT_SECRET).toString();
+UserSchema.methods.generateAuthToken = function () {
+  var user = this;
+  var access = 'auth';
+  var token = _jsonwebtoken2.default.sign({ _id: user._id.toHexString(), access: access }, process.env.JWT_SECRET).toString();
 
-  user.tokens.push({access, token});
+  user.tokens.push({ access: access, token: token });
 
-  return user.save().then( () => {
+  return user.save().then(function () {
     return token;
-  } );
+  });
 };
 
-UserSchema.methods.removeToken = function (token){
-  let user = this;
+UserSchema.methods.removeToken = function (token) {
+  var user = this;
 
   return user.update({
     $pull: {
-      tokens: {token}
+      tokens: { token: token }
     }
   });
-
-
 };
 
-UserSchema.methods.removeCompany = function (company_id){
-  let user = this;
+UserSchema.methods.removeCompany = function (company_id) {
+  var user = this;
   //Had to do this because $pull was not working with objectID
-  user.companies = user.companies.filter(company => !company.equals(company_id))
+  user.companies = user.companies.filter(function (company) {
+    return !company.equals(company_id);
+  });
 
-  if(user.selected_company_id.equals(company_id)){
+  if (user.selected_company_id && user.selected_company_id.equals(company_id)) {
     user.set({ selected_company_id: null });
 
     //In case we'd like to select a ramdom company
@@ -106,29 +129,28 @@ UserSchema.methods.removeCompany = function (company_id){
   return user.save();
 };
 
-UserSchema.statics.getAll = function (_id){
-  if(_id){
+UserSchema.statics.getAll = function (_id) {
+  if (_id) {
     return this.find({
       company_id: _id
-    })
+    });
   }
 
-  return Promise.resolve([])
-
+  return _promise2.default.resolve([]);
 };
 
-UserSchema.statics.findByToken = function (token){
+UserSchema.statics.findByToken = function (token) {
   var User = this;
   var decoded;
-  let error_message = {
+  var error_message = {
     message: 'Token has expired',
     html_code: 401
-  }
+  };
 
-  try{
-    decoded = jwt.verify(token, process.env.JWT_SECRET);
-  } catch(e) {
-    return Promise.reject({
+  try {
+    decoded = _jsonwebtoken2.default.verify(token, process.env.JWT_SECRET);
+  } catch (e) {
+    return _promise2.default.reject({
       message: 'Invalid token',
       html_code: 400
     });
@@ -138,64 +160,57 @@ UserSchema.statics.findByToken = function (token){
     '_id': decoded._id,
     'tokens.token': token,
     'tokens.access': 'auth'
-  }).then( user => {
-    if(!user)
-      return Promise.reject(error_message)
+  }).then(function (user) {
+    if (!user) return _promise2.default.reject(error_message);
 
-    return Promise.resolve(user)
+    return _promise2.default.resolve(user);
   });
 };
 
-UserSchema.statics.findByCredentials = function (username, email, password){
+UserSchema.statics.findByCredentials = function (username, email, password) {
   //It can search user by email or by username
-  let User = this;
+  var User = this;
   //let finder = email || username;
-  let error_message = {
+  var error_message = {
     message: 'Email or password are not valid',
     html_code: 400
-  }
+  };
 
   return User.findOne({
-    $or:[
-      {email},
-      {username}
-    ]
-  }).then( (user) => {
-    if(!user)
-      return Promise.reject(error_message);
+    $or: [{ email: email }, { username: username }]
+  }).then(function (user) {
+    if (!user) return _promise2.default.reject(error_message);
 
-    return new Promise( (resolve, reject) => {
-      bcrypt.compare(password, user.password, (err, res) => {
-        if(res){
+    return new _promise2.default(function (resolve, reject) {
+      _bcryptjs2.default.compare(password, user.password, function (err, res) {
+        if (res) {
           resolve(user);
-        }else{
+        } else {
           reject(error_message);
         }
       });
-    } )
+    });
   });
-
-
 };
 
-UserSchema.pre('save', pre_save_trim);
+UserSchema.pre('save', _pre_trim.pre_save_trim);
 
-UserSchema.pre('save', function (next){
+UserSchema.pre('save', function (next) {
   var user = this;
 
-  if(user.isModified('password')){
-    bcrypt.genSalt(10, (err, salt) => {
-      bcrypt.hash(user.password, salt, (err, hash) => {
+  if (user.isModified('password')) {
+    _bcryptjs2.default.genSalt(10, function (err, salt) {
+      _bcryptjs2.default.hash(user.password, salt, function (err, hash) {
         user.password = hash;
         next();
       });
     });
-
-  }else{
+  } else {
     next();
   }
 });
 
-var User = mongoose.model('User', UserSchema);
+var User = _mongoose2.default.model('User', UserSchema);
 
-module.exports = {User};
+module.exports = { User: User };
+//# sourceMappingURL=user.js.map

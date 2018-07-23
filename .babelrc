@@ -5,6 +5,11 @@
   ],
   "plugins": [
     "transform-class-properties",
-    "transform-object-rest-spread"
+    "transform-object-rest-spread",
+    "transform-runtime",
+    "transform-async-to-generator",
+    "syntax-dynamic-import",
+    ["inline-json", {"matchPattern": "config"}],
+    ["inline-json-import", {}]
   ]
 }
