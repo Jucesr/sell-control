@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const moment = require('moment');
-const {pre_save_trim} = require('../middleware/pre_trim');
+import mongoose from 'mongoose'
+import moment from 'moment'
+import {pre_save_trim} from '../middleware/pre_trim'
 
 const SaleSchema = new mongoose.Schema({
   company_id:{
@@ -43,23 +43,21 @@ const SaleSchema = new mongoose.Schema({
       required: true
     }
   }]
-});
+})
 
 // SaleSchema.statics.getAll = function (user_id){
 //   return this.find({
 //     user_owner_id: user_id
 //   })
-// };
+// }
 
 //All string fields will be trimmed
-SaleSchema.pre('save', pre_save_trim);
+SaleSchema.pre('save', pre_save_trim)
 
 SaleSchema.pre('save', function(next){
-  let user = this;
+  let user = this
 
-  
-});
 
-const Sale = mongoose.model('Sale', SaleSchema);
+})
 
-module.exports = {Sale};
+export const Sale = mongoose.model('Sale', SaleSchema)

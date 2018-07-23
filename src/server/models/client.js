@@ -26,7 +26,7 @@ const ClientSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator: (value) =>{
-        return validator.isEmail(value);
+        return validator.isEmail(value)
       },
       message: '{VALUE} is not a valid email'
     }
@@ -38,18 +38,18 @@ const ClientSchema = new mongoose.Schema({
     type: Number,
     default: moment()
   }
-});
+})
 
-ClientSchema.index({email: 1, company_id: 1}, {unique: true});
+ClientSchema.index({email: 1, company_id: 1}, {unique: true})
 
 ClientSchema.statics.getAll = function (_id){
   return this.find({
     company_id: _id
   })
-};
+}
 
 ClientSchema.methods.toJSON = function () {
-  let objDoc = this.toObject();
+  let objDoc = this.toObject()
 
   return pick(objDoc, [
     '_id',
@@ -59,12 +59,10 @@ ClientSchema.methods.toJSON = function () {
     'email',
     'phone',
     'createdAt'
-  ]);
-};
+  ])
+}
 
 //All string fields will be trimmed
-ClientSchema.pre('save', pre_save_trim);
+ClientSchema.pre('save', pre_save_trim)
 
-const Client = mongoose.model('Client', ClientSchema);
-
-module.exports = {Client};
+export const Client = mongoose.model('Client', ClientSchema)

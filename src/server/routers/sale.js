@@ -1,16 +1,16 @@
-const express = require('express')
-const bodyParser = require('body-parser')
+import express from 'express'
+import bodyParser from 'body-parser'
+import {Sale} from '../models/sale'
+import {Product} from '../models/product'
+import {Client} from '../models/client'
+
+import {authenticate} from '../middleware/authenticate'
+import {validate_company} from '../middleware/validate_company'
+import {add, remove, update, getByID, getAll} from './_base'
+import {log, error_handler} from '../helpers'
+
 const router = express.Router()
-const {Sale} = require('../models/sale')
-const {Product} = require('../models/product')
-const {Client} = require('../models/client')
 
-const {authenticate} = require('../middleware/authenticate')
-const {validate_company} = require('../middleware/validate_company')
-const {add, remove, update, getByID, getAll} = require('./_base')
-const {log, error_handler} = require('../helpers')
-
-// middleware that is specific to this router
 router.use(bodyParser.json())
 router.use(authenticate)
 router.use(validate_company)
@@ -24,14 +24,14 @@ router.post('/', (req, res, next) => {
       }
     }
   )
-}, add(Sale) );
+}, add(Sale) )
 
-router.delete('/:id', remove(Sale));
+router.delete('/:id', remove(Sale))
 
-router.patch('/:id', update(Sale));
+router.patch('/:id', update(Sale))
 
-router.get('/:id', getByID(Sale));
+router.get('/:id', getByID(Sale))
 
-router.get('/', getAll(Sale));
+router.get('/', getAll(Sale))
 
-module.exports = router
+export default router

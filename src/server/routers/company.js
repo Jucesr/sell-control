@@ -22,22 +22,22 @@ router.post('/', (req, res, next) => {
     return next({
       message: 'User can not create more companies.',
       html_code: '400'
-    });
+    })
   }
 
   const company = new Company({
     name: req.body.name,
     user_owner_id: req.user._id,
     users: [req.user._id]
-  });
+  })
 
   company.create().then(
     company_doc => {
-      res.status(200).send(company_doc);
-      log('A company was created');
+      res.status(200).send(company_doc)
+      log('A company was created')
     }
-  ).catch( e => next(e));
-});
+  ).catch( e => next(e))
+})
 
 router.patch('/unsubscribe/user/:id', validate_company, (req, res, next) => {
 
@@ -50,7 +50,7 @@ router.patch('/unsubscribe/user/:id', validate_company, (req, res, next) => {
       log(`${ut.username} has unsubscribed ${user.username} from ${company.name}`)
       res.status(200).send(user)
   }).catch( e => next(e))
-});
+})
 
 router.patch('/unsubscribe/me', validate_company, (req, res, next) => {
 
@@ -59,10 +59,10 @@ router.patch('/unsubscribe/me', validate_company, (req, res, next) => {
 
   company.unsubscribeUser(user).then(
     user => {
-      log(`${req.user.username} has been unsubscribed from ${req.company.name}`);
-      res.status(200).send(user);
-  }).catch( e => next(e));
-});
+      log(`${req.user.username} has been unsubscribed from ${req.company.name}`)
+      res.status(200).send(user)
+  }).catch( e => next(e))
+})
 
 router.patch('/subscribe/user/:id', validate_company, (req, res, next) => {
 
@@ -72,18 +72,18 @@ router.patch('/subscribe/user/:id', validate_company, (req, res, next) => {
 
   company.subscribeUser(ut, uu_id).then(
     user => {
-      log(`${req.user.username} has subscribed ${user.username} to ${req.company.name}`);
-      res.status(200).send(user);
-  }).catch( e => next(e));
-});
+      log(`${req.user.username} has subscribed ${user.username} to ${req.company.name}`)
+      res.status(200).send(user)
+  }).catch( e => next(e))
+})
 
-// router.delete('/:id', remove(Company));
+// router.delete('/:id', remove(Company))
 
-// router.patch('/:id', update(Company));
+// router.patch('/:id', update(Company))
 
-// router.get('/:id', getByID(Company));
+// router.get('/:id', getByID(Company))
 
-router.get('/', getAll(Company));
+router.get('/', getAll(Company))
 
 router.use(error_handler('Company'))
 

@@ -1,4 +1,4 @@
-import './config/config'
+import './config/config.js'
 import './db/mongoose'
 
 import path from 'path'
@@ -16,12 +16,12 @@ const publicPath = path.join(__dirname,'..','public')
 
 app.use(express.static(publicPath))
 
-app.use('/api/company', companies);
-app.use('/api/client', clients);
-app.use('/api/supplier', suppliers);
-app.use('/api/product', products);
-app.use('/api/user', users);
-app.use('/api/sale', sales);
+app.use('/api/company', companies)
+app.use('/api/client', clients)
+app.use('/api/supplier', suppliers)
+app.use('/api/product', products)
+app.use('/api/user', users)
+app.use('/api/sale', sales)
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(publicPath, 'index.html'))
@@ -29,7 +29,6 @@ app.get('*', (req, res) => {
 
 if (process.env.NODE_ENV !== 'jest') {
   app.listen(port, ()=> {
-    debugger;
     console.log(`Server runing in ${port}`)
   })
 }

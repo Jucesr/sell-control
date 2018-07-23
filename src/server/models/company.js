@@ -249,6 +249,6 @@ CompanySchema.post('remove', function(company) {
 
 });
 
-const Company = mongoose.model('Company', CompanySchema);
+export const Company = mongoose.model('Company', CompanySchema);
 
 module.exports = {Company};

@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
-const {ObjectID} = require('mongodb')
-const moment = require('moment');
-const pick = require('lodash/pick');
-const {pre_save_trim} = require('../middleware/pre_trim');
-const {Supplier} = require('./supplier')
+import mongoose from 'mongoose'
+import {ObjectID} from 'mongodb'
+import moment from 'moment'
+import pick from 'lodash/pick'
+import {pre_save_trim} from '../middleware/pre_trim'
+import {Supplier} from './supplier'
 
 const ProductSchema = new mongoose.Schema({
   company_id:{
@@ -46,18 +46,18 @@ const ProductSchema = new mongoose.Schema({
     type: Number,
     default: moment()
   }
-});
+})
 
-ProductSchema.index({code: 1, company_id: 1}, {unique: true});
+ProductSchema.index({code: 1, company_id: 1}, {unique: true})
 
 ProductSchema.statics.getAll = function (_id){
   return this.find({
     company_id: _id
   })
-};
+}
 
 ProductSchema.methods.toJSON = function () {
-  let objDoc = this.toObject();
+  let objDoc = this.toObject()
 
   return pick(objDoc, [
     '_id',
@@ -70,22 +70,22 @@ ProductSchema.methods.toJSON = function () {
     'price',
     'stock',
     'createdAt'
-  ]);
-};
+  ])
+}
 
-ProductSchema.pre('save', pre_save_trim);
+ProductSchema.pre('save', pre_save_trim)
 
 ProductSchema.pre('validate', function(next){
   //Will validate that supplier_id is on the database
   const self = this
-  const company_id = self.company_id;
-  const supplier_id = self.supplier_id;
+  const company_id = self.company_id
+  const supplier_id = self.supplier_id
 
   if(!ObjectID.isValid(self.supplier_id)){
     return next({
       message: 'Supplier ID has invalid format',
       html_code: '400'
-    });
+    })
   }
 
   Supplier.findOne({
@@ -97,12 +97,10 @@ ProductSchema.pre('validate', function(next){
         return next({
           message: `Supplier was not found`,
           html_code: '404'
-        });
-        next();
-    });
-});
+        })
+        next()
+    })
+})
 
 
-const Product = mongoose.model('Product', ProductSchema);
-
-module.exports = {Product};
+export const Product = mongoose.model('Product', ProductSchema)
