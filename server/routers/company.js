@@ -17,7 +17,7 @@ router.use(authenticate)
 router.post('/', (req, res, next) => {
   if(req.user.max_companies <= req.user.companies.length){
     return next({
-      message: 'User can not create more companies. Max companies number reached',
+      message: 'User can not create more companies.',
       html_code: '400'
     });
   }
@@ -30,11 +30,6 @@ router.post('/', (req, res, next) => {
 
   company.save().then(
     company_doc => {
-      if(!company_doc)
-        return next({
-          message: 'Could not update user company_id',
-          html_code: 400
-        })
       res.status(200).send(company_doc);
       log('A company was created');
     }

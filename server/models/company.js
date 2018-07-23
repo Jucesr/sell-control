@@ -49,8 +49,6 @@ CompanySchema.post('save', function(company) {
     new: true
   }).then(
     user_doc => Promise.resolve(company)
-  ).catch(
-    e => Promise.reject(null)
   )
 });
 
