@@ -95,10 +95,13 @@ router.patch('/select/company/:id', authenticate, (req, res, next) => {
 })
 
 router.get('/me', authenticate, (req, res, next) =>{
-  log('An user was sent')
-  res.send({
-    ...req.user.toJSON()
-  })
+
+  let user = req.user
+
+  user.populateCompanies().then(user => {
+    log('An user was sent');
+    res.status(200).send(user)
+  }).catch( e => next(e))
 })
 
 router.use(error_handler('User'))

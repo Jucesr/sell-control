@@ -130,14 +130,27 @@ UserSchema.methods.selectCompany = function (company_id){
 
 };
 
-UserSchema.statics.getAll = function (_id){
-  if(_id){
-    return this.find({
-      company_id: _id
-    })
-  }
+UserSchema.methods.populateCompanies = async function (){
+  //Get all companies from a user. If user is owner of the company it will bring everything
+  //if user is just a member it will bring the name and id
 
-  return Promise.resolve([])
+  let user = this
+  user = await user.populate('companies').execPopulate()
+
+  user = user.toObject()
+  user.companies = user.companies.map(company => {
+    if(!company.user_owner_id.equals(user._id)){
+      return {
+        name: company.name,
+        _id: company._id
+      }
+    }
+    return company
+  })
+
+  user = pick(user, ['_id', 'username','email', 'selected_company_id','companies'])
+
+  return user
 
 };
 
