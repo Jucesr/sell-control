@@ -8,7 +8,7 @@ import {authenticate} from '../middleware/authenticate'
 import {validate_company} from '../middleware/validate_company'
 import {error_handler} from '../middleware/error_handler'
 
-import {remove, update, getAll, getByID} from './_base'
+import {remove} from './_base'
 import {log} from '../helpers'
 
 const router = express.Router()
@@ -77,15 +77,71 @@ router.patch('/subscribe/user/:id', validate_company, (req, res, next) => {
   }).catch( e => next(e))
 })
 
+router.patch('/max_users/:action', validate_company, (req, res, next) => {
+  let company = req.company
+  let user = req.user
+  let action = req.params.action //increase - decrase
+
+  if(!user._id.equals(company.user_owner_id)){
+    next({
+      message: 'User cannot modify max users because is not the owner of the company',
+      html_code: 401
+    })
+  }
+
+  company.updateMaxUsers(action).then(
+    company => {
+      log(`${user.username} has ${action}d max users to ${company.max_users}`)
+      res.status(200).send(company)
+  }).catch( e => next(e))
+
+
+});
+
+router.patch('/user_owner_id/:id', validate_company, (req, res, next) => {
+  let company = req.company
+  let user = req.user
+  let new_owner_id = req.params.id
+
+  if(!user._id.equals(company.user_owner_id)){
+    next({
+      message: 'User cannot modify owner because is not the owner of the company',
+      html_code: 401
+    })
+  }
+
+  company.changeOwner(new_owner_id).then(
+    new_owner => {
+      log(`${user.username} has named ${new_owner.username} owner of ${company.name}`)
+      res.status(200).send(company)
+  }).catch( e => next(e))
+
+
+});
+
+router.get('/', authenticate, validate_company, (req, res, next) =>{
+
+  let company = req.company
+  let user = req.user
+
+  if(!user._id.equals(company.user_owner_id)){
+    next({
+      message: 'User cannot get this company because is not the owner',
+      html_code: 401
+    })
+  }
+
+  company.populateUsers().then(
+    company => {
+      log(`A company was sent`)
+      res.status(200).send(company)
+  }).catch( e => next(e))
+
+
+})
+
 // router.delete('/:id', remove(Company))
 
-// router.patch('/:id', update(Company))
-
-// router.get('/:id', getByID(Company))
-
-router.get('/', getAll(Company))
-
 router.use(error_handler('Company'))
-
 
 export default router

@@ -109,7 +109,7 @@ CompanySchema.methods.unsubscribeUser = async function (ut){
 
   if(ut_id.equals(user_owner_id)){
     throw {
-      message: 'User cannot be unsubscribed because is the only owner of the company',
+      message: 'User cannot unsubscribe himself because is the owner of the company',
       html_code: 401
     }
   }
@@ -195,7 +195,6 @@ CompanySchema.methods.subscribeUser = async function (ut, uu_id){
 
 }
 
-
 CompanySchema.methods.removeUser = function(user_id) {
   let company = this
   company.users = company.users.filter(user => !user.equals(user_id))
@@ -205,6 +204,35 @@ CompanySchema.methods.removeUser = function(user_id) {
 CompanySchema.methods.addUser = function(user_id) {
   let company = this
   company.users.push(user_id)
+  return company.save()
+}
+
+CompanySchema.methods.updateMaxUsers = function(action) {
+  let company = this
+
+  switch (action) {
+    case 'increase':
+      company.max_users = company.max_users + 1;
+    break;
+    case 'decrease':
+      if(company.users.length == company.max_users){
+        return Promise.reject({
+          message: 'Cannot decrase max user number because it has users subscribed',
+          html_code: 400
+        })
+      }
+
+      company.max_users = company.max_users - 1;
+    break;
+
+    default:
+
+    return Promise.reject({
+      message: 'Invalid action',
+      html_code: 400
+    })
+  }
+
   return company.save()
 }
 
@@ -228,6 +256,34 @@ CompanySchema.methods.create = async function() {
   return company_doc
 
 }
+
+CompanySchema.methods.changeOwner = async function(user_id) {
+  let company = this
+
+  let user = await User.findById(user_id)
+
+  if(!user){
+    throw {
+      message: 'User was not found',
+      html_code: 404
+    }
+  }
+
+  company.user_owner_id = user_id
+  await company.save()
+
+  return user
+}
+
+CompanySchema.methods.populateUsers = async function (){
+  //Get all companies from a user. If user is owner of the company it will bring everything
+  //if user is just a member it will bring the name and id
+
+  let company = this
+  company = await company.populate('users').execPopulate()
+  return company
+
+};
 
 CompanySchema.statics.getAll = function (user_id){
   return this.find({
