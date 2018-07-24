@@ -8,7 +8,6 @@ import {Company} from '../models/company'
 import {authenticate} from '../middleware/authenticate'
 import {validate_company} from '../middleware/validate_company'
 import {error_handler} from '../middleware/error_handler'
-import {remove, update, getAll} from './_base'
 import {log} from '../helpers'
 
 const router = express.Router()
@@ -79,7 +78,16 @@ router.delete('/login/token', authenticate,  (req, res, next) => {
   }).catch( e => next(e))
 })
 
-// router.delete('/me', authenticate, remove(User))
+router.delete('/me', authenticate, (req, res, next) => {
+  let user = req.user
+
+  user.customRemove().then(
+    doc => {
+      res.status(200).send(doc)
+      log(`${doc.username} has been removed`)
+    }
+  ).catch( e => next(e))
+})
 
 router.patch('/select/company/:id', authenticate, (req, res, next) => {
   let company_id = req.params.id

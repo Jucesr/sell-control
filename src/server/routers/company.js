@@ -8,7 +8,6 @@ import {authenticate} from '../middleware/authenticate'
 import {validate_company} from '../middleware/validate_company'
 import {error_handler} from '../middleware/error_handler'
 
-import {remove} from './_base'
 import {log} from '../helpers'
 
 const router = express.Router()
@@ -83,7 +82,7 @@ router.patch('/max_users/:action', validate_company, (req, res, next) => {
   let action = req.params.action //increase - decrase
 
   if(!user._id.equals(company.user_owner_id)){
-    next({
+    return next({
       message: 'User cannot modify max users because is not the owner of the company',
       html_code: 401
     })
@@ -104,7 +103,7 @@ router.patch('/user_owner_id/:id', validate_company, (req, res, next) => {
   let new_owner_id = req.params.id
 
   if(!user._id.equals(company.user_owner_id)){
-    next({
+    return next({
       message: 'User cannot modify owner because is not the owner of the company',
       html_code: 401
     })
@@ -125,7 +124,7 @@ router.get('/', authenticate, validate_company, (req, res, next) =>{
   let user = req.user
 
   if(!user._id.equals(company.user_owner_id)){
-    next({
+    return next({
       message: 'User cannot get this company because is not the owner',
       html_code: 401
     })
@@ -140,7 +139,24 @@ router.get('/', authenticate, validate_company, (req, res, next) =>{
 
 })
 
-// router.delete('/:id', remove(Company))
+router.delete('/', validate_company, (req, res, next) => {
+  let company = req.company
+  let user = req.user
+
+  if(!user._id.equals(company.user_owner_id)){
+    return next({
+      message: 'User cannot delete this company because is not the owner',
+      html_code: 401
+    })
+  }
+
+  company.remove().then(
+    company => {
+      log(`A company was removed`)
+      res.status(200).send(company)
+  }).catch( e => next(e))
+
+})
 
 router.use(error_handler('Company'))
 

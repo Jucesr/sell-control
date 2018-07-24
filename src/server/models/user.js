@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 import pick from 'lodash/pick'
 import bcrypt from 'bcryptjs'
 
+import {Company} from './company'
 import {pre_save_trim} from '../middleware/pre_trim'
 
 const UserSchema = new mongoose.Schema({
@@ -153,6 +154,29 @@ UserSchema.methods.populateCompanies = async function (){
   return user
 
 };
+
+UserSchema.methods.customRemove = async function(){
+  let user = this
+
+  let userObject = await user.populateCompanies()
+
+  userObject.companies.forEach(company => {
+    if(company.hasOwnProperty('max_users')){
+      throw {
+        message: 'User cannot be deleted because it owns 1 or more companies',
+        html_code: 400
+      }
+    }
+  })
+
+  userObject.companies.forEach(async company => {
+    let company_doc = await Company.findById(company._id)
+    company_doc = await company_doc.removeUser(user._id)
+  })
+
+  return user.remove()
+
+}
 
 UserSchema.statics.findByToken = function (token){
   var User = this;
