@@ -19,9 +19,6 @@ export const add = (Model, fieldsToExclude) => {
       ...req.body
     })
 
-    console.log(req.user.username)
-    console.log(req.body.company_id)
-
     entity.save().then(
       doc => {
         res.send(doc)
@@ -55,7 +52,10 @@ export const remove = (Model) => {
     //
     // }).catch( e => next(e) )
 
-    Model.findById(id).then(
+    Model.findOne({
+      _id: id,
+      company_id: req.user.selected_company_id
+    }).then(
       doc => {
         if(!doc)
           return next({
@@ -142,7 +142,10 @@ export const getByID = (Model) => {
         html_code: 400
       })
 
-      Model.findById(id).then(
+      Model.findOne({
+        _id: id,
+        company_id: req.user.selected_company_id
+      }).then(
         (doc) => {
           if(!doc)
             return next({
