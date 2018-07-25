@@ -1,19 +1,16 @@
 const request = require('supertest');
-const {app} = require('../../server');
+const app = require('../../index');
 const {Product} = require('../../models/product');
 jest.setTimeout(30000);
 
 const {
   users,
   products,
+  suppliers,
   populateUsers,
   populateProducts,
   populateSuppliers,
-  populateCompanies,
-  companyOneID,
-  supplierOneID,
-  supplierTwoID,
-  supplierThreeID
+  populateCompanies
 } = require('../seed');
 
 beforeAll(populateUsers);
@@ -23,7 +20,7 @@ beforeEach(populateProducts);
 
 describe('POST', () => {
   let new_product = {
-    supplier_id: supplierOneID,
+    supplier_id: suppliers[0]._id,
     code: '003',
     name: 'Chanclas',
     uom: 'pair',
@@ -101,7 +98,7 @@ describe('POST', () => {
 
   it('should not create a new product with supplier_id that is not related to user', (done) => {
       let item = {...new_product};
-      item.supplier_id = supplierThreeID;
+      item.supplier_id = suppliers[2]._id
 
       request(app)
         .post('/api/product')
@@ -218,6 +215,7 @@ describe('PATCH', () => {
 
   it('should update a product with a new supplier id ', (done) => {
 
+      let supplierTwoID = suppliers[1]._id
       let _id = products[0]._id;
       let product = {
         ...updated_product,
@@ -233,7 +231,7 @@ describe('PATCH', () => {
         .expect( (res) =>{
           product = {
             ...product,
-            supplier_id: supplierTwoID.toString()
+            supplier_id: supplierTwoID
           }
           expect(res.body).toMatchObject(product);
         })
@@ -256,7 +254,8 @@ describe('PATCH', () => {
 
   it('should not update a product with supplier id that is not in database', (done) => {
 
-      let _id = products[0]._id;
+      let _id = products[0]._id
+      let supplierThreeID = suppliers[2]._id
       let product = {
         ...updated_product,
         supplier_id: supplierThreeID
@@ -280,10 +279,6 @@ describe('PATCH', () => {
             let db_product = {
               ...products[0]._doc
             }
-            // product = {
-            //   ...product,
-            //   supplier_id: supplierThreeID.toString()
-            // }
             expect(db_product).not.toMatchObject(product);
             done();
           }).catch( (e) => done(e) );

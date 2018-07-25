@@ -73,6 +73,14 @@ const suppliers = [{
     email: 'argelio.sanchez@nike.com',
     company_id: companyOneID,
     phone: '74487988955'
+  },{
+    _id: supplierThreeID,
+    name: 'GNC',
+    contact_name: 'Bad bunny',
+    address: '101 Olie Ave, Calexico CA',
+    email: 'bad.bunny@gnc.com',
+    company_id: companyTwoID,
+    phone: '1234567898'
   }]
 
 const users = [{
@@ -145,7 +153,7 @@ const products = [{
   },{
     _id: productThreeID,
     company_id: companyTwoID,
-    supplier_id: supplierTwoID,
+    supplier_id: supplierThreeID,
     code: '004',
     name: 'T-shirt blue',
     description: '',

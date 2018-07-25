@@ -1,5 +1,5 @@
 const request = require('supertest');
-const {app} = require('../../server');
+const app = require('../../index');
 const {Client} = require('../../models/client');
 jest.setTimeout(30000);
 
@@ -269,11 +269,10 @@ describe('DELETE', () => {
   it('should not remove a client if user does not belong to the same company of the client', (done) => {
 
       let token = users[0].tokens[0].token;
-      let email = clients[0].email;
-      let _id = clients[1]._id;
+      let client = clients[1];
 
       request(app)
-        .delete(`/api/client/${_id}`)
+        .delete(`/api/client/${client._id}`)
         .set('x-auth', token)
         .expect(404)
         .expect( (res) =>{
@@ -284,7 +283,7 @@ describe('DELETE', () => {
             return done(err);
           }
 
-          Client.find({email}).then( (clients) => {
+          Client.find({_id: client._id}).then( (clients) => {
             expect(clients.length).toBe(1);
             done();
           }).catch( (e) => done(e) );

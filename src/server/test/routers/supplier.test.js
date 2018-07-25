@@ -1,5 +1,5 @@
 const request = require('supertest');
-const {app} = require('../../server');
+const app = require('../../index');
 const {Supplier} = require('../../models/supplier');
 jest.setTimeout(30000);
 
