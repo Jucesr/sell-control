@@ -23,9 +23,9 @@ app.use('/api/product', products)
 app.use('/api/user', users)
 app.use('/api/sale', sales)
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(publicPath, 'index.html'))
-})
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(publicPath, 'index.html'))
+// })
 
 if (process.env.NODE_ENV !== 'jest') {
   app.listen(port, ()=> {
@@ -36,4 +36,5 @@ if (process.env.NODE_ENV !== 'jest') {
 //   console.log(`Server runing in ${port}`)
 // })
 
-export default app;
+
+module.exports = app
