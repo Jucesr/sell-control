@@ -1,7 +1,8 @@
 module.exports = {
   testPathIgnorePatterns: [
     "/node_modules/",
-    "/src/",
-    '/server/test/ignore'
+    "<rootDir>/server/",
+    "src/server/test/ignore",
+    "/src/client"
   ]
 };
