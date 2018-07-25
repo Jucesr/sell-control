@@ -6,24 +6,24 @@ const {User} = require('../models/user');
 const {Product} = require('../models/product');
 const {Company} = require('../models/company');
 
-const clientOneID = new ObjectID();
-const clientTwoID = new ObjectID();
-const supplierOneID = new ObjectID();
-const supplierTwoID = new ObjectID();
-const supplierThreeID = new ObjectID();
-const productOneID = new ObjectID();
-const productTwoID = new ObjectID();
-const productThreeID = new ObjectID();
+const clientOneID = new ObjectID().toString();
+const clientTwoID = new ObjectID().toString();
+const supplierOneID = new ObjectID().toString();
+const supplierTwoID = new ObjectID().toString();
+const supplierThreeID = new ObjectID().toString();
+const productOneID = new ObjectID().toString();
+const productTwoID = new ObjectID().toString();
+const productThreeID = new ObjectID().toString();
 
-const userOneId = new ObjectID();
-const userTwoId = new ObjectID();
-const userThreeId = new ObjectID();
-const userFourId = new ObjectID();
+const userOneId = new ObjectID().toString();
+const userTwoId = new ObjectID().toString();
+const userThreeId = new ObjectID().toString();
+const userFourId = new ObjectID().toString();
 
-const companyOneID = new ObjectID();
-const companyTwoID = new ObjectID();
+const companyOneID = new ObjectID().toString();
+const companyTwoID = new ObjectID().toString();
 
-const expiredToken = jwt.sign({_id: new ObjectID(), access: 'auth'}, process.env.JWT_SECRET).toString();
+const expiredToken = jwt.sign({_id: new ObjectID().toString(), access: 'auth'}, process.env.JWT_SECRET).toString();
 
 const companies = [{
     _id: companyOneID,
@@ -155,42 +155,28 @@ const products = [{
     stock: 10
   }]
 
-const populateClients = done =>{
-  Client.remove({
+const populateClients = () =>{
+  return Client.remove({
   }).then( () => {
     return Client.insertMany(clients);
-  }).then( () => {
-    done();
-  }).catch( (e) => {
-    done(e);
-  });
+  })
 };
 
-const populateSuppliers = done =>{
-  Supplier.remove({
-  }).then( () => {
+const populateSuppliers = () =>{
+  return Supplier.remove({}).then( () => {
     return Supplier.insertMany(suppliers);
-  }).then( () => {
-    done();
-  }).catch( (e) => {
-    done(e);
-  });
+  })
 };
 
-const populateProducts = done =>{
-  Product.remove({
-  }).then( () => {
+const populateProducts = () =>{
+  return Product.remove({}).then( () => {
     return Product.insertMany(products);
-  }).then( () => {
-    done();
-  }).catch( (e) => {
-    done(e);
-  });
-};
+  })
+}
 
-const populateUsers = (done) =>{
+const populateUsers = () =>{
 
-  User.remove({}).then( () =>{
+  return User.remove({}).then( () =>{
 
     var userOne = new User(users[0]).save();
     var userTwo = new User(users[1]).save();
@@ -198,19 +184,14 @@ const populateUsers = (done) =>{
     var userFour = new User(users[3]).save();
     return Promise.all([userOne, userTwo, userThree, userFour]);
 
-  }).then( () => done() );
+  })
 }
 
-const populateCompanies = (done) =>{
+const populateCompanies = () =>{
 
-  Company.remove({
-  }).then( () => {
+  return Company.remove({}).then( () => {
     return Company.insertMany(companies);
-  }).then( () => {
-    done();
-  }).catch( (e) => {
-    done(e);
-  });
+  })
 
 }
 
@@ -226,10 +207,5 @@ module.exports = {
   populateCompanies,
   populateSuppliers,
   populateProducts,
-  companyOneID,
-  companyTwoID,
-  supplierOneID,
-  supplierTwoID,
-  supplierThreeID,
   expiredToken
 }
