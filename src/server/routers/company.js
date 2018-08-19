@@ -39,7 +39,8 @@ router.post('/', (req, res, next) => {
 })
 
 router.patch('/unsubscribe/user/:id', validate_company, (req, res, next) => {
-
+  
+  
   let uu_id = req.params.id
   let ut = req.user
   let company = req.company

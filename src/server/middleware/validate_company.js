@@ -3,7 +3,7 @@ import {error_handler} from '../helpers'
 
 export const validate_company = (req, res, next) => {
   const user = req.user;
-
+  
   if(!user.selected_company_id || user.selected_company_id == null){
     return next({
       message: 'User does not belong to any company',

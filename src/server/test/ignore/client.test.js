@@ -6,7 +6,6 @@ jest.setTimeout(30000);
 const {
   users,
   clients,
-  companies,
   populateUsers,
   populateClients,
   populateCompanies
