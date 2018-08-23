@@ -68,7 +68,7 @@ router.patch('/subscribe/user/:id', validate_company, (req, res, next) => {
 
   let company = req.company
   let ut = req.user
-  let uu_id = req.params.id
+  let uu_id = req.params.id  
 
   company.subscribeUser(ut, uu_id).then(
     user => {
@@ -80,7 +80,7 @@ router.patch('/subscribe/user/:id', validate_company, (req, res, next) => {
 router.patch('/max_users/:action', validate_company, (req, res, next) => {
   let company = req.company
   let user = req.user
-  let action = req.params.action //increase - decrase
+  let action = req.params.action //increase - decrease
 
   if(!user._id.equals(company.user_owner_id)){
     return next({
