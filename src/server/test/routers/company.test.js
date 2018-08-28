@@ -1,15 +1,28 @@
 const request = require('supertest')
 const app = require('../../index')
 const {Company} = require('../../models/company')
+const {Client} = require('../../models/client')
+const {Supplier} = require('../../models/supplier')
+const {Product} = require('../../models/product')
 jest.setTimeout(30000)
 
 const {
     users,
     clients,
+    suppliers,
     companies,
+    products,
+    populateClients,
+    populateProducts,
+    populateSuppliers,
     populateUsers,
     populateCompanies
 } = require('../seed')
+
+beforeAll(populateClients);
+beforeAll(populateSuppliers);
+beforeAll(populateProducts);
+
 
 beforeEach(populateUsers);
 beforeEach(populateCompanies);
@@ -312,3 +325,60 @@ describe('PATCH /user_owner_id/:id', () => {
     }) 
 })
 
+describe('DELETE /', () => {
+    it('should remove a company and all related data', done => {
+        let token = users[0].tokens[0].token
+
+        request(app)
+            .delete(`/api/company`)
+            .set('x-auth', token)
+            .send({})
+            .expect(200)
+            .end( (err, res) =>{
+                if(err){
+                  return done(err);
+                }
+        
+                Company.findById(users[0].selected_company_id).then( (item) => {
+
+                    expect(item).toBeFalsy()
+
+                    return Client.findById(clients[0]._id)
+              
+                }).then( item => {
+
+                    expect(item).toBeFalsy() 
+
+                    return Product.findById(products[0]._id)
+ 
+                }).then( item => {
+
+                    expect(item).toBeFalsy() 
+
+                    return Supplier.findById(suppliers[0]._id)
+ 
+                }).then( item => {
+
+                    expect(item).toBeFalsy() 
+
+                    return done()
+ 
+                }).catch( (e) => done(e) );
+              } )
+    })
+
+    it('should not remove a company if the user is not the owner', done => {
+        let token = users[1].tokens[0].token
+
+        request(app)
+            .delete(`/api/company`)
+            .set('x-auth', token)
+            .send({})
+            .expect(401)
+            .expect( (res) =>{
+                let {error} = res.body
+                expect(error).toBeDefined()
+            })
+            .end( done )
+    })
+})

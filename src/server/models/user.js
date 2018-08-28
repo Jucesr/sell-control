@@ -139,21 +139,31 @@ UserSchema.methods.populateCompanies = async function (){
   user = await user.populate('companies').execPopulate()
 
   user = user.toObject()
-  user.companies = user.companies.map(company => {
+  user.companies = await Promise.all(user.companies.map(async company => {
+    //If user is not the owner return just return name and id of the company
     if(!company.user_owner_id.equals(user._id)){
       return {
         name: company.name,
         _id: company._id
       }
     }
+    //User is owner bring all users from each company. 
+    let proms = company.users.map(user_id => User.findById(user_id))
+    
+    let users = await Promise.all(proms)
+
+    //Just pick some fields of each user.
+    company.users = users.map(user => pick(user, ['_id', 'username','email']))
+
     return company
-  })
+  }))
 
   user = pick(user, ['_id', 'username','email', 'selected_company_id','companies'])
 
   return user
 
 };
+
 
 UserSchema.methods.customRemove = async function(){
   let user = this

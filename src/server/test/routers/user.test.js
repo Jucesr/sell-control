@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../../index');
+const app = require('../..');
 const {User} = require('../../models/user');
 const {Company} = require('../../models/company');
 jest.setTimeout(30000);
@@ -400,7 +400,7 @@ describe('DELETE', () => {
 
 describe('GET', () => {
 
-    it('should get an user, if he owns a company get all details, if not just a name and id', (done) => {
+    it('should get user information, if user owns a company get all details, if not just a name and id', (done) => {
         let user = users[2]
         let token = user.tokens[0].token
         let company_own = companies[1]
@@ -417,7 +417,12 @@ describe('GET', () => {
              expect(res.body._id).toEqual(user._id.toString());
              let res_company_own = res.body.companies.filter(c => c._id == company_own._id)[0]
              let res_company_belong = res.body.companies.filter(c => c._id == company_belong._id)[0]
-             expect(res_company_own).toMatchObject(company_own)
+             //Company that user owns
+             expect(res_company_own._id).toEqual(company_own._id.toString())
+             expect(res_company_own.name).toBe(company_own.name)
+             expect(res_company_own.max_users).toBe(company_own.max_users)
+
+             //Company that user belongs
              expect(res_company_belong._id).toEqual(company_belong._id.toString())
              expect(res_company_belong.max_users).not.toBeDefined()
           })
