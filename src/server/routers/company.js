@@ -20,7 +20,7 @@ router.post('/', (req, res, next) => {
   if(req.user.max_companies <= req.user.companies.length){
     return next({
       message: 'User can not create more companies.',
-      html_code: '400'
+      http_code: '400'
     })
   }
 
@@ -85,7 +85,7 @@ router.patch('/max_users/:action', validate_company, (req, res, next) => {
   if(!user._id.equals(company.user_owner_id)){
     return next({
       message: 'User cannot modify max users because is not the owner of the company',
-      html_code: 401
+      http_code: 401
     })
   }
 
@@ -106,7 +106,7 @@ router.patch('/user_owner_id/:id', validate_company, (req, res, next) => {
   if(!user._id.equals(company.user_owner_id)){
     return next({
       message: 'User cannot modify owner because is not the owner of the company',
-      html_code: 401
+      http_code: 401
     })
   }
 
@@ -127,7 +127,7 @@ router.get('/', authenticate, validate_company, (req, res, next) =>{
   if(!user._id.equals(company.user_owner_id)){
     return next({
       message: 'User cannot get this company because is not the owner',
-      html_code: 401
+      http_code: 401
     })
   }
 
@@ -147,7 +147,7 @@ router.delete('/', validate_company, (req, res, next) => {
   if(!user._id.equals(company.user_owner_id)){
     return next({
       message: 'User cannot delete this company because is not the owner',
-      html_code: 401
+      http_code: 401
     })
   }
 

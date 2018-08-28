@@ -7,7 +7,7 @@ export const validate_company = (req, res, next) => {
   if(!user.selected_company_id || user.selected_company_id == null){
     return next({
       message: 'User does not belong to any company',
-      html_code: 401
+      http_code: 401
     })
   }
   Company.findById(user.selected_company_id).then(
@@ -16,14 +16,14 @@ export const validate_company = (req, res, next) => {
         user.removeCompany(user.selected_company_id);
         return next({
           message: 'Company does not exists anymore',
-          html_code: 404
+          http_code: 404
         });
       }
       let result = doc.users.find(u => u.equals(user._id))
       if(!result){
         return next({
           message: 'User does not belong to that company',
-          html_code: 401
+          http_code: 401
         });
       }
       req.body.company_id = user.selected_company_id;

@@ -7,7 +7,7 @@ var authenticate = (req, res, next) => {
     if(!user){
       return Promise.reject({
         message: 'Token has expired',
-        html_code: 401
+        http_code: 401
       });
     }
 
@@ -16,7 +16,7 @@ var authenticate = (req, res, next) => {
     next();
   }).catch( e => next({
     ...e,
-    html_code: 401
+    http_code: 401
   }));
 };
 

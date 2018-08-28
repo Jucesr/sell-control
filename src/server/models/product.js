@@ -84,7 +84,7 @@ ProductSchema.pre('validate', function(next){
   if(!ObjectID.isValid(self.supplier_id)){
     return next({
       message: 'Supplier ID has invalid format',
-      html_code: '400'
+      http_code: '400'
     })
   }
 
@@ -96,7 +96,7 @@ ProductSchema.pre('validate', function(next){
       if(!doc)
         return next({
           message: `Supplier was not found`,
-          html_code: '404'
+          http_code: '404'
         })
         next()
     })

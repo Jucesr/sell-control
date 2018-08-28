@@ -52,14 +52,14 @@ CompanySchema.methods.unsubscribeOtherUser = async function (ut, uu_id){
   if(ut_id.equals(uu_id)){
     throw {
       message: 'User cannot unsubscribe himself',
-      html_code: 400
+      http_code: 400
     }
   }
 
   if(!ut_id.equals(user_owner_id)){
     throw {
       message: 'User cannot unsubscribe other user because is not owner of the company',
-      html_code: 401
+      http_code: 401
     }
   }
 
@@ -69,7 +69,7 @@ CompanySchema.methods.unsubscribeOtherUser = async function (ut, uu_id){
 
     throw {
       message: 'User that will be unsubscribe is not in company user list',
-      html_code: 400
+      http_code: 400
     }
   }
 
@@ -78,7 +78,7 @@ CompanySchema.methods.unsubscribeOtherUser = async function (ut, uu_id){
   if(!uu){
     throw {
       message: 'User was not found',
-      html_code: 404
+      http_code: 404
     }
   }
 
@@ -110,7 +110,7 @@ CompanySchema.methods.unsubscribeUser = async function (ut){
   if(ut_id.equals(user_owner_id)){
     throw {
       message: 'User cannot unsubscribe himself because is the owner of the company',
-      html_code: 401
+      http_code: 401
     }
   }
 
@@ -149,21 +149,21 @@ CompanySchema.methods.subscribeUser = async function (ut, uu_id){
   if(company.max_users == company.users.length){
     throw {
       message: 'Company cannot have more users.',
-      html_code: 400
+      http_code: 400
     }
   }
 
   if(ut_id.equals(uu_id)){
     throw {
       message: 'User cannot subscribe himself to a company',
-      html_code: 400
+      http_code: 400
     }
   }
 
   if(!ut_id.equals(user_owner_id)){
     throw {
       message: 'User cannot subscribe other user because is not owner of the company',
-      html_code: 401
+      http_code: 401
     }
   }
 
@@ -173,7 +173,7 @@ CompanySchema.methods.subscribeUser = async function (ut, uu_id){
 
     throw {
       message: 'User is subscribed already',
-      html_code: 400
+      http_code: 400
     }
   }
 
@@ -182,7 +182,7 @@ CompanySchema.methods.subscribeUser = async function (ut, uu_id){
   if(!uu){
     throw {
       message: 'User was not found',
-      html_code: 404
+      http_code: 404
     }
   }
 
@@ -218,7 +218,7 @@ CompanySchema.methods.updateMaxUsers = function(action) {
       if(company.users.length == company.max_users){
         return Promise.reject({
           message: 'Cannot decrase max user number because it has users subscribed',
-          html_code: 400
+          http_code: 400
         })
       }
 
@@ -229,7 +229,7 @@ CompanySchema.methods.updateMaxUsers = function(action) {
 
     return Promise.reject({
       message: 'Invalid action',
-      html_code: 400
+      http_code: 400
     })
   }
 
@@ -265,7 +265,7 @@ CompanySchema.methods.changeOwner = async function(user_id) {
   if(!user){
     throw {
       message: 'User was not found',
-      html_code: 404
+      http_code: 404
     }
   }
 

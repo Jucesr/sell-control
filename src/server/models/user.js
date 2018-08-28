@@ -121,7 +121,7 @@ UserSchema.methods.selectCompany = function (company_id){
   if(!result){
     return Promise.reject ({
       message: 'Company is not part of available companies',
-      html_code: 404
+      http_code: 404
     })
   }
 
@@ -174,7 +174,7 @@ UserSchema.methods.customRemove = async function(){
     if(company.hasOwnProperty('max_users')){
       throw {
         message: 'User cannot be deleted because it owns 1 or more companies',
-        html_code: 400
+        http_code: 400
       }
     }
   })
@@ -193,7 +193,7 @@ UserSchema.statics.findByToken = function (token){
   var decoded;
   let error_message = {
     message: 'Token has expired',
-    html_code: 401
+    http_code: 401
   }
 
   try{
@@ -201,7 +201,7 @@ UserSchema.statics.findByToken = function (token){
   } catch(e) {
     return Promise.reject({
       message: 'Invalid token',
-      html_code: 400
+      http_code: 400
     });
   }
 
@@ -223,7 +223,7 @@ UserSchema.statics.findByCredentials = function (username, email, password){
   //let finder = email || username;
   let error_message = {
     message: 'Email or password are not valid',
-    html_code: 400
+    http_code: 400
   }
 
   return User.findOne({

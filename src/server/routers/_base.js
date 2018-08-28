@@ -35,7 +35,7 @@ export const remove = (Model) => {
     if(!ObjectID.isValid(id)){
       return next({
         message: 'ID has invalid format',
-        html_code: 400
+        http_code: 400
       })
     }
 
@@ -44,7 +44,7 @@ export const remove = (Model) => {
     //     if(!doc)
     //       return next({
     //         message: `${Model.modelName} was not found`,
-    //         html_code: 404
+    //         http_code: 404
     //       })
     //
     //     res.status(200).send(doc)
@@ -60,7 +60,7 @@ export const remove = (Model) => {
         if(!doc)
           return next({
             message: `${Model.modelName} was not found`,
-            html_code: 404
+            http_code: 404
           })
         return doc.remove()
     }).then(
@@ -82,7 +82,7 @@ export const update = (Model, fieldsToExclude) => {
     if(!ObjectID.isValid(id))
       return next({
         message: 'ID has invalid format',
-        html_code: 400
+        http_code: 400
       })
 
     if(fieldsToExclude){
@@ -99,7 +99,7 @@ export const update = (Model, fieldsToExclude) => {
         if(!doc)
           return next({
             error: `${Model.modelName} was not found`,
-            html_code: 404
+            http_code: 404
           })
         doc.set({
           ...req.body
@@ -139,7 +139,7 @@ export const getByID = (Model) => {
     if(!ObjectID.isValid(id))
       return next({
         message: 'ID has invalid format',
-        html_code: 400
+        http_code: 400
       })
 
       Model.findOne({
@@ -150,7 +150,7 @@ export const getByID = (Model) => {
           if(!doc)
             return next({
               message: `${Model.modelName} was not found`,
-              html_code: 404
+              http_code: 404
             })
 
             res.status(200).send(doc)

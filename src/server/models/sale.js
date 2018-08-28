@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import moment from 'moment'
+import {Client} from './client'
 import {pre_save_trim} from '../middleware/pre_trim'
 
 const SaleSchema = new mongoose.Schema({
@@ -45,6 +46,38 @@ const SaleSchema = new mongoose.Schema({
   }]
 })
 
+SaleSchema.pre('validate', function(next){
+  //If client_id is provided it will validate that is on the database
+  const self = this
+  const company_id = self.company_id
+  const client_id = self.client_id
+
+  if(!!client_id){
+    if(!ObjectID.isValid(client_id)){
+      return next({
+        message: 'Client ID has invalid format',
+        http_code: '400'
+      })
+    }
+  
+    Client.findOne({
+      _id: client_id,
+      company_id
+    }).then(
+      (doc) => {
+        if(!doc)
+          return next({
+            message: `Client was not found`,
+            http_code: '404'
+          })
+          next()
+      })
+  }
+  next()
+  })
+
+  
+
 // SaleSchema.statics.getAll = function (user_id){
 //   return this.find({
 //     user_owner_id: user_id
@@ -54,10 +87,6 @@ const SaleSchema = new mongoose.Schema({
 //All string fields will be trimmed
 SaleSchema.pre('save', pre_save_trim)
 
-SaleSchema.pre('save', function(next){
-  let user = this
 
-
-})
 
 export const Sale = mongoose.model('Sale', SaleSchema)
