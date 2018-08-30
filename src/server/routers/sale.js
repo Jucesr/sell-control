@@ -17,91 +17,140 @@ router.use(validate_company)
 
 //  Middlware especific to this route.
 
-const validate_data = (req, res, next) => {
-  //  This function validate that client_id is valid on the database.
-  //  It also validate that all the products in sale_details are on the database as well.
-  //  Plus, If all products are valid it will attached unit rate and code to the sale object.
+const validate_clientID = (req, res, next) => {
+  const {company_id, client_id} = req.body
 
-  req.body.user_id = req.user._id
+  //  it could be undefined but if defined it will check its on the database
+  
+  if(!!client_id){
 
-  const {company_id, client_id, sale_details} = req.body
-
-  //  A promise to validate client_id, it could be undefined but if defined it will check its on the database
-  const validateClientId = new Promise(async (resolve, reject) => {
-    if(!!client_id){
-
-      const doc = await Client.findOne({
+    Client.findOne({
         _id: client_id,
         company_id
-      })
-
-      if(!doc)
-        reject({
-          message: `Client was not found`,
-          http_code: '404'
-        })
-      resolve()
-    }else{
-      resolve()
-    }
-
-  })
-
-  //  A promise that validates each product in sale_details, the property cannot be empty 
-  const validateSaleDetail = new Promise(async (resolve, reject) => {
-    
-    if(!!sale_details){
-      //  An array of promises that search the product in the database.
-      let proms = sale_details.map(
-        sale_detail => {
-          
-          return Product.findOne({
-            _id: sale_detail.product_id,
-            company_id
-          }).then(product => {
-            if(product){
-              sale_detail.unit_rate = product.price
-              sale_detail.code = product.code
-              return sale_detail
-            }else{
-              return null
-            }
-          }).catch(e => {
-            return null
-          })
-
-          
-        }
-      )
-        
-      let results = await Promise.all(proms)
-
-      //  All promise's result have to be defined
-      if(results.every(i => !!i)){
-        //  It attached the new sale_details with unit_rate and code
-        req.body.sale_details = results
-        resolve() 
-      }else{
-        reject({
-          message: `A product was not found`,
-          http_code: '404'
-        })
       }
-    }else{
-      // It means sale_details is not defined
-      reject({
-        message: `Sale details cannot be empty`,
-        http_code: '400'
-      })
-    }
-  })
+    ).then(
+      doc => {
+        if(!doc)
+          next({
+            message: `Client was not found`,
+            http_code: '404'
+          })
+        next()
+      }
+    ).catch(
+      e => next(e)
+    )
 
-  Promise.all([validateClientId, validateSaleDetail])
-    .then( () => next())
-    .catch( e => next(e))
+  }else{
+    next()
+  }
 }
 
-router.post('/', validate_data, add(Sale) )
+const validate_sale_details = (req, res, next) => {
+  //  It validates that sale details is not empty.
+  //  it validates values are not negative.
+  //  It validates all sale_details 
+  //    * product is on the database
+  //    * product is in stock
+  //    * has positive quantity
+  //    * has a valid discount
+  const {company_id, sale_details} = req.body
+
+  if(!sale_details){
+    // It means sale_details is not defined
+    return next({
+      message: `Sale details cannot be empty`,
+      http_code: '400'
+    })
+  }
+  
+
+  //  An array of promises that search the product in the database.
+  let proms = sale_details.map(
+    sale_detail => {
+      
+      return Product.findOne({
+        _id: sale_detail.product_id,
+        company_id
+      }).then(product => {
+
+        if(!product){
+          return {
+            message: `${sale_detail.product_id} was not found`
+          }
+        }
+
+        if(sale_detail.quantity <= 0){
+          return {
+            message: `${sale_detail.product_id} has to have a positive quantity`
+          }
+        }
+
+        if(sale_detail.discount < 0){
+          return {
+            message: `${sale_detail.product_id} has to have a positive or 0 discount`
+          }
+        }
+
+        //  If stock is being track check that is not out of stock
+        if(product.stock != -1 && product.stock - sale_detail.quantity < 0){
+          return {
+            message: `Error in product ${product.code}. Can not sell ${sale_detail.quantity}, only ${product.stock} in stock.`
+          }
+        }
+        //  When product found it takes extra information
+        sale_detail = {
+          ...sale_detail,
+          code: product.code,
+          unit_rate: product.price,
+          name: product.name,
+          uom: product.uom,
+          total: (product.price * sale_detail.quantity) - sale_detail.discount
+        }
+        
+        return sale_detail
+        
+      }).catch(e => {
+        return {
+          message: `${sale_detail.product_id} was not found`
+        }
+      })
+
+      
+    }
+  )
+    
+  Promise.all(proms).then(
+    results => {
+      //  Check if all promises were solved without errors
+      results.forEach(sale_detail => {
+        if(sale_detail.message){
+          return next(sale_detail)
+        }
+      })
+      
+      //  It attaches the new sale_details with extra information
+      req.body.sale_details = results
+
+      //  It gets the final total 
+
+      req.body.total = results.reduce((prev, current) => {
+        return prev + current.total
+      }, 0)
+
+      next() 
+      
+    }
+  )
+
+}
+
+const add_userID = (req, res, next) => {
+  req.body.user_id = req.user._id
+  next()
+}
+
+router.post('/', add_userID, validate_clientID, validate_sale_details, add(Sale) )
 
 router.delete('/:id', remove(Sale))
 
