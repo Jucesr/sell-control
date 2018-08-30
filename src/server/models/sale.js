@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import moment from 'moment'
 import {pre_save_trim} from '../middleware/pre_trim'
+import {Product} from './product'
 
 const SaleSchema = new mongoose.Schema({
   company_id:{
@@ -33,6 +34,8 @@ const SaleSchema = new mongoose.Schema({
       required: true
     },
     code: String,
+    name: String,
+    uom: String,
     quantity: {
       type: Number,
       required: true
@@ -51,8 +54,30 @@ const SaleSchema = new mongoose.Schema({
   }]
 })
 
-//All string fields will be trimmed
+//  All string fields will be trimmed
 SaleSchema.pre('save', pre_save_trim)
+
+
+SaleSchema.post('save', function(){
+  //  Updates all product stock after the sell
+  this.sale_details.forEach(sale_detail => {
+    Product.findOne({
+      _id: sale_detail.product_id,
+      company_id: this.company_id
+    }).then(
+      product => {
+        //  Just update products that are being track
+        if(product.stock != -1){
+          product.set({
+            stock: product.stock - sale_detail.quantity
+          })
+          product.save()
+        }
+        
+      }
+    )
+  })
+})
 
 
 
