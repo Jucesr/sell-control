@@ -1,4 +1,11 @@
 /node_modules
-/public/dist
-/src/server/config/config.json
-/server/
+package-lock.json
+/storage/*
+!/storage/.empty
+/tests
+.env
+logs.txt
+
+pm2.json
+/playground
+.vscode
